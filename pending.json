@@ -4,6 +4,11 @@
       "note_uid": "a0f8393c-9804-4780-9e77-f2d4f6b7d1ff",
       "version": 1,
       "path": "notes/a0f8393c-9804-4780-9e77-f2d4f6b7d1ff/v1"
+    },
+    {
+      "note_uid": "genesis",
+      "version": 0,
+      "path": "genesis/2026-07-09-root"
     }
   ]
 }
