@@ -13,7 +13,7 @@
   "signature": "afmoUyh0Ay036iSIE0UT9/vH8vVnH/tsEQUeMTwjP17E/hivBGWpCbwJS3gsSTYMPX4TRixWswerZPU8s++7BQ==",
   "pubkey_id": "sn-ed25519-2026-07",
   "ots": {
-    "status": "pending",
+    "status": "confirmed",
     "calendars": [
       "alice.btc.calendar.opentimestamps.org"
     ]
