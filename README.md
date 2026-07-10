@@ -4,8 +4,12 @@ Public, append-only provenance ledger for Signal & Noise Tools Notes. Every
 commit is written by the `sn-provenance` Cloudflare Worker in response to a
 Note being published or edited — no human commits here directly.
 
-See `VERIFY.md` for how to independently verify any record without trusting
-this repo's owner.
+Verify any record yourself with **one command** —
+`node verify.mjs <note_uid>` — which recomputes the content hash, checks the
+Ed25519 signature under the published key, and confirms the OpenTimestamps proof
+against the **real Bitcoin block** on a public explorer (no OTS client needed).
+For the manual, do-it-by-hand steps see `VERIFY.md`. Either way, no trust in this
+repo's owner is required.
 
 ## Layout
 
@@ -27,6 +31,16 @@ this repo's owner.
   repo) by `normalize/parity.test.mjs`.
 - `pending.json` — the Worker's sweep work queue: `{note_uid, version, path}`
   for every record whose OTS proof hasn't yet been confirmed on-chain.
+- `verify.mjs` + `verify/` — the one-command trustless verifier
+  (`node verify.mjs <note_uid>`, or `npm run verify -- <note_uid>`): recompute
+  the canonical hash via `normalize/canonical-json.mjs`, verify the Ed25519
+  signature, and confirm the OTS proof's merkle root against the real block
+  header from a public explorer. `verify/ots.mjs` is a minimal, vendored OTS
+  reader; everything but the block-header lookup is offline. Tested against a
+  real confirmed record in `verify/verify.test.mjs` (`npm test`).
+- `backfill-v1.done` — one-time marker: present once the Worker's historical
+  `bitcoin_block` backfill has run (for Notes confirmed before the Worker began
+  recording the block).
 
 ## Why "bot-written"
 
