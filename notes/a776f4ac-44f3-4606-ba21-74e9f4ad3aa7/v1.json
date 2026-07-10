@@ -16,6 +16,8 @@
     "status": "pending",
     "calendars": [
       "alice.btc.calendar.opentimestamps.org"
-    ]
+    ],
+    "bitcoin_txid": "3a484dde3f288320c590d4a0976015e776a38e0a5b7b241393fdba653e992ed3",
+    "confirmations": 4
   }
 }
