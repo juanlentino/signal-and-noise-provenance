@@ -16,6 +16,7 @@
     "status": "confirmed",
     "calendars": [
       "alice.btc.calendar.opentimestamps.org"
-    ]
+    ],
+    "bitcoin_block": 957333
   }
 }
