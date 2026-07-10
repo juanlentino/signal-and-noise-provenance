@@ -2,7 +2,33 @@
 
 Anyone can independently verify that a published Note's content existed, in
 exactly its committed form, at or before a given time — without trusting
-this repo's owner, the Worker, or WordPress. Four steps:
+this repo's owner, the Worker, or WordPress.
+
+## Quick: one command
+
+With Node ≥ 18 and a clone of this repo, one script does steps 2–4 for you —
+recompute the content hash, verify the Ed25519 signature under the published
+key, and confirm the OpenTimestamps proof's merkle root against the **real
+Bitcoin block** (fetched from a public block explorer; no OTS client to install):
+
+```bash
+git clone https://github.com/<owner>/signal-and-noise-provenance
+cd signal-and-noise-provenance
+node verify.mjs <note_uid>     # e.g. node verify.mjs a0f8393c-9804-4780-9e77-f2d4f6b7d1ff
+```
+
+```
+  1) content hash  ✓ matches (canonical reproduced independently)
+  2) signature     ✓ valid Ed25519 under the published key
+  3) bitcoin       ✓ merkle root matches block 957333 on-chain
+
+VERIFIED — authentic, unmodified, and anchored in Bitcoin.
+```
+
+It prints each check and exits non-zero if any fails; everything but the final
+block-header lookup is offline. Prefer to trust nothing but your own Bitcoin
+node, or to check by hand? The four manual steps below remain fully valid — the
+script is a convenience, not the source of truth.
 
 ## 1. Fetch the record
 

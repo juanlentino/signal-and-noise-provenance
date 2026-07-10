@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "vitest run normalize/"
+    "test": "vitest run",
+    "verify": "node verify.mjs"
   },
   "devDependencies": {
     "vitest": "^3.0.0"
