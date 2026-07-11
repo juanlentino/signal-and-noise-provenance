@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "These are notes, not articles. Short pieces, each taking one idea as far as it goes, working out a single argument in public and in sequence. If you landed on one of them cold, this page is the map.\n\nWhat a note is\n\nA note is a three to four minute read that holds one idea and stops. It is not news commentary, and it is not written for search engines. Each one stakes a position and shows its work.\n\nOnce a note is published and dated, it does not get edited. There is one canonical version, and it stays the version it was the day it went up. If the thinking moves, that becomes a new note, not a quiet revision of an old one. You can trust that what you are reading is what was argued, when it was argued.\n\nThis page is the one exception. It describes the system, so it stays current.\n\nWhy they exist\n\nThe notes are building one case. Music is heading into an era where the question of who made what, and with which inputs, decides who gets paid. The current answer is detection, which guesses after the fact and can always be challenged. The argument here is that the answer has to be provenance instead. Identity that is cryptographic, bound to the work, and signed at the moment of creation, so it survives the life of the file.\n\nThe formal versions of this argument live as papers. The notes are where it gets worked out in the open, one piece at a time, where anyone can follow the reasoning and push on it.\n\nHow they are organized\n\nThe notes sit in one index, newest first, each tagged by topic. Tags are the map. Follow one and you get every note that touches that thread. Some notes build on earlier ones and link back when they do, but there is no required order. Each one stands on its own.\n\nAbove the notes sit the pillar essays. Those are the long-form anchors, each backed by a paper. A note assumes you have either read the pillars or are willing to.\n\nWhere to start\n\nStart with the pillars. Provenance Over Detection carries the core argument. Provenance as Substrate carries the technical case underneath it. Every note hangs off one or the other. From there, jump to whichever question brought you here, or work through the index and watch the argument accumulate.\n\nHow to follow\n\nThere is a feed, and the feed is the spine of all of it. Subscribe via RSS and new notes arrive as they publish. If you would rather read by email, point a service like Blogtrottr or Feedrabbit at the feed and each note lands in your inbox, on your account, not a list of mine. There is no signup form here and no list I keep, by design. The work is here for anyone who wants it, on the reader's terms.\n\nNothing here is finished. That is the reason for working it out where you can watch it happen.",
+    "note_uid": "045d4cec-bf8c-4fdc-8b5f-30145d3ed639",
+    "parent": "7e84f5668fb1179dad3bb697143064bc099919134d93d7e18afc05ed40059951",
+    "published_at": "2026-06-20T23:24:55Z",
+    "title": "Start here",
+    "version": 1
+  },
+  "content_hash": "ede6aea2d9c9bca42adde016c2069565a1d9e26e90a1a44bd9ead5d89b7b134c",
+  "signature": "hJ+7VQN42KozdGuXNClhWnQuWhde+jWLIvDIw2hHTn7MiK32yUxbWTqWvzfa/b1g85xSrnRdTdKOY8xNyElyBQ==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
