@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "Platforms wait on provenance for reasons that are entirely rational from inside their own economics, which is the subject of another note. Set the timing question aside and a different one remains, and it does not depend on anyone's incentives. When provenance does get adopted, where does it have to be captured? The answer is fixed by information, not by economics, and it points to exactly one place.\n\nProvenance is a chain of custody, and a chain is only as good as its first link. Whatever gets recorded at the origin is what every later system has to work with. Whatever is lost there stays lost.\n\nThe origin link decides the rest\n\nA provenance record is not a description bolted on after the fact. It is a claim about identity and authorship bound to the work at the moment the work comes into being. The technical case for how that binding survives the life of a file is Provenance as Substrate. The point here is plainer. The binding has to be written by whatever produces the work, because that is the only actor present at creation holding the full picture.\n\nA downstream system can read a file. It cannot witness how the file came to be. Once the work leaves its origin, the record of its making is gone, and no later system can supply what it never saw. This is the same failure a recent black box ruling described from the far end: money collected, the writer unmatched, no institution able to reconstruct what was never captured at the source. The court was looking at the wreckage. The cause is upstream, at the link that was never written.\n\nOnly the origin knows enough to sign\n\nAt the moment a work is made, the tool that makes it knows what it made and what it drew on. Identity, inputs, and output are all present at the same instant. A moment later that knowledge starts to decay, and every hand the file passes through erases a little more of it.\n\nThis is why the responsibility cannot be handed downstream. Downstream actors are not unwilling. They arrive after the only moment when the truth was fully available to be recorded. Asking a distributor or a platform to certify origin is asking a witness to testify to an event they were not present for. They can attest that a file reached them. They cannot attest to how it was born, because they were not there.\n\nProvenance is a position, not a burden\n\nThe tool layer gets discussed as the place that ought to shoulder provenance, as though signing at creation were a cost imposed on whoever happens to sit at the origin. Read from the information side, that framing inverts. The origin is not being asked to carry a burden the rest of the chain would rather avoid. It occupies the one position from which a truthful record can be written at all.\n\nEverything downstream is estimation. The origin is the only point with direct knowledge, and direct knowledge is the whole value of a provenance record. Whoever sits at the moment of creation holds something no later party can reconstruct or fake into existence after the fact. The record can be written truthfully in exactly one place, which is also the reason it will eventually have to be written there.",
+    "note_uid": "dcb5a07a-aea4-4721-b30e-9da11b00c100",
+    "parent": null,
+    "published_at": "2026-07-17T20:23:00Z",
+    "title": "Where provenance has to live",
+    "version": 1
+  },
+  "content_hash": "f0fbdc78fa2f85f95a424e14bbf613cb9ab1f9dbac8f792769a2b773db36f8a0",
+  "signature": "wM5teZCp4rPpLS16iFJTyu8V1SfuuLt6Qy2f79UG5u7QYrba1zBFbRsvSsfFOqNAI3gx8haVCseKH3Q/kBmjCw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
