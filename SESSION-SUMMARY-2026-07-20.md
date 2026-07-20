@@ -54,9 +54,10 @@ migration changed only the JSON `signature` value; its payload, Merkle root,
   tag `v9.72.0`; installed through WordPress admin by the site owner.
 - Private Worker source: `893a200e133230a6af37552a68d93d0aff7b2b09`
   (v1.5.0) and `d57e378e559c37dc84b051367ba203f5f58e0e9b`
-  (v1.5.1 CI containment).
-- Live Worker: v1.5.1, Cloudflare version
-  `0c3ef4e2-73f2-47b8-a899-d2986a3927a1`, deployed with `npm run deploy`.
+  (v1.5.1 CI containment), followed by `282122a` (v1.5.2 stale-queue
+  self-healing and tracked-lockfile repair).
+- Live Worker: v1.5.2, Cloudflare version
+  `099e3585-5e3d-48ea-8c81-08d4c2a0c0dd`, deployed with `npm run deploy`.
   The original three secret bindings remain present; no values were read.
 - Cloudflare DNS record: `052ba26506e20bcfdfe928bb31640bac`.
 - First green full-ledger workflow: run `29751548320` at commit `c7fd124`
@@ -75,6 +76,9 @@ migration changed only the JSON `signature` value; its payload, Merkle root,
   optimizer-dependent runs use the strict REST fallback only where needed.
 - All six pre-existing standalone records and genesis pass end-to-end Bitcoin
   verification against Blockstream.
+- Four newly backfilled standalone records also pass end-to-end verification at
+  Bitcoin block `958897`; all 11 currently confirmed artifacts (10 Notes plus
+  genesis) pass together.
 - DNS answers from 1.1.1.1 and 8.8.8.8, the HTTPS mirror, the repo key, and
   `key-history.json` agree on key id `sn-ed25519-2026-07` and raw-key SHA-256
   `973e572578919916d93bbe37dbf3a3539b4e1bc1b19d235a7610cc734cae674a`.
@@ -84,10 +88,19 @@ migration changed only the JSON `signature` value; its payload, Merkle root,
 
 ## External confirmation state
 
-At the time this summary was drafted, the 18 new standalone Note proofs and the
-key-fingerprint proof were accepted by the public Alice OTS calendar but had not
-yet been placed into a calendar Bitcoin transaction. `pending.json` therefore
-contains 19 entries. The hourly Worker sweep will upgrade them atomically after
-the calendar returns Bitcoin attestations. Final closure requires pulling those
-bot commits, rebuilding `index.json`, running `verify.mjs` for all 24 Notes and
-the key-anchor checks, and recording the final block height(s) here.
+Four of the 18 new standalone Note proofs have now confirmed in Bitcoin block
+`958897` (transaction
+`84b546128123ec01e6088b5d5b18960dcd150fd2c550af21b571ffaf9ebd4e2c`).
+Their Worker commits were pulled, `pending.json` was pruned, and `index.json` was
+rebuilt. The sweep exposed a tail-commit failure mode in which confirmed records
+could remain queued if the final pending-index commit did not land; Worker
+v1.5.2 now recognizes those records, retries the signed WordPress callback, and
+self-heals the queue without rewriting confirmed record bytes.
+
+The other 14 new standalone Note proofs and the key-fingerprint proof remain
+accepted by Alice but have no calendar Bitcoin transaction yet, so
+`pending.json` honestly contains 15 entries. No local or Cloudflare action can
+create that external attestation; the hourly Worker will continue upgrading
+them as the calendar publishes Bitcoin proofs. Final closure still requires
+pulling those later `[skip ci]` bot commits, rebuilding `index.json`, verifying
+the newly confirmed proofs, and recording their final block height(s) here.
