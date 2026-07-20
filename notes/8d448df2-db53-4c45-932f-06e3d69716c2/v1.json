@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "The most common pushback against cryptographic provenance for music is straightforward: what if the producer types the artist name wrong, gets the splits wrong, or signs the file before they realize the song title is misspelled?\n\nThe signature locks in whatever was signed. It doesn't validate that the data being signed was correct. This is true. It's also the reason cryptographic systems include correction mechanisms from the start.\n\nThe signature is permanent. The state isn't.\n\nThink of it like git. You can't actually delete a commit. Once it's there, the hash is the hash, and the history is preserved. But you can add a new commit that fixes the error. The original wrong record stays in the audit trail. The corrected value becomes the current state. Anyone querying the system sees the correction. Anyone auditing the system can trace back to the original.\n\nProvenance records work the same way. The original signed manifest exists forever. A signed correction record supersedes it. The current canonical state is whatever the most recent valid signed record says.\n\nThis is a feature. The current system, where metadata gets silently overwritten in databases when somebody notices an error, has no audit trail at all. With cryptographic correction, every change is signed, dated, and attributable to whoever made it.\n\nAppend-only correction chain\nThree signed records arranged in a chain. The first contains an error and stays in the audit trail. The second is a correction. The third is the current canonical state, highlighted. Each record is signed and dated; none is overwritten.\n\nOriginal\n\nCorrection\n\nCurrent state\n\nEach record signed. None overwritten. History preserved.\n\nWhat different errors look like under this model\n\nA typo in the artist's own field is a single-party correction. The original signer publishes a new signed record with the right value. No external coordination required. The corrected record becomes canonical.\n\nA wrong split percentage is a multi-party correction. If the original record claimed Maria wrote 50% and Tomás wrote 50%, but Maria actually wrote 60%, both have to sign the correction. False attribution can't be silently fixed by one party rewriting the other party's contribution.\n\nAn identity-layer change (the artist's display name updates, their professional affiliation switches, their signing key gets compromised) propagates through the registry that holds their identity record. The producer doesn't have to re-sign every old release. The new identity information is read by anyone querying.\n\nA disputed correction happens when the parties don't agree. One says X, the other says Y. The system doesn't auto-resolve. It records the dispute, flags the conflict, and waits for resolution outside the cryptographic layer: arbitration, court order, registry intervention. The conflict is preserved as part of the record, not hidden behind whoever updated last.\n\nWhy this matters\n\nThe current state of music metadata is that errors propagate silently and accumulate. A wrong code on a track at the distributor becomes a wrong code at the streaming service becomes a wrong code at the collection society. Nobody knows when it was introduced or by whom. Correcting it requires somebody to notice, and even then the correction is just an overwrite.\n\nUnder a cryptographic system, errors are visible and disputable. They have a date, an author, a chain of changes. A producer who signed wrong data has an audit trail showing what they claimed and when they corrected it. That's better than the alternative even before the matching-and-payment improvements show up.\n\nThe point isn't that the math eliminates human error. People will still type things wrong. The point is that the system makes the errors auditable instead of invisible, and gives every party a way to correct or dispute without losing the history.",
+    "note_uid": "8d448df2-db53-4c45-932f-06e3d69716c2",
+    "parent": "8b7967f2edb6caffffc39b4b18bcdf2bddd2bb0911d4c922cd81e720d94573be",
+    "published_at": "2026-07-07T21:14:00Z",
+    "title": "How a music file gets corrected",
+    "version": 1
+  },
+  "content_hash": "d5c277ed924e4adf442a6ee491aa3e4e0a0a55901ea3e050ebff15c5f8545a53",
+  "signature": "VduD7N9LY2z/y8KzT9lZhHZ3WrIZM99ajMTIqRv0oeHw0VUggNrbCjc9axBTkg3vrGAkC9uDGlVQhu1KHf/QAQ==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "8b7967f2edb6caffffc39b4b18bcdf2bddd2bb0911d4c922cd81e720d94573be"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
