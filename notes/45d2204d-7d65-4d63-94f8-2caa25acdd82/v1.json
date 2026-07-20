@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "Any conversation about a new identification system for music eventually arrives at the same question: what about the music that already exists?\n\nThere are around 250 million tracks on streaming services. Almost none of them carry creation-time provenance, because the cryptographic frameworks to do so didn't exist when most of them were recorded. If the industry adopts a new identifier substrate going forward, what happens to everything that came before?\n\nThe short answer: nothing has to change. The longer answer is more useful.\n\nBackward compatibility by design\n\nExisting identifiers don't get retired. The codes that already identify a recording, a composition, an artist, an album: those keep working exactly the way they work now. The new substrate identifier is an additional layer underneath, not a replacement on top.\n\nA recording with an existing code keeps using that code. Streaming services keep reading it. Collection societies keep matching against it. The new identifier sits beneath as an additional reference point. When the existing codes disagree across systems (which is the entire reason the substrate exists), the underlying identifier resolves the conflict.\n\nThis is the same pattern that domain names follow. The actual address of a server is a numerical IP address. Humans don't memorize those. We use domain names because they're easier to type and remember. Both layers exist simultaneously. The domain name resolves to the IP address, but the IP address is the source of truth. If somebody mistypes the domain name, the IP address is still correct underneath.\n\nSubstrate beneath legacy codes\nA diagram showing four existing music identifier codes as visible labels on top, all resolving down to a single cryptographic substrate identifier underneath. Both layers coexist; the substrate is the source of truth when the visible codes disagree.\nExisting identifiers (visible, used by every system)\n\nrecording code\ncomposition code\nartist code\nalbum code\n\ncryptographic substrate identifier\nSource of truth. Resolves conflicts.\n\nThe legacy attestation question\n\nFor a new release, the recording software generates a creation-time identifier and signs it. There's a producer, there's a session, there's a moment of creation, there's a key. That whole flow is missing for music recorded ten or fifty years ago. There's no session to sign at. There may not even be a living producer.\n\nWhat works for legacy catalog is a lighter-weight credential. A rights holder attests that they own a specific recording, that the existing identifiers point to it, and that the corresponding ownership splits are accurate. The attestation itself is signed. It doesn't prove who originally made the recording, since that information was never captured in a verifiable way. It does establish a verifiable claim of ownership going forward.\n\nThis is meaningfully better than the current state, where ownership assertions exist as unsigned database entries that get overwritten every time something changes. Legacy attestation locks the ownership state at a moment in time, signed by the party making the claim, and provides an audit trail when ownership later transfers or gets disputed.\n\nWhy this matters\n\nThe hardest part of any infrastructure transition is what happens to the existing infrastructure. Replace-everything-at-once never works. Catalogs are too large, contracts are too entangled, technical systems are too interdependent. Real transitions happen in layers, with old systems remaining functional while new systems get built underneath them.\n\nThe substrate model is built for that kind of transition. Future works get full creation-time provenance. Past works get whatever level of attestation is feasible to retrofit. Both work. Neither requires the catalogs of every label, distributor, and collection society to be renumbered.\n\nOver time, as more new music ships with full provenance and more legacy works get attested, the credentialed portion of the global catalog grows. The unmatched portion shrinks. Nothing has to be retired for that to happen, which is a good thing, because nothing was going to be retired anyway.",
+    "note_uid": "45d2204d-7d65-4d63-94f8-2caa25acdd82",
+    "parent": "51c3a3f164d233403e6fc8012aa80308e26dc83c62d9bee155f541dad4f66239",
+    "published_at": "2026-06-02T13:21:00Z",
+    "title": "What happens to old music?",
+    "version": 1
+  },
+  "content_hash": "a9588f33d1e8189a9da0d4165b1038e7731e06d18bc42960b0980277362696a3",
+  "signature": "0nw1WRQHXlqXQzanHQTx8i0CZSjksoxqWbgi+mL8FoWgYpulHTsWigcyttp5wagJcBgHSXQJdLQOPbyL2NVaBg==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "51c3a3f164d233403e6fc8012aa80308e26dc83c62d9bee155f541dad4f66239"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
