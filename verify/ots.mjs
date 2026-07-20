@@ -24,6 +24,17 @@ const concatBytes = (arrs) => {
   return out;
 };
 export const toHex = (u8) => [...u8].map((b) => b.toString(16).padStart(2, "0")).join("");
+const bytesEqual = (a, b) => a.length === b.length && a.every((value, index) => value === b[index]);
+
+/** Return the SHA-256 digest named in the detached proof header. */
+export function stampedDigest(otsBytes) {
+  if (otsBytes.length < HEADER_MAGIC.length + 34) throw new Error("truncated OTS proof");
+  if (!bytesEqual(otsBytes.slice(0, HEADER_MAGIC.length), HEADER_MAGIC)) throw new Error("invalid OTS header");
+  const version = otsBytes[HEADER_MAGIC.length];
+  const fileHashOp = otsBytes[HEADER_MAGIC.length + 1];
+  if (version !== 1 || fileHashOp !== OP_SHA256) throw new Error("unsupported OTS version or file-hash operation");
+  return otsBytes.slice(HEADER_MAGIC.length + 2, HEADER_MAGIC.length + 34);
+}
 
 function readVaruint(buf, cur) {
   let result = 0, shift = 0, b;
@@ -44,9 +55,8 @@ function applyOp(opTag, arg, msg) {
 // Walk the serialized Timestamp, collecting every attestation as
 // { attTag, commitment } — the running message at each attestation node.
 async function parseAttestations(otsBytes) {
-  let i = HEADER_MAGIC.length + 1 + 1; // skip MAGIC + version + fileHashOp
-  const digest = otsBytes.slice(i, i + 32);
-  i += 32;
+  const digest = stampedDigest(otsBytes);
+  let i = HEADER_MAGIC.length + 34;
   const cur = { i };
   const attestations = [];
 

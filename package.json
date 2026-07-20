@@ -5,6 +5,7 @@
   "scripts": {
     "test": "vitest run",
     "verify": "node verify.mjs",
+    "verify:records": "node verify-records.mjs",
     "verify:genesis": "node verify-genesis.mjs",
     "verify:coverage": "node verify-coverage.mjs",
     "verify:pages": "node verify-pages.mjs",

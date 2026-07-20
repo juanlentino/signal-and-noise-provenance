@@ -24,7 +24,7 @@ for (const key of history.keys) {
   const anchor = JSON.parse(readFileSync(join(root, anchorPath), "utf8"));
   const anchorOts = new Uint8Array(readFileSync(join(root, anchorPath.replace(/\.json$/, ".ots"))));
   const verified = await verifyRecord({ record: anchor, pubB64: published, otsBytes: anchorOts });
-  if (!verified.hashOk || !verified.sigOk) throw new Error(`invalid key-fingerprint anchor: ${key.id}`);
+  if (!verified.hashOk || !verified.sigOk || !verified.otsHashOk) throw new Error(`invalid key-fingerprint anchor: ${key.id}`);
   if (anchor.pubkey_id !== key.id
     || anchor.payload?.kind !== "key-fingerprint"
     || anchor.payload?.pubkey_id !== key.id

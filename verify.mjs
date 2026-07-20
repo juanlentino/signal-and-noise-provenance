@@ -14,7 +14,7 @@ import { dirname, join } from "node:path";
 import { canonicalize } from "./normalize/canonical-json.mjs";
 import { extractPostContent, extractRestRenderedContent } from "./normalize/extract-content.mjs";
 import { normalizeV1 } from "./normalize/sn-normalize-v1.mjs";
-import { bitcoinAttestation, toHex } from "./verify/ots.mjs";
+import { bitcoinAttestation, stampedDigest, toHex } from "./verify/ots.mjs";
 
 const b64 = (s) => Uint8Array.from(Buffer.from(String(s).trim(), "base64"));
 
@@ -37,8 +37,9 @@ export async function verifyRecord({ record, pubB64, otsBytes }) {
     : recomputed === record.content_hash;
   const key         = await crypto.subtle.importKey("raw", b64(pubB64), { name: "Ed25519" }, false, ["verify"]);
   const sigOk       = await crypto.subtle.verify({ name: "Ed25519" }, key, b64(record.signature), canonical);
+  const otsHashOk   = toHex(stampedDigest(otsBytes)) === record.content_hash;
   const btc         = await bitcoinAttestation(otsBytes);
-  return { hashOk, sigOk, recomputed, btc };
+  return { hashOk, sigOk, otsHashOk, recomputed, btc };
 }
 
 const collapseTextWhitespace = (value) => String(value).normalize("NFC").replace(/\s+/gu, " ").trim();
@@ -142,7 +143,7 @@ async function main() {
   const otsBytes = new Uint8Array(readFileSync(otsPath));
   const pubB64   = readFileSync(join(here, "keys", `${record.pubkey_id}.pub`), "utf8");
 
-  const { hashOk, sigOk, recomputed, btc } = await verifyRecord({ record, pubB64, otsBytes });
+  const { hashOk, sigOk, otsHashOk, recomputed, btc } = await verifyRecord({ record, pubB64, otsBytes });
   const bc = await confirmBitcoin(btc, esploraMerkleRoot);
 
   console.log(isGenesis ? `Genesis ${record.payload.date} — ${record.payload.count} notes` : `Note ${uid} v${version} — ${JSON.stringify(record.payload.title)}`);
@@ -150,7 +151,8 @@ async function main() {
   console.log(`  key:           ${record.pubkey_id}`);
   console.log(`  1) ${isGenesis ? "merkle root " : "content hash"}  ${hashOk ? (isGenesis ? "✓ payload root equals anchored content_hash" : "✓ matches (canonical reproduced independently)") : "✗ MISMATCH → " + recomputed}`);
   console.log(`  2) signature     ${sigOk ? "✓ valid Ed25519 under the published key" : "✗ INVALID"}`);
-  console.log(`  3) bitcoin       ${bc.ok ? `✓ merkle root matches block ${bc.height} on-chain` : "✗ " + (bc.reason || `merkle mismatch at block ${bc.height}`)}`);
+  console.log(`  3) OTS digest    ${otsHashOk ? "✓ detached proof starts from content_hash" : "✗ proof is for a different digest"}`);
+  console.log(`  4) bitcoin       ${bc.ok ? `✓ merkle root matches block ${bc.height} on-chain` : "✗ " + (bc.reason || `merkle mismatch at block ${bc.height}`)}`);
   let page = { ok: true };
   if (pageUrl) {
     const response = await fetch(pageUrl);
@@ -158,9 +160,9 @@ async function main() {
     const pageHtml = await response.text();
     page = await verifyPageRecord({ record, pageHtml });
     if (!page.ok) page = await verifyPageRecord({ record, pageHtml, restRendered: await fetchRestRendered(pageUrl) });
-    console.log(`  4) served page   ${page.ok ? `✓ public ${page.source} reproduces the signed content and hash` : `✗ DRIFT (content=${page.contentOk}, hash=${page.hashOk}, pageText=${page.pageTextOk})`}`);
+    console.log(`  5) served page   ${page.ok ? `✓ public ${page.source} reproduces the signed content and hash` : `✗ DRIFT (content=${page.contentOk}, hash=${page.hashOk}, pageText=${page.pageTextOk})`}`);
   }
-  const ok = hashOk && sigOk && bc.ok && page.ok;
+  const ok = hashOk && sigOk && otsHashOk && bc.ok && page.ok;
   console.log(`\n${ok ? "VERIFIED — authentic, unmodified, and anchored in Bitcoin." : "NOT fully verified."}`);
   process.exit(ok ? 0 : 1);
 }

@@ -5,6 +5,7 @@ Node 22 is recommended. A fresh clone needs no OTS client:
 ```bash
 npm ci
 npm test
+node verify-records.mjs
 node verify.mjs <note_uid>
 node verify.mjs --from-page https://juanlentino.com/notes/<slug>/ <note_uid>
 node verify.mjs genesis
@@ -15,8 +16,11 @@ node verify-coverage.mjs
 ```
 
 `verify.mjs` recomputes the signed bytes, verifies Ed25519, parses the detached
-OTS proof, and compares its Merkle commitment with the real Bitcoin block from
-Blockstream. It exits nonzero on any failure.
+OTS proof, requires the proof's embedded starting digest to equal
+`content_hash`, and compares its Merkle commitment with the real Bitcoin block
+from Blockstream. It exits nonzero on any failure. `verify-records.mjs` applies
+the offline hash, signature, OTS-digest, and confirmed-block-height checks to
+every indexed standalone record in one command.
 
 ## Content and page verification
 

@@ -19,6 +19,8 @@
   chain, verifier, and signed OTS fingerprint-record path.
 - Extended key-history verification through the signed fingerprint anchor and
   added an online verifier requiring exact DNS/HTTPS/history agreement.
+- Bound every detached OTS proof explicitly to its record `content_hash` and
+  added a 24-record offline verification sweep to CI.
 - Regression-protected the original six confirmed JSON/OTS pairs. The only
   permitted historical JSON change is the controlled genesis signature value;
   its root and OTS proof remain byte-identical.

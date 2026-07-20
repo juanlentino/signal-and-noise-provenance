@@ -35,6 +35,7 @@ describe("verifyRecord (offline hash + signature)", () => {
     const r = await verifyRecord({ record, pubB64, otsBytes });
     expect(r.hashOk).toBe(true);
     expect(r.sigOk).toBe(true);
+    expect(r.otsHashOk).toBe(true);
     expect(r.recomputed).toBe(record.content_hash);
     expect(r.btc.height).toBe(BLOCK);
   });
@@ -44,6 +45,15 @@ describe("verifyRecord (offline hash + signature)", () => {
     const r = await verifyRecord({ record: tampered, pubB64, otsBytes });
     expect(r.hashOk).toBe(false);
     expect(r.sigOk).toBe(false);
+  });
+
+  it("rejects an OTS proof whose embedded digest is not the record hash", async () => {
+    const tamperedOts = otsBytes.slice();
+    tamperedOts[33] ^= 0x01;
+    const r = await verifyRecord({ record, pubB64, otsBytes: tamperedOts });
+    expect(r.hashOk).toBe(true);
+    expect(r.sigOk).toBe(true);
+    expect(r.otsHashOk).toBe(false);
   });
 });
 
