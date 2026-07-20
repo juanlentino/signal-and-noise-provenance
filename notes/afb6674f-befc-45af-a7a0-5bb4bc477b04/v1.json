@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "I've integrated AI-assisted tools into my production workflow across more than 150 commercial releases since 2022. Some of those tools save real time. Others are improving fast. A few are still mostly hype.\n\nThe line between the three isn't where most coverage puts it. The honest version, from someone whose deadlines depend on getting this right.\n\nWhat actually saves time\n\nSource separation and cleanup. Stem isolation (pulling the individual instruments and vocals out of a finished mix), vocal extraction, hum and noise removal. The current generation of these tools is genuinely excellent and replaces work that used to take hours of manual editing. This is the category where I save the most time per project.\n\nTranscription and session documentation. Auto-transcription for interview-style sessions, voice memos from artists, reference notes during writing camps. Saves administrative time that otherwise comes out of creative time.\n\nSpecific repair tasks. De-noising, click and pop removal, certain kinds of phase correction. The work was always doable manually. The current tools just do it faster and often more cleanly.\n\nReference matching for mix and master decisions. Using AI-assisted analysis to compare a mix against a reference track on specific spectral and dynamic dimensions (the frequency balance and the loudness behavior). Doesn't make the decision for me. Tells me where the gap is faster than my ears alone.\n\nThat's the high-confidence list. Reliable, daily, time-saving.\n\nWhat's improving fast\n\nMixing assistants. A few years ago these produced a defensible starting point and not much more. The current generation is meaningfully better, particularly for genre-specific starting templates, balance suggestions on dense arrangements, and as a sanity check before a final pass. I still steer them toward the vision rather than letting them drive, but the steering takes less time than it used to. For a junior engineer they're a real accelerant. For experienced engineers they're a useful second opinion.\n\nMastering tools with adaptive processing. The label \"AI mastering\" has been applied to a wide range of tools, some doing genuinely adaptive analysis and some just rebadging older signal processing. The adaptive ones have improved noticeably and earn their place in the chain for certain project types, particularly fast-turnaround and reference-based work. I wouldn't hand a flagship release to one without close oversight, but the gap between assistive mastering and manual mastering is narrowing every release cycle.\n\nThese aren't slam-dunk time-savers yet. They're getting closer.\n\nWhat isn't there yet\n\nGenerative tools for full production. Generating a track or a stem from a prompt sounds like a time-saver until you try to integrate the output into a session. The generated material rarely matches the key, tempo, or sonic identity of the project closely enough to be usable without significant rework. By the time you've reworked it, you'd have been faster recording or programming the part directly.\n\nAI feedback on artistic choices. This one's more about framing than capability. The model is averaging across whatever it was trained on, and averaging isn't useful as a creative note. The artists I work with want sharp opinions, not averages. That doesn't mean the tools are bad. It means they're being asked to do the wrong job.\n\nThe pattern underneath\n\nThe tools that save time are the ones doing well-defined deterministic tasks. The tools that are improving fastest are the ones doing genre-aware assistive work where a human steers. The tools that aren't there yet are the ones being asked to make purely creative or aesthetic decisions in isolation.\n\nThat's not an argument against generative AI in music. It's a snapshot of where the technology actually is from inside the workflow, today, on commercial deadlines. The categories will keep moving. The honest read is that AI has changed how I work in real ways, mostly on the boring parts of production, with a growing footprint on the assistive layer above.\n\nThe creative core is still mine. That's not a complaint.",
+    "note_uid": "afb6674f-befc-45af-a7a0-5bb4bc477b04",
+    "parent": "322a84a5e35c5d69048489d1ba092451087ef9f1d18e8d9199a05ddfa546439e",
+    "published_at": "2026-05-07T17:59:00Z",
+    "title": "Where AI actually saves time in record production",
+    "version": 1
+  },
+  "content_hash": "11b4bb4b432804571f4e2a400d255944f20fa8f804be15cd08b70d22e56157d2",
+  "signature": "arxsevcaHKt1BpnAxXkFySH8ChR50TEoLqcTVwp9yCwUBk/vjW5F0x2wJV06z0FAm6LoKeSBZ4udMdIRHSwSBA==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "322a84a5e35c5d69048489d1ba092451087ef9f1d18e8d9199a05ddfa546439e"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
