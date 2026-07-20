@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "I founded my recording studio in Buenos Aires in 2016. I priced in US dollars from day one.\n\nThat sentence is more controversial in Argentina than it sounds anywhere else. The local economy operates in pesos. The peso has lost a meaningful share of its purchasing power in every year I've been in business. Pricing in dollars in that environment is read as either elitist, opportunistic, or both, depending on who's evaluating.\n\nIt was also, from the very first day, the only viable choice.\n\nWhy dollars, in plain terms\n\nBuying the initial gear meant working within the cepo cambiario (in Argentina, cepo cambiario refers to the strict capital and currency controls the government imposes to limit access to US dollars; depending on the regime, individuals and businesses are restricted to small monthly dollar purchases at official rates, while a parallel \"blue dollar\" market operates at much higher prices). Professional studio gear is priced in dollars, sold by international vendors, and shipped through customs that wants to be paid in dollars. The math of getting a single piece of equipment into the country forced me to think in dollars before I'd booked my first session.\n\nIf the inputs are dollar-priced and the international clients who pay the bills are dollar-paying, pricing the work in pesos is just a slow-motion margin loss. Every project quoted today and delivered eight weeks from now becomes a different project economically by the time it ships. Pricing in dollars takes the variable out. The number quoted is the number that matters when the invoice clears.\n\nEarly on I didn't publicize it. The conversations were dollar-denominated but the public posture was peso-friendly. When I moved to the United States in 2021, the public posture changed too. Same pricing model, different surface.\n\nWhat it actually taught me\n\nThe currency decision was the easy part. Circumstances forced it.\n\nThe discipline behind it was harder. Holding a number when the world around you is pressuring you to move it is a skill that doesn't come naturally to most people running creative businesses. You feel the pull of every conversation: the artist who's between labels, the producer with a tight project budget, the client who wants to negotiate as a relationship gesture rather than a financial one. Each of those is a legitimate ask. Each of them is also a chance to set a ceiling on every project that comes after.\n\nThe version of me that survived multiple Argentine currency cycles wasn't the version with the best gear or the loudest reputation. It was the version that understood the difference between negotiating scope, payment terms, and timeline (all flexible) and negotiating the headline number (rarely flexible).\n\nMost of the freelance and studio pricing advice I see online treats the number as the thing to optimize. It isn't. The discipline of holding the number is the thing to optimize. The number is just the surface.\n\nWhat I'd tell a younger version of myself\n\nThe number you quote is a statement about how you value your own time. The minute you treat it as negotiable, you've told the client your time is also negotiable. There's a way to handle scope, payment terms, and timeline flexibly without negotiating the headline number, and most freelancers haven't learned that distinction.\n\nPricing in dollars from Argentina is an extreme version of a problem every freelancer has, in any currency, in any market: the discipline of holding a number when there's pressure to move it. The pressure changes shape. The discipline is the same.\n\nNine years in, the math still works. So does the discipline.",
+    "note_uid": "3851b2f3-ac70-4df7-89e7-ddee54ceadd2",
+    "parent": "2873b09f9f3a31456bd431f6e6853b3fdae91b2417e42edc2c106a1b668015e1",
+    "published_at": "2026-04-28T14:56:00Z",
+    "title": "Pricing in dollars from Argentina",
+    "version": 1
+  },
+  "content_hash": "7b2601002969ddda245ddafed0010eccc042fe62526d5a34baa4096efcc18f4f",
+  "signature": "NlBDPwZDcVsd7nw0WviexzjXwLV8atCU/BriA8HEcQsYxpJV1uIG1bLiQ6WHJrZd8iXKmsoqefuQggHD6ufQAw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "2873b09f9f3a31456bd431f6e6853b3fdae91b2417e42edc2c106a1b668015e1"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
