@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "Detection-first approaches usually get argued on accuracy. Detectors produce false positives, generation outpaces classification, models evolve faster than the systems built to catch them. True, repeated often enough that the accuracy argument doesn't carry much new weight.\n\nThe argument that hasn't been made enough is the cost one. Accuracy is fixable on long timescales. Cost structure isn't.\n\nWhat detection costs to operate\n\nEvery detector has to evaluate every piece of content. That's the job. At platform scale, \"every piece of content\" means more than 250 million existing tracks, plus more than 100,000 new uploads daily, plus the third of those that arrive AI-generated. Deezer reported 50,000 fully AI-generated uploads daily by late 2025. Spotify removed over 75 million spam tracks in 2025 alone. Each evaluation has a compute cost.\n\nEach new generative model release has a retraining cost. Each new bypass technique has an integration cost. Detection's costs scale with both content volume and model sophistication. Both numbers go up every quarter.\n\nThis isn't unique to AI music. It's the same cost curve that's eaten antivirus, deepfake detection, plagiarism flagging, and every other classifier-versus-generator system that's tried to police a producer with infinite output potential. The classifier always loses on cost before it loses on accuracy.\n\nWhat AI generation costs to produce\n\nA model gets trained once. After that, generating one more track is a marginal-cost operation that approaches zero. Inference on consumer hardware is measurable in cents per track. On dedicated infrastructure, less.\n\nProducers of AI music aren't running detectors against themselves. They aren't paying for moderation. Their cost curve goes down with scale, not up. Every model improvement and every efficiency gain on the generation side widens the gap detection has to close.\n\nGeneration costs trend toward zero. Detection costs trend with volume and complexity. The two curves diverge, and they diverge faster every quarter.\n\nCOST CURVES UNDER GROWING VOLUME\n\nCOST\n\nVOLUME →\n\nDetection\n\nGeneration\n\nProvenance\n\nIllustrative. Verification cost is independent of generation volume.\n\nWhy this hides in current accounting\n\nThe cost of detection at most labels and platforms is split across lines. Moderation budgets. Dispute resolution. Royalty leakage from false positives. Legal exposure when an artist's account gets flagged wrongly. Catalog contamination when AI tracks slip through the threshold and accumulate streams.\n\nNone of those lines is labeled \"the cost of fighting an asymmetric arms race.\" But that's what they sum to. The line item doesn't exist because the architectural choice is invisible to the accounting layer.\n\nWhat changes with provenance\n\nVerification at creation is a one-time signing event. Every downstream check is a hash comparison. The compute cost of verifying a signature is close enough to zero that platform-scale verification doesn't show up as a budget line at all.\n\nVerification cost is independent of generation volume. It's also independent of model sophistication. A signed track from 2026 verifies the same way in 2030 regardless of how much better the AI got in between. Detection's cost curve climbs. Provenance's cost curve sits flat.\n\nThat's the structural difference that matters. Not that provenance is more accurate. Not that provenance is more elegant. Provenance is the only architecture in this category whose cost curve doesn't punish operating at scale.\n\nThe companies that solve this don't solve it by buying better detection. They solve it by changing what they're paying for. Provenance flips the budget from ongoing cost of catching up to one-time cost of signing once.\n\nThat's the trade that ends the arms race. Not because detection got beaten. Because the side paying for it stopped paying.\n\nDetection scales the wrong way. Provenance scales the way infrastructure does.",
+    "note_uid": "5bc0e8fc-94e5-4891-a123-5fc3574e8ac9",
+    "parent": "28318c35f93317ec926128087a02b2b33584ddc3d586613d36474077ac509f39",
+    "published_at": "2026-05-21T13:32:00Z",
+    "title": "Detection scales the wrong way",
+    "version": 1
+  },
+  "content_hash": "4ab0870c7cb4e37eba32b3adef8e467d244ac7d14538888bdfeb31bbc8b1feb0",
+  "signature": "BlmZeO5AA+1e9a4LZIop2KUq+j9+g/hNP48j85BAKBvo42MXxlhfYu+ps/gWhz7XzK6AvO/cO0X4ezbsZ/NLDw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "28318c35f93317ec926128087a02b2b33584ddc3d586613d36474077ac509f39"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
