@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "Spotify announced \"Verified by Spotify\" the week of June 17, 2026. The framing was clear. In 2026, with AI-generated music at scale, authenticity means something different. The product confirms that an artist profile belongs to the person it claims to belong to.\n\nThat solves a real problem. Impersonation has been a quiet crisis for years. Fake accounts under real artists' names. Fake albums uploaded to verified profiles. Fake catalogs built to harvest playlist placements. Spotify confirming the human behind the profile is a meaningful first move.\n\nBut it is a first move, not a complete one.\n\nTwo questions, not one\n\nAuthenticity in music distribution actually asks two questions, and they are not the same.\n\nThe first question is about the artist. Who is this account? Is the person behind it the artist they claim to be? Verified by Spotify answers this one.\n\nThe second question is about the track. What is this song? Who made it? Was it generated, sampled, scraped, or composed by the artist whose name is on it? Verifying the profile says nothing about what gets uploaded to the profile.\n\nA verified artist can still upload tracks of unverified origin. The 85% of mass AI uploads Deezer flagged earlier this year as linked to fraud or artificial streaming sit in this second question, not the first. So do the impersonation cases where someone uploads a fake album under another artist's name through a third-party distributor. Profile verification does not reach into the file.\n\nThe binding\n\nThe complete answer is not either question alone. It is the link between them.\n\nImagine two stamps on every release. One stamp says, this is really the artist. The other stamp says, this is really their work. When the two stamps are linked together at the moment of upload, you have something that cannot be faked: a verifiable claim that this specific human made this specific track. Either the stamps check out or they don't. There is no probabilistic middle. There is no third state where a detection model gives a confidence score that gets disputed in a royalty dispute.\n\nThis is the structural difference between detection and signed authorship. Detection identifies probabilistically. It can be argued. Signed authorship proves directly. It cannot. The binding is what turns two separate stamps into a single, unfalsifiable claim.\n\nHow real music actually works\n\nThe model accommodates the way music actually gets made.\n\nFeatures and collaborations carry multiple artist stamps on one work. Each one verifies independently. The track carries proof of every contributor.\n\nGhostwriting and co-production work the same way, with stamps that can be public or private depending on what the parties agreed to. The chain stays intact regardless of which credits surface publicly.\n\nSample libraries and AI tools stamp their own contributions when they are used. The artist's stamp on the final work either includes those upstream stamps or doesn't. Either way, the source of every part of the track is legible.\n\nDisputed authorship becomes a question of which stamps verify, not whose detection model is more accurate. Direct proof beats probability every time.\n\nWhat's still missing\n\nSpotify shipped the first stamp the week of June 29, 2026. That is the easier of the two problems because verifying who someone is has decades of precedent across every other industry that uses the internet.\n\nVerifying what they made is harder. It requires every tool in the production chain to stamp its output. It requires a place where the artist's stamp gets bound to the work's stamp. The math behind all of this is well understood and used everywhere from banking to passports. Music just hasn't built its version yet.\n\nThe broader argument is in Provenance Over Detection, published earlier this year. This note adds the specific mechanism the Spotify announcement made worth naming. The binding is what completes the trust stack.",
+    "note_uid": "4a32127e-5571-4b85-a1f5-84714682d30e",
+    "parent": "6bea3b91d6bfa6aa9dd37cfaf4b87523962e032fdcc148c38f772ac2464c23ed",
+    "published_at": "2026-05-09T22:33:32Z",
+    "title": "Verifying the artist isn't enough",
+    "version": 1
+  },
+  "content_hash": "b69817067a5c462bc89255bc83782ad79132faa7ab6368544c59db32c01d02c5",
+  "signature": "1gEjbJYWIrPEYGi1opFgNcOaKP/vCXIrKHDVJ5+Hpum1xlEx8Ebpm+rNL6NDnBJOzbd+fgtmJbRkXtiVRgqfAw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "6bea3b91d6bfa6aa9dd37cfaf4b87523962e032fdcc148c38f772ac2464c23ed"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
