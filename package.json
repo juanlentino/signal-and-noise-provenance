@@ -4,7 +4,11 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
-    "verify": "node verify.mjs"
+    "verify": "node verify.mjs",
+    "verify:genesis": "node verify-genesis.mjs",
+    "verify:coverage": "node verify-coverage.mjs",
+    "verify:pages": "node verify-pages.mjs",
+    "verify:keys": "node verify-key-history.mjs"
   },
   "devDependencies": {
     "vitest": "^3.0.0"

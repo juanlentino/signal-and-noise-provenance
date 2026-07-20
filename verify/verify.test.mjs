@@ -6,7 +6,9 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { bitcoinAttestation } from "./ots.mjs";
-import { verifyRecord, confirmBitcoin } from "../verify.mjs";
+import { createHash } from "node:crypto";
+import { canonicalize } from "../normalize/canonical-json.mjs";
+import { verifyRecord, verifyPageRecord, confirmBitcoin } from "../verify.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UID  = "a0f8393c-9804-4780-9e77-f2d4f6b7d1ff";
@@ -63,5 +65,23 @@ describe("confirmBitcoin (merkle root vs the real block)", () => {
     const res = await confirmBitcoin(null, async () => MERKLE);
     expect(res.ok).toBe(false);
     expect(res.reason).toMatch(/pending|awaiting/i);
+  });
+});
+
+describe("verifyPageRecord", () => {
+  const payload = { algo: "sn-normalize-v1", author: "Juan Lentino", content: "One.\n\nTwo & three.", note_uid: "00000000-0000-4000-8000-000000000000", parent: null, published_at: "2026-07-09T00:00:00Z", title: "Example", version: 1 };
+  const pageRecord = { payload, content_hash: createHash("sha256").update(canonicalize(payload)).digest("hex") };
+
+  it("reproduces the signed hash from the served post body", async () => {
+    const pageHtml = '<div class="entry-content wp-block-post-content"><p>One.</p><p>Two &amp; three.</p><div class="sn-prov-panel">unsigned UI</div></div>';
+    expect((await verifyPageRecord({ record: pageRecord, pageHtml })).ok).toBe(true);
+  });
+
+  it("fails on a one-character served-page drift", async () => {
+    const pageHtml = '<div class="entry-content wp-block-post-content"><p>One!</p><p>Two &amp; three.</p></div>';
+    const result = await verifyPageRecord({ record: pageRecord, pageHtml });
+    expect(result.ok).toBe(false);
+    expect(result.contentOk).toBe(false);
+    expect(result.hashOk).toBe(false);
   });
 });

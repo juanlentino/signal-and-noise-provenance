@@ -11,6 +11,16 @@ against the **real Bitcoin block** on a public explorer (no OTS client needed).
 For the manual, do-it-by-hand steps see `VERIFY.md`. Either way, no trust in this
 repo's owner is required.
 
+Verify the bytes served by the public site—not merely the committed payload:
+
+```bash
+node verify.mjs --from-page https://juanlentino.com/notes/<slug>/ <note_uid>
+```
+
+The root `index.json` is the machine-checkable coverage manifest. The scheduled
+GitHub Action verifies the offline suites, reconstructs genesis, reconciles the
+live WordPress note list, and checks every served page for drift.
+
 ## Layout
 
 - `keys/` — published Ed25519 public keys, one file per key generation
@@ -24,6 +34,13 @@ repo's owner is required.
 - `genesis/` — baseline records for Notes that existed before the
   provenance system went live (backlog import; set via WordPress's
   `_sn_prov_genesis_parent` meta).
+- `genesis/2026-07-09-leaves.json` + `normalize/merkle-v1.mjs` — all 21
+  public v0 derivations, the domain-separated historical tree algorithm, and
+  audit-path inputs; `verify-genesis.mjs` proves them offline.
+- `index.json` + `verify-coverage.mjs` — one coverage row per public Note and
+  live-site gap detection.
+- `keys/key-history.json` + `verify-key-history.mjs` — key lifecycle and
+  transition verification; DNS and HTTPS carry independent off-repo pins.
 - `normalize/sn-normalize-v1.mjs` — the JS reference implementation of the
   `sn-normalize-v1` content-normalization algorithm. **Authoritative for
   third-party verifiers** — guaranteed byte-identical to the PHP source of

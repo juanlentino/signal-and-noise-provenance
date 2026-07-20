@@ -1,102 +1,84 @@
-# Verifying a provenance record
+# Verify the public provenance ledger
 
-Anyone can independently verify that a published Note's content existed, in
-exactly its committed form, at or before a given time — without trusting
-this repo's owner, the Worker, or WordPress.
-
-## Quick: one command
-
-With Node ≥ 18 and a clone of this repo, one script does steps 2–4 for you —
-recompute the content hash, verify the Ed25519 signature under the published
-key, and confirm the OpenTimestamps proof's merkle root against the **real
-Bitcoin block** (fetched from a public block explorer; no OTS client to install):
+Node 22 is recommended. A fresh clone needs no OTS client:
 
 ```bash
-git clone https://github.com/<owner>/signal-and-noise-provenance
-cd signal-and-noise-provenance
-node verify.mjs <note_uid>     # e.g. node verify.mjs a0f8393c-9804-4780-9e77-f2d4f6b7d1ff
+npm ci
+npm test
+node verify.mjs <note_uid>
+node verify.mjs --from-page https://juanlentino.com/notes/<slug>/ <note_uid>
+node verify.mjs genesis
+node verify-genesis.mjs
+node verify-key-history.mjs
+node verify-coverage.mjs
 ```
 
-```
-  1) content hash  ✓ matches (canonical reproduced independently)
-  2) signature     ✓ valid Ed25519 under the published key
-  3) bitcoin       ✓ merkle root matches block 957333 on-chain
+`verify.mjs` recomputes the signed bytes, verifies Ed25519, parses the detached
+OTS proof, and compares its Merkle commitment with the real Bitcoin block from
+Blockstream. It exits nonzero on any failure.
 
-VERIFIED — authentic, unmodified, and anchored in Bitcoin.
-```
+## Content and page verification
 
-It prints each check and exits non-zero if any fails; everything but the final
-block-header lookup is offline. Prefer to trust nothing but your own Bitcoin
-node, or to check by hand? The four manual steps below remain fully valid — the
-script is a convenience, not the source of truth.
+The canonical artifact is `record.payload.content`. Never feed an entire
+rendered page directly to `normalizeV1`: WordPress renders surrounding UI and
+HTML optimizers remove source block whitespace. `--from-page` is the supported
+public-artifact proof. It fetches the URL, isolates
+`div.entry-content.wp-block-post-content`, cuts at the first provenance/share/
+footer boundary, restores deterministic block and inline-diagram boundaries,
+runs `sn-normalize-v1`, replaces only the payload's content, canonicalizes, and
+requires both the content string and SHA-256 to match. One changed character in
+the served body fails.
 
-## 1. Fetch the record
+For ordinary records, `content_hash` is SHA-256 of recursive sorted-key compact
+JSON for `payload` (UTF-8, unescaped slash and Unicode). The same canonicalizer
+is tested byte-for-byte across PHP, ledger JS, and Worker JS.
 
-Every commit lives at `notes/<note_uid>/v<version>.json` (plus a matching
-`v<version>.ots`). Fetch both, e.g.:
+Genesis is the explicit exception to the hash convention: `content_hash` is
+the Merkle root because the OTS commits to that root. Its Ed25519 signature is
+still over recursive sorted-key canonical JSON for its payload. The controlled
+2026-07-20 re-sign changed only `signature`; the root JSON value and original
+`.ots` bytes remain the 2026-07-09 anchor.
+
+## Genesis and historical backfills
+
+Run `node verify-genesis.mjs`. It reconstructs every v0 leaf from
+`genesis/2026-07-09-leaves.json`, generates and verifies all audit paths, and
+must produce root
+`cca0dfa924b4bd694c762f902c61c70340b94e302a2f0ad3bb7e42f56d1f2ef9`.
+
+Historical genesis-only notes also have standalone v1 records. Their
+`genesis_ref` links to the older leaf. The genesis OTS is the authoritative
+"existed by 2026-07-09" evidence; the later v1 OTS supplies independently
+reproducible content and proves existence by the backfill block. Leaf and
+content hashes differ because v0 uses `SHA-256(0x00 || canonical-v0)`, while v1
+uses `SHA-256(canonical-v1)` and names the leaf as its parent.
+
+## Pin the key outside GitHub
+
+Do not accept the repo copy by itself. Compare all three surfaces:
 
 ```bash
-curl -O https://raw.githubusercontent.com/<owner>/signal-and-noise-provenance/main/notes/<note_uid>/v1.json
-curl -O https://raw.githubusercontent.com/<owner>/signal-and-noise-provenance/main/notes/<note_uid>/v1.ots
+dig +short TXT _provenance.juanlentino.com
+curl -fsS https://juanlentino.com/.well-known/provenance-keys.json
+cat keys/sn-ed25519-2026-07.pub
+node verify-key-history.mjs
 ```
 
-The `.json` record has the shape:
+They must agree on:
 
-```json
-{
-  "payload": { "algo": "sn-normalize-v1", "author": "...", "content": "...", "note_uid": "...", "parent": null, "published_at": "...", "title": "...", "version": 1 },
-  "content_hash": "<sha256 hex>",
-  "signature": "<base64 ed25519 sig>",
-  "pubkey_id": "sn-ed25519-2026-07",
-  "ots": { "status": "pending" | "confirmed", "calendars": [...] }
-}
-```
+- id `sn-ed25519-2026-07`
+- key `+aDvAWcZA6awAX3+y76cteKbIGKyVLDjpG7rp7IVNWs=`
+- raw-key SHA-256 `973e572578919916d93bbe37dbf3a3539b4e1bc1b19d235a7610cc734cae674a`
 
-## 2. Recompute the hash
+The private key is a Cloudflare Worker secret and is never committed. The
+current fingerprint has its own signed OTS record at
+`keys/anchors/sn-ed25519-2026-07.json`. Future generations must be introduced
+by a transition in `key-history.json` signed by the preceding key; revocations
+record their effective boundary without invalidating signatures made before it.
 
-A pure-JS verifier can do this entire step with only the two files below —
-no PHP, no WordPress, no network calls beyond fetching the record itself:
+## Coverage
 
-- Run the Note's raw HTML through `normalize/sn-normalize-v1.mjs`'s
-  `normalizeV1()` (or the authoritative PHP `sn_prov_normalize_v1()` in the
-  plugin repo — both are guaranteed byte-identical; see
-  `normalize/parity.test.mjs`, including its live-PHP cross-checks) to get
-  `payload.content`.
-- Canonicalize `payload` with `normalize/canonical-json.mjs`'s
-  `canonicalize()` (recursively sorts object keys by byte order, compact
-  JSON, UTF-8, unescaped slashes/unicode — byte-identical to the
-  authoritative PHP `sn_prov_canonical_json()`; see
-  `normalize/canonical-json.test.mjs`'s live-PHP cross-checks).
-- SHA-256 the canonical bytes and compare hex digests against
-  `content_hash`. A mismatch means the content was altered after commit.
-
-## 3. Verify the signature
-
-- Fetch the publishing key from `keys/<pubkey_id>.pub` (raw 32-byte Ed25519
-  public key, base64).
-- Verify `signature` (base64, 64 raw bytes) against the *exact canonical
-  JSON bytes* from step 2 using that public key. A valid signature proves
-  the holder of the corresponding private key attested to this exact
-  content — not just that some data with a matching hash exists.
-
-## 4. Verify the timestamp
-
-- `.ots` is a standard OpenTimestamps proof over `content_hash`.
-- Install the reference client (`pip install opentimestamps-client`) and run:
-  ```bash
-  ots verify v1.ots
-  ```
-- `status: "pending"` means the proof is calendar-attested but not yet
-  aggregated into a Bitcoin block; `ots verify` will report a pending
-  attestation. `status: "confirmed"` means the Worker's hourly sweep
-  upgraded it — `ots verify` should report `Success! Bitcoin block <height>
-  attests existence as of <date>`, proving the content existed no later
-  than that block.
-
-## Trust model
-
-This ledger is bot-written and append-only (Task 8 scaffold; commits are
-made only by the `sn-provenance` Worker via a scoped GitHub token). Nothing
-here requires trusting the repo owner: the signature proves authorship
-attestation, and the OpenTimestamps proof proves a lower bound on existence
-time, both independently checkable by any third party with steps 2–4 above.
+`node verify-coverage.mjs` enumerates the public WordPress note collection and
+requires every live slug to have one unique `index.json` row with a confirmed
+genesis or per-note Bitcoin anchor. The success line is `24/24 anchored, 0 gaps`.
+Use `--offline` to validate only the committed manifest.

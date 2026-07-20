@@ -1,16 +1,28 @@
-# keys/
+# Provenance signing keys
 
-Publishes the site's Ed25519 public key(s), one file per key generation
-(rotation-friendly). Filename convention matches the Worker's `PUBKEY_ID` var
-and the `pubkey_id` field on every ledger record, e.g. `sn-ed25519-2026-07.pub`.
+`sn-ed25519-2026-07.pub` is the active Ed25519 public key. It was generated
+for the July 2026 signing epoch and first published with the genesis ledger on
+2026-07-09. The file is the raw 32-byte key encoded as one base64 line:
 
-Each file holds the raw 32-byte public key, base64-encoded, one line, no
-other content — the exact bytes `scripts/gen-keypair.mjs` prints under
-"PUBLIC KEY (publish; 32-byte raw, base64)".
+- key id: `sn-ed25519-2026-07`
+- public key: `+aDvAWcZA6awAX3+y76cteKbIGKyVLDjpG7rp7IVNWs=`
+- SHA-256 of the raw key: `973e572578919916d93bbe37dbf3a3539b4e1bc1b19d235a7610cc734cae674a`
 
-**No key has been generated or published yet.** `gen-keypair.mjs` was
-written (worker `scripts/gen-keypair.mjs`) but deliberately not run as part
-of this offline build — key generation + secret provisioning is an outward
-step for the controller to run once, after which the resulting public key
-lands here as `sn-ed25519-2026-07.pub` and the private key becomes the
-Worker's `ED25519_PRIVATE_KEY` secret (never committed to this repo).
+The matching PKCS#8 private key exists only as the Cloudflare Worker secret
+`ED25519_PRIVATE_KEY`; it has never been committed. The date suffix identifies
+the generation, not an automatic expiry. Rotation is deliberate: create a new
+key id, have the current key sign its introduction in `key-history.json`, pin
+the new key through DNS and HTTPS, deploy the Worker with the new secret/id,
+then mark the prior generation retired. A compromised key is marked revoked
+with the reason and discovery time; old signatures remain verifiable but are
+not trusted after the recorded revocation boundary.
+
+Do not trust this directory alone. Compare it with both independent pins:
+
+- DNS TXT at `_provenance.juanlentino.com`
+- `https://juanlentino.com/.well-known/provenance-keys.json`
+
+`key-history.json` is the lifecycle chain. Its first entry is an explicitly
+documented trust root; every later key introduction must be signed by the key
+that immediately precedes it. The current fingerprint is also signed and
+OpenTimestamps-anchored at `anchors/sn-ed25519-2026-07.json`.

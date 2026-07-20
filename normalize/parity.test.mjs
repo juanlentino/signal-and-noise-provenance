@@ -5,6 +5,7 @@
 import { describe, it, expect } from "vitest";
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { normalizeV1 } from "./sn-normalize-v1.mjs";
 
 describe("normalizeV1 parity with PHP sn_prov_normalize_v1", () => {
@@ -50,8 +51,7 @@ describe("normalizeV1 parity with PHP sn_prov_normalize_v1", () => {
 // offline dev setup this suite was authored against (see the task's
 // "Reference (authoritative PHP)" note) and is intentionally NOT expected
 // to run in a stripped-down CI image without that checkout.
-const PLUGIN_CORE_PATH =
-  "/Users/juanlentino/Projects/signal-and-noise-tools/.claude/worktrees/notes-provenance-commits-86c7c0/inc/provenance-core.php";
+const PLUGIN_CORE_PATH = fileURLToPath(new URL("../../signal-and-noise-tools/inc/provenance-core.php", import.meta.url));
 
 const phpOracleAvailable = existsSync(PLUGIN_CORE_PATH);
 

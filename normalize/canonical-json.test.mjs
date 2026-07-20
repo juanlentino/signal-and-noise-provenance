@@ -5,6 +5,7 @@
 import { describe, it, expect } from "vitest";
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { canonicalize } from "./canonical-json.mjs";
 
 describe("canonicalize", () => {
@@ -29,8 +30,7 @@ describe("canonicalize", () => {
 // plugin implementation rather than a re-derived guess, so a JS-side pure
 // verifier can be trusted to fully self-serve (see VERIFY.md). Requires a
 // local PHP 8+ and a checkout of the plugin repo at PLUGIN_CORE_PATH.
-const PLUGIN_CORE_PATH =
-  "/Users/juanlentino/Projects/signal-and-noise-tools/.claude/worktrees/notes-provenance-commits-86c7c0/inc/provenance-core.php";
+const PLUGIN_CORE_PATH = fileURLToPath(new URL("../../signal-and-noise-tools/inc/provenance-core.php", import.meta.url));
 
 const phpOracleAvailable = existsSync(PLUGIN_CORE_PATH);
 
@@ -58,6 +58,7 @@ function phpCanonicalize(payload) {
 const samplePayloads = [
   { algo: "sn-normalize-v1", author: "Juan", content: "a/b é — “quoted”", note_uid: "abc-123", parent: null, published_at: "2026-07-09T00:00:00Z", title: "a/b é", version: 2 },
   { outer: { b: [3, 2, 1], a: 1 }, z: null, list: [{ y: 2, x: 1 }, { b: 2, a: 1 }] },
+  { kind: "genesis", root: "ab".repeat(32), date: "2026-07-09", count: 1, notes: [{ note_uid: "abc", leaf_hash: "cd".repeat(32) }] },
 ];
 
 describe("canonicalize byte-matches live PHP sn_prov_canonical_json", () => {
