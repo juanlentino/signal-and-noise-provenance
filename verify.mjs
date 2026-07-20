@@ -12,7 +12,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { canonicalize } from "./normalize/canonical-json.mjs";
-import { extractPostContent } from "./normalize/extract-content.mjs";
+import { extractPostContent, extractRestRenderedContent } from "./normalize/extract-content.mjs";
 import { normalizeV1 } from "./normalize/sn-normalize-v1.mjs";
 import { bitcoinAttestation, toHex } from "./verify/ots.mjs";
 
@@ -41,19 +41,69 @@ export async function verifyRecord({ record, pubB64, otsBytes }) {
   return { hashOk, sigOk, recomputed, btc };
 }
 
-/** Prove the rendered public body still produces the committed payload/hash. */
-export async function verifyPageRecord({ record, pageHtml }) {
-  if (record.payload?.kind === "genesis") throw new Error("--from-page applies to per-note records only");
-  const content = normalizeV1(extractPostContent(pageHtml));
+const collapseTextWhitespace = (value) => String(value).normalize("NFC").replace(/\s+/gu, " ").trim();
+
+async function pageHash(record, content) {
   const payload = { ...record.payload, content };
   const canonical = new TextEncoder().encode(canonicalize(payload));
-  const recomputed = toHex(new Uint8Array(await crypto.subtle.digest("SHA-256", canonical)));
+  return toHex(new Uint8Array(await crypto.subtle.digest("SHA-256", canonical)));
+}
+
+/**
+ * Prove the rendered public body still produces the committed payload/hash.
+ *
+ * The served page is authoritative whenever it preserves the exact normalized
+ * content. If an HTML optimizer has erased source-only whitespace inside an
+ * inline SVG, `restRendered` may supply the same post's public REST rendering:
+ * it must reproduce the record exactly, while the served page must remain
+ * text-equivalent after whitespace collapse. Any non-whitespace drift fails.
+ */
+export async function verifyPageRecord({ record, pageHtml, restRendered = null }) {
+  if (record.payload?.kind === "genesis") throw new Error("--from-page applies to per-note records only");
+  const pageContent = normalizeV1(extractPostContent(pageHtml));
+  const directHash = await pageHash(record, pageContent);
+  const directContentOk = pageContent === record.payload.content;
+  const directHashOk = directHash === record.content_hash;
+  if (directContentOk && directHashOk) {
+    return { ok: true, contentOk: true, hashOk: true, pageTextOk: true, recomputed: directHash, source: "served-page" };
+  }
+
+  if (restRendered === null) {
+    return { ok: false, contentOk: false, hashOk: directHashOk, pageTextOk: false, recomputed: directHash, source: "served-page" };
+  }
+
+  const restContent = normalizeV1(extractRestRenderedContent(restRendered));
+  const recomputed = await pageHash(record, restContent);
+  const restContentOk = restContent === record.payload.content;
+  const hashOk = recomputed === record.content_hash;
+  const pageTextOk = collapseTextWhitespace(pageContent) === collapseTextWhitespace(restContent);
   return {
-    ok: content === record.payload.content && recomputed === record.content_hash,
-    contentOk: content === record.payload.content,
-    hashOk: recomputed === record.content_hash,
+    ok: restContentOk && hashOk && pageTextOk,
+    contentOk: restContentOk && pageTextOk,
+    hashOk,
+    pageTextOk,
+    restContentOk,
     recomputed,
+    source: "public-rest+served-page",
   };
+}
+
+/** Fetch one post's public WordPress REST rendering from the served page URL. */
+export async function fetchRestRendered(pageUrl) {
+  const url = new URL(pageUrl);
+  const parts = url.pathname.split("/").filter(Boolean);
+  const slug = parts.at(-1);
+  if (!slug) throw new Error("cannot derive a post slug from the page URL");
+  const endpoint = new URL("/wp-json/wp/v2/posts", url.origin);
+  endpoint.searchParams.set("slug", slug);
+  endpoint.searchParams.set("_fields", "content");
+  const response = await fetch(endpoint);
+  if (!response.ok) throw new Error(`public REST fetch failed: HTTP ${response.status}`);
+  const posts = await response.json();
+  if (!Array.isArray(posts) || posts.length !== 1 || typeof posts[0]?.content?.rendered !== "string") {
+    throw new Error(`public REST did not return exactly one rendered post for ${slug}`);
+  }
+  return posts[0].content.rendered;
 }
 
 /**
@@ -105,8 +155,10 @@ async function main() {
   if (pageUrl) {
     const response = await fetch(pageUrl);
     if (!response.ok) throw new Error(`page fetch failed: HTTP ${response.status}`);
-    page = await verifyPageRecord({ record, pageHtml: await response.text() });
-    console.log(`  4) served page   ${page.ok ? "✓ rendered body reproduces the signed content and hash" : `✗ DRIFT (content=${page.contentOk}, hash=${page.hashOk})`}`);
+    const pageHtml = await response.text();
+    page = await verifyPageRecord({ record, pageHtml });
+    if (!page.ok) page = await verifyPageRecord({ record, pageHtml, restRendered: await fetchRestRendered(pageUrl) });
+    console.log(`  4) served page   ${page.ok ? `✓ public ${page.source} reproduces the signed content and hash` : `✗ DRIFT (content=${page.contentOk}, hash=${page.hashOk}, pageText=${page.pageTextOk})`}`);
   }
   const ok = hashOk && sigOk && bc.ok && page.ok;
   console.log(`\n${ok ? "VERIFIED — authentic, unmodified, and anchored in Bitcoin." : "NOT fully verified."}`);

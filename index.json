@@ -22,10 +22,13 @@
       "title": "Pricing in dollars from Argentina",
       "published_at": "2026-04-28T14:56:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "7b2601002969ddda245ddafed0010eccc042fe62526d5a34baa4096efcc18f4f",
       "leaf_hash": "2873b09f9f3a31456bd431f6e6853b3fdae91b2417e42edc2c106a1b668015e1",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "d95be039-064b-482f-b94c-caa581bc808a",
@@ -33,10 +36,13 @@
       "title": "Where artist signatures live",
       "published_at": "2026-05-03T01:37:50Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "2bab277c3c3aa9010a78d162bd266b1128ca72439df7ab145529444dc71d210c",
       "leaf_hash": "659caca9a017b9e4183fee38154be111936a67c82e61e42a67ef9187be3a4953",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "dedf0479-0b1b-4551-a411-7e5840c87097",
@@ -44,10 +50,13 @@
       "title": "Provenance is for humans, not against AI",
       "published_at": "2026-05-05T16:13:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "853b8515cc43d41794eacccd3bdd80bf222d8e18378a58f7553e738a50754dc2",
       "leaf_hash": "dbb629c8ed58314d723834980c2c0f62ff101308d7d1f0799da73779b0441fbe",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "afb6674f-befc-45af-a7a0-5bb4bc477b04",
@@ -55,10 +64,13 @@
       "title": "Where AI actually saves time in record production",
       "published_at": "2026-05-07T17:59:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "11b4bb4b432804571f4e2a400d255944f20fa8f804be15cd08b70d22e56157d2",
       "leaf_hash": "322a84a5e35c5d69048489d1ba092451087ef9f1d18e8d9199a05ddfa546439e",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "4a32127e-5571-4b85-a1f5-84714682d30e",
@@ -66,10 +78,13 @@
       "title": "Verifying the artist isn't enough",
       "published_at": "2026-05-09T22:33:32Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "b69817067a5c462bc89255bc83782ad79132faa7ab6368544c59db32c01d02c5",
       "leaf_hash": "6bea3b91d6bfa6aa9dd37cfaf4b87523962e032fdcc148c38f772ac2464c23ed",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "1059fb8d-2602-45a7-912e-18f463c7146d",
@@ -91,10 +106,13 @@
       "title": "Five years of remote freelance work",
       "published_at": "2026-05-15T21:02:25Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "181dd042c4c706e32512bb6e8b06295afa72047201b39b0f62a9dbb81fe4b658",
       "leaf_hash": "427a220b1f02e3cd419ed389623ed1353f3ec0ddc78d4a5ce2da879fe66ea34f",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "94db36d5-b441-4c69-95dc-40dad622ab0f",
@@ -102,10 +120,13 @@
       "title": "Five layers, one system",
       "published_at": "2026-05-19T20:14:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "1e666863f9ca3a3a690fbd52b82b7bb89ff9a00c0e1dc7e125798c03222cbb3f",
       "leaf_hash": "4086d94c946b1d911fb8b5afb1d31fbb6d5b16c9d7f169f89d1bcc079bb362d3",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "5bc0e8fc-94e5-4891-a123-5fc3574e8ac9",
@@ -113,10 +134,13 @@
       "title": "Detection scales the wrong way",
       "published_at": "2026-05-21T13:32:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "4ab0870c7cb4e37eba32b3adef8e467d244ac7d14538888bdfeb31bbc8b1feb0",
       "leaf_hash": "28318c35f93317ec926128087a02b2b33584ddc3d586613d36474077ac509f39",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "23c62072-a277-4d09-80fc-5cca54d598d3",
@@ -124,10 +148,13 @@
       "title": "Fingerprints, not name tags",
       "published_at": "2026-05-23T14:18:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "64785cf712cbae7faecc63a8048b957cbb38b5295a0e71d820268d26fa2e0c60",
       "leaf_hash": "7d4144d476b6b3a34a942023e3e1b3c1af18d9c926f0d7c4abc27b730d07d1f1",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "9f0abe29-71ed-4b6d-b3a3-ad00f06b2fc3",
@@ -135,10 +162,13 @@
       "title": "Falsifiability is the line",
       "published_at": "2026-05-27T19:24:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "bb83343a48edd8d794852bc7f7402d682876cf304c881cfb762530086b9a5d4d",
       "leaf_hash": "964150870dc7ea8f9df37c11de1095dcead674d2fcd2761779c81b6efe23e7cf",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "5c3d0e61-0f95-4bd4-b665-41571fdad1a3",
@@ -146,10 +176,13 @@
       "title": "Signing the inputs at the source",
       "published_at": "2026-05-30T13:14:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "277a03345b7a438006ce4b5bd74cb01bdbd81ac1f33a60052926027aab07bd1a",
       "leaf_hash": "94561986122ffbd421577644227f2e2c99692569da8d5a2db9c65f02f1989fa8",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "45d2204d-7d65-4d63-94f8-2caa25acdd82",
@@ -157,10 +190,13 @@
       "title": "What happens to old music?",
       "published_at": "2026-06-02T13:21:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "a9588f33d1e8189a9da0d4165b1038e7731e06d18bc42960b0980277362696a3",
       "leaf_hash": "51c3a3f164d233403e6fc8012aa80308e26dc83c62d9bee155f541dad4f66239",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "c9c4b790-ec73-46ab-b13a-3930fe86ea0a",
@@ -168,10 +204,13 @@
       "title": "Who vouches for the independent artist?",
       "published_at": "2026-06-11T21:23:39Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "8e3322f8b650706c41029a7bffb977a997f8a7a20c2d44fa6906fcd095d3c91b",
       "leaf_hash": "b8c2c9983cc5a02aa63e05c0ef064c420d9f9857aa1666779c05929442463431",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "9519209a-7a01-405e-8de7-d291b80fafd4",
@@ -179,10 +218,13 @@
       "title": "The music industry talks to itself in code",
       "published_at": "2026-06-20T13:38:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "6ccf833694e8dd4bb65fd9d235bb7ea4b46a16286930a7cc323e3b454215bea7",
       "leaf_hash": "f319e59c5537bdf89078bec7cdf0d54eceb07e0107772095c70b64d6f18ea031",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "045d4cec-bf8c-4fdc-8b5f-30145d3ed639",
@@ -204,10 +246,13 @@
       "title": "The seat was never given",
       "published_at": "2026-06-26T11:18:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "1dd1ca96cd11d41ff3cb5b50b02b967ba81db69990da3e630517a4fdef640ca5",
       "leaf_hash": "560b1873485b4dfb21e91cc8e6fd8a975e2dfb7856e647602d80de861b6dc255",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "7e1bb548-735e-4350-aa2c-d0ce4093c538",
@@ -215,10 +260,13 @@
       "title": "Open standards or no standards",
       "published_at": "2026-06-30T13:57:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "60023cd4e9f08fd14e1bbf21f27ee408f551476e462c26cd7dec914f9dffea98",
       "leaf_hash": "de3635fcc30bb568b330d3203ab6041fa725d55fc2dead8f23137e56fcde74c7",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "b1d2f576-ef1d-4ac0-b30a-4ce93b11bc90",
@@ -226,10 +274,13 @@
       "title": "The court found the floor",
       "published_at": "2026-07-03T19:06:12Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "8c314e7ac33dea01da316db2a9512cd15918d917f07027f09a794bd55349a337",
       "leaf_hash": "07028fd5811af7416ab24cee470bbe62440658d3bdedf1ad1993e0ef8ea9cc5e",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "8d448df2-db53-4c45-932f-06e3d69716c2",
@@ -237,10 +288,13 @@
       "title": "How a music file gets corrected",
       "published_at": "2026-07-07T21:14:00Z",
       "anchor": "genesis",
-      "version": 0,
+      "version": 1,
+      "content_hash": "d5c277ed924e4adf442a6ee491aa3e4e0a0a55901ea3e050ebff15c5f8545a53",
       "leaf_hash": "8b7967f2edb6caffffc39b4b18bcdf2bddd2bb0911d4c922cd81e720d94573be",
       "bitcoin_block": 957359,
-      "ots_status": "confirmed"
+      "ots_status": "confirmed",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "a776f4ac-44f3-4606-ba21-74e9f4ad3aa7",

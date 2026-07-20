@@ -13,6 +13,11 @@ describe("extractPostContent", () => {
     expect(normalizeV1(extractPostContent(page))).toBe("A\n\nB");
   });
 
+  it("removes only the generated article table of contents", () => {
+    const page = '<div class="entry-content wp-block-post-content"><nav class="sn-article-toc" aria-label="Table of contents"><p class="sn-article-toc__label">Contents</p><ol><li><a href="#one">One</a></li></ol></nav><p>Body.</p></div>';
+    expect(normalizeV1(extractPostContent(page))).toBe("Body.");
+  });
+
   it("fails closed when no provenance-bearing region exists", () => {
     expect(() => extractPostContent("<main><p>no match</p></main>")).toThrow(/not found/);
   });

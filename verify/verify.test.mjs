@@ -77,6 +77,32 @@ describe("verifyPageRecord", () => {
     expect((await verifyPageRecord({ record: pageRecord, pageHtml })).ok).toBe(true);
   });
 
+  it("uses exact public REST content only for whitespace-only page loss", async () => {
+    const pageHtml = '<div class="entry-content wp-block-post-content"><svg><text>One.</text><text>Two &amp; three.</text></svg></div>';
+    const restRendered = "<p>One.</p><p>Two &amp; three.</p>";
+    const result = await verifyPageRecord({ record: pageRecord, pageHtml, restRendered });
+    expect(result.ok).toBe(true);
+    expect(result.source).toBe("public-rest+served-page");
+    expect(result.pageTextOk).toBe(true);
+  });
+
+  it("rejects public REST fallback when the served page has character drift", async () => {
+    const pageHtml = '<div class="entry-content wp-block-post-content"><p>One!</p><p>Two &amp; three.</p></div>';
+    const restRendered = "<p>One.</p><p>Two &amp; three.</p>";
+    const result = await verifyPageRecord({ record: pageRecord, pageHtml, restRendered });
+    expect(result.ok).toBe(false);
+    expect(result.pageTextOk).toBe(false);
+  });
+
+  it("rejects public REST fallback when REST does not reproduce the record", async () => {
+    const pageHtml = '<div class="entry-content wp-block-post-content"><p>One.</p><p>Two &amp; three.</p></div>';
+    const restRendered = "<p>One.</p><p>Two &amp; four.</p>";
+    const driftedRecord = { ...pageRecord, content_hash: "00".repeat(32) };
+    const result = await verifyPageRecord({ record: driftedRecord, pageHtml, restRendered });
+    expect(result.ok).toBe(false);
+    expect(result.hashOk).toBe(false);
+  });
+
   it("fails on a one-character served-page drift", async () => {
     const pageHtml = '<div class="entry-content wp-block-post-content"><p>One!</p><p>Two &amp; three.</p></div>';
     const result = await verifyPageRecord({ record: pageRecord, pageHtml });

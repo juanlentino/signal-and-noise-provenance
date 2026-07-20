@@ -22,16 +22,38 @@ export function extractPostContent(pageHtml) {
   const match = boundary.exec(html);
   if (match && match.index < bodyEnd) bodyEnd = match.index;
 
-  return html
-    .slice(bodyStart, bodyEnd)
+  return restoreRenderedBoundaries(stripGeneratedToc(html.slice(bodyStart, bodyEnd)));
+}
+
+/**
+ * Recover source-like block boundaries from the public REST `content.rendered`
+ * field. This is used only as an exact-byte fallback when an HTML optimizer
+ * has erased whitespace inside an inline SVG on the served page.
+ */
+export function extractRestRenderedContent(renderedHtml) {
+  return restoreBlockEndings(stripGeneratedToc(String(renderedHtml)));
+}
+
+function stripGeneratedToc(html) {
+  return html.replace(
+    /<nav\b[^>]*\bclass=(?:"[^"]*\bsn-article-toc\b[^"]*"|'[^']*\bsn-article-toc\b[^']*')[^>]*>[\s\S]*?<\/nav>/gi,
+    ""
+  );
+}
+
+function restoreRenderedBoundaries(html) {
+  return restoreBlockEndings(html
     // HTML optimizers collapse source whitespace inside inline diagrams.
     // Re-expand element boundaries, and preserve section breaks carried by
     // the diagram's heading class, before tags are stripped by normalize-v1.
     .replace(/<svg\b[\s\S]*?<\/svg>/gi, (svg) => svg
       .replace(/>\s*</g, ">\n<")
       .replace(/(<text\b[^>]*\bclass=(?:"[^"]*heading[^"]*"|'[^']*heading[^']*')[^>]*>)/gi, "\n$1")
-      .replace(/(<text\b[^>]*\bfont-style=(?:"italic"|'italic')[^>]*>)/gi, "\n$1"))
-    .replace(/<\/(p|h[1-6]|blockquote|li|ul|ol|figure|svg)>/gi, "</$1>\n\n");
+      .replace(/(<text\b[^>]*\bfont-style=(?:"italic"|'italic')[^>]*>)/gi, "\n$1")));
+}
+
+function restoreBlockEndings(html) {
+  return html.replace(/<\/(p|h[1-6]|blockquote|li|ul|ol|figure|svg)>/gi, "</$1>\n\n");
 }
 
 function findPostContentOpeningTag(html) {

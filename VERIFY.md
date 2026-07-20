@@ -10,6 +10,7 @@ node verify.mjs --from-page https://juanlentino.com/notes/<slug>/ <note_uid>
 node verify.mjs genesis
 node verify-genesis.mjs
 node verify-key-history.mjs
+node verify-key-pins.mjs
 node verify-coverage.mjs
 ```
 
@@ -24,10 +25,18 @@ rendered page directly to `normalizeV1`: WordPress renders surrounding UI and
 HTML optimizers remove source block whitespace. `--from-page` is the supported
 public-artifact proof. It fetches the URL, isolates
 `div.entry-content.wp-block-post-content`, cuts at the first provenance/share/
-footer boundary, restores deterministic block and inline-diagram boundaries,
-runs `sn-normalize-v1`, replaces only the payload's content, canonicalizes, and
-requires both the content string and SHA-256 to match. One changed character in
-the served body fails.
+footer boundary, removes the generated `nav.sn-article-toc`, restores
+deterministic block and inline-diagram boundaries, runs `sn-normalize-v1`,
+replaces only the payload's content, canonicalizes, and requires both the
+content string and SHA-256 to match.
+
+Some page-cache optimizers erase source-only blank lines inside inline SVGs.
+Only when direct page recovery misses does the verifier consult the same post's
+public WordPress REST `content.rendered`: the REST rendering must reproduce the
+record exactly, and the served page must be text-equivalent after whitespace
+collapse. This permits only provably whitespace-only optimizer loss. A changed,
+inserted, deleted, or reordered non-whitespace character on either public
+surface fails.
 
 For ordinary records, `content_hash` is SHA-256 of recursive sorted-key compact
 JSON for `payload` (UTF-8, unescaped slash and Unicode). The same canonicalizer
@@ -69,6 +78,11 @@ They must agree on:
 - id `sn-ed25519-2026-07`
 - key `+aDvAWcZA6awAX3+y76cteKbIGKyVLDjpG7rp7IVNWs=`
 - raw-key SHA-256 `973e572578919916d93bbe37dbf3a3539b4e1bc1b19d235a7610cc734cae674a`
+
+`verify-key-history.mjs` also verifies that every declared key introduction
+points to a correctly signed and hashed fingerprint record. Once the two public
+off-repo surfaces are live, `verify-key-pins.mjs` requires DNS, HTTPS, and
+`key-history.json` to agree exactly.
 
 The private key is a Cloudflare Worker secret and is never committed. The
 current fingerprint has its own signed OTS record at
