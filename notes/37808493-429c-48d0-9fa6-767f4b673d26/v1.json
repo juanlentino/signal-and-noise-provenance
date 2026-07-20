@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "When I moved to the United States in 2021, I started running a freelance practice in parallel with my Buenos Aires studio. Five years later, that practice spans clients in the US and Argentina, working entirely remotely.\n\nThe infrastructure to make that work is unglamorous. The discipline behind it is the actual lesson.\n\nMost \"remote work\" content focuses on tools. The tools are the easy part. The hard part is scoping, and scoping is what nobody writes about.\n\nWhat I learned about scope\n\nA remote project across timezones is a forecasting exercise. Every \"let me get back to you tomorrow\" is actually 24 to 36 hours of dead time depending on which way the timezones run. Three of those in a project, and you've added a week to delivery without doing any extra work.\n\nScope on a remote project has to be tighter than scope on a local one. Not by a little. By a lot. The scope discipline that lets a local studio survive a few \"while you're at it\" requests will quietly destroy a remote project's timeline because each request triggers a multi-day round-trip.\n\nThe fix isn't saying no more often. It's structuring scope so the round-trips happen on questions that actually matter, not on revisions that should have been part of the original brief.\n\nWhat I learned about cultural variance\n\nUS clients tend to scope tight upfront and then expect the spec to hold. If something needs to change, it's a formal change request. That works well remotely.\n\nLatin American clients tend to scope looser upfront and expect the relationship to absorb adjustments along the way. That works well in person. It does not work well remotely. The relationship-based flexibility that's natural in a Buenos Aires session room doesn't survive the timezone gap, and trying to maintain it remotely is what kills profitability on otherwise good projects.\n\nThe lesson wasn't that one approach is better. It was that I had to choose one approach per project, communicate it clearly upfront, and not switch midway. Most of the painful projects in my history were ones where the cultural framing flipped halfway through.\n\nWhat I learned about infrastructure\n\nThe infrastructure that actually mattered, in order:\n\nPredictable file delivery. Not \"I'll email you the stems\" but a structured delivery system the artist can rely on. Every project, same format, same notification, same download experience. Sounds boring. Eliminates an entire category of \"did you get it?\" follow-ups.\n\nAsynchronous review with synchronous decisions. Async review is fine. Async decisions are not. The tools that let an artist leave timestamped comments on a mix are useful. The decisions about which comments to action have to happen in a 30-minute live conversation, or they don't happen.\n\nA documented session workflow that doesn't require me. If everything in the session depends on me being awake, the practice doesn't scale across timezones. Session structure, naming conventions, and delivery process have to be legible to whoever's continuing the work, including future-me at 6am.\n\nThe honest summary\n\nThe remote freelance practice worked because the scope was tighter, the cultural framing was explicit, and the infrastructure was boring on purpose. None of that is a tools problem. All of it is a discipline problem.\n\nThe next time someone asks me whether a fully remote audio practice is \"viable,\" I'll tell them yes, but only if they're willing to scope like a project manager and document like a software team. Most freelancers aren't, which is why most remote practices stay small.\n\nFive years in, the discipline is still the hardest part.",
+    "note_uid": "37808493-429c-48d0-9fa6-767f4b673d26",
+    "parent": "427a220b1f02e3cd419ed389623ed1353f3ec0ddc78d4a5ce2da879fe66ea34f",
+    "published_at": "2026-05-15T21:02:25Z",
+    "title": "Five years of remote freelance work",
+    "version": 1
+  },
+  "content_hash": "181dd042c4c706e32512bb6e8b06295afa72047201b39b0f62a9dbb81fe4b658",
+  "signature": "ZXq4tgn74dSiemijizc6xcuCiVdn+mjY9PG3s2UD+W91RPx/uIJ8f99CQt0oy5y5/5pIJ6FQLqxUkkWqqQ3oAQ==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "427a220b1f02e3cd419ed389623ed1353f3ec0ddc78d4a5ce2da879fe66ea34f"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
