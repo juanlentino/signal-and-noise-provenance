@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "Provenance has the same problem TLS solved in the 1990s. Multiple vendors building proprietary verification stacks doesn't add up to a verification chain. It adds up to a coordination problem nobody owns.\n\nThe pitch from any provenance vendor sounds reasonable in isolation. We sign tracks at upload. We verify at distribution. We integrate with the partners we have. The chain works inside our system.\n\nThe chain working inside one system isn't the goal. The goal is a chain that works across the industry, because music doesn't move through one system. It moves through dozens.\n\nWhat \"interoperable\" actually requires\n\nA label uploads a track to its distributor. The distributor delivers to seven DSPs. Three DSPs run their own AI-detection systems. Two pass through to publishers. The publisher routes mechanical royalties to a collection society in territory and a different one in territory B. A sync agency clears the master separately. A sample of the track gets used in a derivative work that gets uploaded to a different distributor.\n\nThat's a single track. Every party in that chain is a verification surface. If the verification primitive at each surface is proprietary to a different vendor, the chain has to reconcile across vendors at every handoff. The dispute layer doesn't end. It just moves to a different table.\n\nOpen primitives don't have this problem. The verification math is the same regardless of which vendor's tooling did the signing or the verifying. Anyone with the public key and the protocol can verify any signature. That's the structural property that lets a chain work across thousands of independent participants.\n\nWhy proprietary verification can't reach industry scale\n\nA proprietary verification primitive is bilateral. Vendor A and any party that adopts vendor A's stack can verify each other. Anyone outside that stack has to either trust the vendor's word, run a different verification process, or treat the chain as broken at that handoff.\n\nBilateral verification doesn't end disputes. It moves them from \"is this track signed\" to \"do we trust this vendor's signing.\" That's the same dispute, with new participants, in a different room.\n\nMusic distribution has tried this pattern repeatedly. Proprietary watermarking standards. Proprietary fingerprint catalogs. Proprietary rights management databases. Each one solved a problem inside its walls. None of them coordinated across the industry, because coordination requires a shared primitive, not a shared vendor.\n\nA CHAIN IS ONLY AS OPEN AS ITS LINKS\n\nPROPRIETARY\n\nLBL\n\nDST\n\n✕\n\nDSP\n\nPUB\n\n✕\n\nSOC\n\nOPEN\n\nLBL\n\nDST\n\nDSP\n\nPUB\n\nSOC\n\nA chain only works if every link uses the same primitive.\n\nThe historical precedent\n\nTLS replaced the bilateral SSL implementations of the 1990s because email, banking, and commerce needed encryption that worked across vendors. PGP made signed messages possible because nobody could ship encrypted mail through any single vendor's proprietary system. IPFS specified content addressing as a public protocol because distributed storage needed every participant to verify the same way. X.509 certificates standardized identity binding because authentication had to scale beyond any single CA.\n\nIn each case, the open primitive came first, then the vendors built on top of it. The vendors that resisted standardization either lost or were forced into compatibility. The pattern isn't accidental. It's what scale requires.\n\nWhere the line actually runs\n\nThe argument isn't that nothing in provenance can be proprietary. Vendors can build closed implementations on top of an open primitive. They can offer closed user interfaces, closed key management products, closed monitoring dashboards. None of that breaks the chain.\n\nWhat breaks the chain is closing the verification primitive itself. If the way a signature is structured, the way a public key is shared, the way a verification fails or succeeds de",
+    "note_uid": "7e1bb548-735e-4350-aa2c-d0ce4093c538",
+    "parent": "de3635fcc30bb568b330d3203ab6041fa725d55fc2dead8f23137e56fcde74c7",
+    "published_at": "2026-06-30T13:57:00Z",
+    "title": "Open standards or no standards",
+    "version": 1
+  },
+  "content_hash": "60023cd4e9f08fd14e1bbf21f27ee408f551476e462c26cd7dec914f9dffea98",
+  "signature": "Af69YK7InvcTgWc9EKH2VAIW5qnEhshpR/XxU5yd3PtU/D3DKM2CJBWVE16CMQX/f16072ceKhr6M94M2fVZBw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "de3635fcc30bb568b330d3203ab6041fa725d55fc2dead8f23137e56fcde74c7"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
