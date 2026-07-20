@@ -23,7 +23,7 @@ const b64 = (s) => Uint8Array.from(Buffer.from(String(s).trim(), "base64"));
  * signature under the given public key. `btc` is the block the proof claims
  * ({ height, merkleRoot }) or null when still pending.
  *
- * @returns {Promise<{hashOk:boolean, sigOk:boolean, recomputed:string, btc:object|null}>}
+ * @returns {Promise<{hashOk:boolean, sigOk:boolean, otsHashOk:boolean, recomputed:string, btc:object|null}>}
  */
 export async function verifyRecord({ record, pubB64, otsBytes }) {
   const canonical   = new TextEncoder().encode(canonicalize(record.payload));
