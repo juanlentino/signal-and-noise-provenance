@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "The reporting called it a loss. On June 29 the Court of Appeal upheld the strike-out of Dave Rowntree's proposed class action against PRS, and roughly £200m in unmatched \"black box\" royalties stays where it was. Rowntree, a songwriter member who brought the case on behalf of PRS's writer members, accepted the outcome. Read as a headline, it is a defeat.\n\nRead as a diagnosis, it is the most useful thing a court has said about music money in years. Lord Justice Miles did not rule that the distribution was fair in the abstract. He ruled that no fairer distribution could even be proposed, because the information required to build one does not exist. That reasoning locates the exact layer where the system breaks, and the layer sits upstream of everything the case was arguing about.\n\nWhat the court actually found\n\nThe line worth keeping comes from the judgment ([2026] EWCA Civ 814). On why no better distribution method had been offered, Miles wrote that \"the reason why no counterfactual has been advanced, even in general terms, is manifest: it is that the very data failure problem which has given rise to the black box royalties means that there is no plausible basis for suggesting a more accurate (let alone fairer) distribution.\"\n\nThat is not a defence of the black box. It is a description of how it forms. Money enters the system attached to a performance. The data that would route it to the right writer is incomplete, so it cannot be matched, so it pools. Every question that follows, who deserves it and by what formula, is asking how to allocate a loss that already happened. The court declined to referee that allocation, and it was right to. The injury occurred before distribution was ever in play. The failure is informational, and it is early.\n\nWhy the downstream fixes inherit the failure\n\nRowntree reached for litigation. The more common instinct is technical: better matching engines, cleaner registration, harder claiming against unidentified pools. Each of those operates on money that is already orphaned, which makes each one a recovery bet on information lost at the source.\n\nThis is the same shape as the argument in Provenance Over Detection. Detecting synthetic media after it exists is a probabilistic race that gets harder as the models improve, and it never reaches certainty because it is reconstructing something that was never captured. Royalty matching is that race in accounting clothes. It improves at the margins and the gap persists, because the gap is upstream of where matching works. A Court of Appeal has now said as much in its own domain: where the data failed at the point it should have been recorded, no method downstream can recover the truth, only estimate around it. That is the ceiling on every after-the-fact fix, stated from the bench.\n\nWhat capture at the source changes\n\nProvenance changes the tense of the problem. If contributor identity and splits are recorded and bound to the work at the moment of creation, the black box does not shrink for those works. It fails to form. The £200m is not recovered under this model, because under this model that money was never orphaned. The technical case for how that binding survives the life of a file is the subject of Provenance as Substrate; the point here is narrower, and the court supplied it.\n\nMiles named the data failure as the reason no fairer distribution can be built. He was describing a dead end for litigation. The same fact read forward is a specification: fix the information where it originates, and the distribution problem never arrives.",
+    "note_uid": "b1d2f576-ef1d-4ac0-b30a-4ce93b11bc90",
+    "parent": "07028fd5811af7416ab24cee470bbe62440658d3bdedf1ad1993e0ef8ea9cc5e",
+    "published_at": "2026-07-03T19:06:12Z",
+    "title": "The court found the floor",
+    "version": 1
+  },
+  "content_hash": "8c314e7ac33dea01da316db2a9512cd15918d917f07027f09a794bd55349a337",
+  "signature": "oi79om68rG4/vWdUxPAJxnMkRw0vP8sIXKPnoQpLRYewiAAJXNuwOYKxDUp1858R9w11+LA/myq9Jipe5fIHBA==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "07028fd5811af7416ab24cee470bbe62440658d3bdedf1ad1993e0ef8ea9cc5e"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
