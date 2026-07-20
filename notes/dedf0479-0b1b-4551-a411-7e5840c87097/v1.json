@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "Most people who hear \"music provenance\" assume the goal is to catch AI-generated tracks. That's the wrong frame, and the framing is going to start mattering as the industry drafts policy around it.\n\nA provenance system designed to catch AI inherits every problem detection has. It has to define what counts as AI, which becomes a moving target as the tools evolve. It has to gatekeep, which means false positives become a feature instead of a bug. And it has to keep up with whatever generators ship next, which is the same arms race the industry is already losing.\n\nA provenance system designed to credit humans doesn't have any of those problems. It doesn't need to know what AI is doing on the other side. It just needs to verify that a specific human authored a specific work at a specific moment, and carry that proof through the rights pipeline.\n\nThe difference shows up immediately in the design choices.\n\nWhat \"anti-AI\" framing leads to\n\nBuild a system to catch AI and you end up building gatekeeping infrastructure. You decide what does and doesn't qualify as \"human enough.\" You build flagging mechanisms. You build appeals processes. You build a regulatory body to administer the boundary, because the boundary keeps moving.\n\nYou also build a system that fights its own users. An artist who uses a vocal correction plugin shouldn't have to defend their humanity. An artist who used a generative tool for one element of a track shouldn't have to negotiate a percentage with a verification authority. The minute the system has to make these calls, it's broken.\n\nAnd the policy crowd will start drafting legislation around the wrong question. \"How do we detect AI\" becomes the legal frame, and the industry signs up for arms-race compliance forever.\n\nWhat \"pro-human\" framing leads to\n\nBuild a system to credit humans and the design narrows. You only need to verify three things at the moment of creation: who, what, and when. The signature attaches at that point and travels with the work. Whether AI was involved upstream or downstream is somebody else's question. The system stays neutral and stays simple.\n\nThis also changes who the system is for. Anti-AI provenance is for platforms and regulators trying to filter what reaches consumers. Pro-human provenance is for artists trying to get paid for what they made. The first one creates new gatekeepers. The second one strengthens the existing infrastructure that already pays artists, just with cleaner signal.\n\nThe pro-human frame also handles the messy reality of how music actually gets made. Co-writers, session players, producers, samplers, engineers. All of them sign their contributions. The system doesn't have to know which contribution was made with what tool. It only has to know who claims it and prove the claim is verifiable.\n\nWhy this matters now\n\nThe framing is being set right now, in policy drafts, in standards meetings, in the trade press. Most of it is being set by the anti-AI frame, because that's what's politically loud.\n\nIf the industry locks in \"provenance equals AI detection\" as the default mental model, the working systems built later will inherit that framing whether they want to or not. Regulatory hearings will use it. DSP terms of service will use it. Royalty collection societies will write it into their procedures.\n\nGet the frame right while it's still up for grabs. The technology should serve the humans who made the work, not the institutions trying to police what counts as work in the first place.",
+    "note_uid": "dedf0479-0b1b-4551-a411-7e5840c87097",
+    "parent": "dbb629c8ed58314d723834980c2c0f62ff101308d7d1f0799da73779b0441fbe",
+    "published_at": "2026-05-05T16:13:00Z",
+    "title": "Provenance is for humans, not against AI",
+    "version": 1
+  },
+  "content_hash": "853b8515cc43d41794eacccd3bdd80bf222d8e18378a58f7553e738a50754dc2",
+  "signature": "zxM7MxrhcsyLpk+SEPQp9az6gh/JcIO+0hMdlFjGe1NZLl3+mLZVqpv/5YHBVDNvXEGw0+fMm4lDYs2wmhEsCw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "dbb629c8ed58314d723834980c2c0f62ff101308d7d1f0799da73779b0441fbe"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
