@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "When you walk into an event, someone might hand you a name tag. It works, mostly. People can read it and the conversation moves. But name tags fail in obvious ways. They get printed wrong. They fall off. Someone else's gets handed to you by mistake. The system doesn't know who you are. It only knows what the tag says.\n\nFingerprints are different. Nobody assigns them. Two people can't share them. They can't fall off, can't be transferred, can't be confused with someone else's. The system doesn't have to write anything down. It just has to look.\n\nMusic has been running on a name tag system for fifty years.\n\nName tag\nA handwritten name tag with a torn corner and a scribbled-out name, representing how administrative identifiers fail when mistyped, lost, or transferred.\n\nHELLO MY NAME IS\n\nName tagAssigned, mistyped, lost\n\nFingerprint\nA fingerprint pattern of concentric loops, representing a cryptographic identity that is intrinsic to the work, mathematically unique, and cannot be transferred to a different file.\n\nFingerprintBorn with the file, cannot be transferred\n\nHow the name tag system fails\n\nEvery recording released through the modern industry gets identifying codes. There's a code for the recording, a different code for the underlying composition, another for the person who made it, another for the album. These codes get issued by administrative bodies, typed into databases, and propagated through distribution.\n\nWhen the codes work, the system functions. When they don't, and they often don't, the music wears the wrong name tag. The code got mistyped at the distributor. The streaming service has a different code than the rights holder. Two recordings somehow share a code. The code was missing entirely.\n\nThe result is hundreds of millions of dollars in royalties that can't find their way home. The recording exists. The artist exists. The streams happened. But the chain that connects \"this stream\" to \"this artist's bank account\" runs through a series of name tags, and any one being wrong is enough to break it.\n\nThe pile keeps growing because the volume keeps growing. Around a hundred thousand new tracks get uploaded daily. Each gets name-tagged. A meaningful percentage will be wrong, missing, or inconsistent across the systems that need to agree.\n\nWhat a fingerprint system would look like\n\nA music file doesn't have natural fingerprints the way a human does. But it can have something equivalent: a cryptographic signature derived from the audio itself, generated at the moment the file is created, mathematically guaranteed to be unique to that recording, impossible to transfer to a different file, verifiable by anyone with access to the file.\n\nThis isn't speculative. The cryptographic primitives are several decades old. They secure financial transactions, software updates, government identity systems. They're well understood and routine in adjacent industries. What they haven't done yet is replace the name tag system in music.\n\nIf music adopted them, the file's identity would be inseparable from the file. The administrative codes wouldn't go away. They'd stick around as labels, useful for human readers and legacy systems. But the underlying identity wouldn't depend on them anymore. When the codes disagree, the fingerprint settles it.\n\nWhy this hasn't happened yet\n\nThe technology is decades old. The reason adoption hasn't happened is coordination, not capability.\n\nRecording software, distributors, streaming platforms, and collection societies all have to make adjustments that don't benefit any one of them individually until enough of the others have moved. The first to ship loses the marketing battle to whoever waits. The last to ship gets the benefit without the cost. That's the worst possible incentive structure for the system that makes the change first.\n\nBut the math says somebody eventually does. The name tag pile keeps growing. The cost of running the current system keeps rising. At some point the first major player ships the fingerprint version, and everyone else follows because they're the only ones still bleeding.\n\nUntil then, the artists with the wrong name tag pay the cost. The system pretends the cost is unavoidable.\n\nIt isn't.",
+    "note_uid": "23c62072-a277-4d09-80fc-5cca54d598d3",
+    "parent": "7d4144d476b6b3a34a942023e3e1b3c1af18d9c926f0d7c4abc27b730d07d1f1",
+    "published_at": "2026-05-23T14:18:00Z",
+    "title": "Fingerprints, not name tags",
+    "version": 1
+  },
+  "content_hash": "64785cf712cbae7faecc63a8048b957cbb38b5295a0e71d820268d26fa2e0c60",
+  "signature": "GOnB2aZ24ANR/1irk44K4wxkvVzPSqDvH3unQoAyddNxLDnC2zMk2uWPvIAakHSYhZOt7vp/+XZlRnW0YhDeCw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "7d4144d476b6b3a34a942023e3e1b3c1af18d9c926f0d7c4abc27b730d07d1f1"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
