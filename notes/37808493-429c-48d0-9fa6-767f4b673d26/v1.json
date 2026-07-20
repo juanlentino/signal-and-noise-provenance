@@ -17,9 +17,10 @@
     "leaf_hash": "427a220b1f02e3cd419ed389623ed1353f3ec0ddc78d4a5ce2da879fe66ea34f"
   },
   "ots": {
-    "status": "pending",
+    "status": "confirmed",
     "calendars": [
       "alice.btc.calendar.opentimestamps.org"
-    ]
+    ],
+    "bitcoin_block": 958897
   }
 }
