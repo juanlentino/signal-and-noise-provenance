@@ -21,6 +21,12 @@
   added an online verifier requiring exact DNS/HTTPS/history agreement.
 - Bound every detached OTS proof explicitly to its record `content_hash` and
   added a 24-record offline verification sweep to CI.
+- Pinned the verification workflow's checkout and Node setup actions to
+  immutable commit SHAs and disabled persisted checkout credentials.
+- Enabled GitHub secret scanning, push protection, and Dependabot security
+  updates. Protected `main` for administrators too: linear history is required,
+  and force-pushes and branch deletion are rejected while the provenance Worker
+  may continue normal fast-forward ledger commits.
 - Regression-protected the original six confirmed JSON/OTS pairs. The only
   permitted historical JSON change is the controlled genesis signature value;
   its root and OTS proof remain byte-identical.
