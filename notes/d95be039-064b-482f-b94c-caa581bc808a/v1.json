@@ -1,0 +1,25 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "The previous note made the case that the complete authenticity signal in music distribution is the link between two stamps. One that confirms the artist is who they say they are. Another that confirms the track is what it claims to be. Linked at the moment of upload, the two together produce something a single stamp cannot: a verifiable claim that this human made this work.\n\nThe natural follow-up is operational. Where does the artist actually stamp the work?\n\nNot at the studio\n\nAsking artists to manage stamping at the studio is a UX failure waiting to happen. Production tools change project to project. Sessions involve multiple collaborators with different setups. The artist's stamp should not be entangled with whichever studio software they happened to open that afternoon.\n\nThe studio software stamps its own output. AI tools stamp theirs. Sample libraries stamp their contributions. Each of those describes what the tool did, not who the artist is.\n\nThe artist's stamp is different. It is a statement of authorship, not production. It belongs at the moment the artist actually publishes the work into the world.\n\nDistribution is the natural place\n\nDistributors are the right home for it. CD Baby, DistroKid, TuneCore, Believe, EMPIRE, and the rest of the indie distribution layer already verify artists at signup, hold their tax documents, manage their payout accounts, and require them to attest to authorship at upload. Adding a stamp to that existing attestation is a small addition on top of relationships that already exist.\n\nThe flow becomes clear. The work picks up stamps during production. By the time the file is ready for distribution, it carries a record of everything that touched it. The artist logs into their distributor, reviews what is attached to the file, and stamps it themselves. That stamp is the binding. It says: this work, with this history, is mine to release.\n\nStreaming platforms verify the chain when they receive the file. Profile verification plus work verification plus the artist's binding stamp equals a complete authenticity signal at the point of ingest.\n\nThis also reframes the business case for distributors. They currently compete on reach, payout speed, and creator tools. Verified distribution becomes the next axis of competition. Sign your catalog with us is a real differentiator, especially for independent artists worried about voice cloning, scraped catalogs, or impersonation through fraudulent uploads.\n\nTwo ways to get a stamp\n\nArtists should have two paths to a stamp, and the architecture should treat both as valid.\n\nThe first is the managed version. The distributor handles the stamp on the artist's behalf as part of onboarding. The artist logs in and clicks publish. The stamp is applied invisibly. This is how most other industries handle digital signing already. The user authenticates with the platform. The platform handles the rest. For working musicians who want to release music, not study cryptography, this is the right path.\n\nThe second is the independent version. The artist generates and holds their own stamp through a public registry, the same way anyone can register a domain name or a copyright. They can take that stamp with them across distributors, sign their catalog independently, and verify it against the registry from anywhere. This is the right path for established artists with large catalogs, for estates and indie labels managing legacy works, and for anyone who wants their authorship verifiable independent of any single platform.\n\nBoth paths produce the same result downstream: a verifiable artist stamp bound to a verifiable work stamp. The chain does not care which path the artist took. It only cares that the stamp checks out.\n\nHow adoption actually happens\n\nThis creates a graceful path forward. Distributors can start with the managed version because the cost to the artist is near zero. The independent version develops in parallel through standards work and public registries. Artists who want portability migrate when the tooling matures. Artists who never want to think about it never have to.\n\nThe verification is the same in both cases. The difference is who holds the stamp.",
+    "note_uid": "d95be039-064b-482f-b94c-caa581bc808a",
+    "parent": "659caca9a017b9e4183fee38154be111936a67c82e61e42a67ef9187be3a4953",
+    "published_at": "2026-05-03T01:37:50Z",
+    "title": "Where artist signatures live",
+    "version": 1
+  },
+  "content_hash": "2bab277c3c3aa9010a78d162bd266b1128ca72439df7ab145529444dc71d210c",
+  "signature": "BaLTJevHjbzP1Tu7Eh+ED7G7NtLKC/+gkOvyPgtRo6vFV5fjGY2Dzeds+n4iIQeDdApXlKdUrhEHRsX8o2Z+BQ==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "genesis_ref": {
+    "root_date": "2026-07-09",
+    "leaf_hash": "659caca9a017b9e4183fee38154be111936a67c82e61e42a67ef9187be3a4953"
+  },
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
