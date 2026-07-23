@@ -90,6 +90,13 @@
       "path": "rights-signals/robots-txt/v1",
       "kind": "rights-signal",
       "queued_at": "2026-07-23T22:00:21.406Z"
+    },
+    {
+      "note_uid": "robots-txt",
+      "version": 2,
+      "path": "rights-signals/robots-txt/v2",
+      "kind": "rights-signal",
+      "queued_at": "2026-07-23T23:00:22.152Z"
     }
   ]
 }
