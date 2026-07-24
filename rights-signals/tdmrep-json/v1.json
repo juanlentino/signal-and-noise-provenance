@@ -1,0 +1,13 @@
+{
+  "slug": "tdmrep-json",
+  "url": "https://juanlentino.com/.well-known/tdmrep.json",
+  "content_hash": "421f88383938eeaf8882474c747d1f3cfcd7e51c5d89711fd3df98fc0071ec80",
+  "signature": "wvZLO0nFgPJEVtkNFwR34Jlie27EN2ZNoiuRoDCOtXthHxLJMEp5xNDKA1LNWKdvFyPk7yfNfz/GCLEb7DThBw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
