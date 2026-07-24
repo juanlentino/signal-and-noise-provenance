@@ -83,13 +83,6 @@
       "version": 1,
       "path": "notes/8d448df2-db53-4c45-932f-06e3d69716c2/v1",
       "kind": "note"
-    },
-    {
-      "note_uid": "tdmrep-json",
-      "version": 1,
-      "path": "rights-signals/tdmrep-json/v1",
-      "kind": "rights-signal",
-      "queued_at": "2026-07-24T02:00:23.485Z"
     }
   ]
 }
