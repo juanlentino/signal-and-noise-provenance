@@ -37,6 +37,12 @@ live WordPress note list, and checks every served page for drift.
 - `genesis/2026-07-09-leaves.json` + `normalize/merkle-v1.mjs` — all 21
   public v0 derivations, the domain-separated historical tree algorithm, and
   audit-path inputs; `verify-genesis.mjs` proves them offline.
+- `rights-signals/<slug>/v<version>.{raw,json,ots}` — the same anchoring applied
+  to the site's machine-readable rights files (`/robots.txt`, `/license.xml`,
+  and `/.well-known/tdmrep.json`). `.raw` is the exact served bytes; unlike a
+  Note record there is no `payload` and no `sn-normalize-v1` pass —
+  `content_hash` is the plain SHA-256 of those bytes, the Ed25519 signature is
+  over the same bytes, and `.ots` is the detached proof over `content_hash`.
 - `index.json` + `verify-coverage.mjs` — one coverage row per public Note and
   live-site gap detection.
 - `keys/key-history.json` + `verify-key-history.mjs` — key lifecycle and
@@ -46,8 +52,11 @@ live WordPress note list, and checks every served page for drift.
   third-party verifiers** — guaranteed byte-identical to the PHP source of
   truth (`inc/provenance-core.php`'s `sn_prov_normalize_v1()` in the plugin
   repo) by `normalize/parity.test.mjs`.
-- `pending.json` — the Worker's sweep work queue: `{note_uid, version, path}`
-  for every record whose OTS proof hasn't yet been confirmed on-chain.
+- `pending.json` — the Worker's sweep work queue:
+  `{note_uid, version, path, kind, queued_at}` for every record whose OTS proof
+  hasn't yet been confirmed on-chain. `kind` is `note`, `rights-signal`, or
+  `key-fingerprint`. `queued_at` is an ISO-8601 timestamp; entries written
+  before it was introduced carry none and are age-unknown rather than fresh.
 - `verify.mjs` + `verify/` — the one-command trustless verifier
   (`node verify.mjs <note_uid>`, or `npm run verify -- <note_uid>`): recompute
   the canonical hash via `normalize/canonical-json.mjs`, verify the Ed25519
