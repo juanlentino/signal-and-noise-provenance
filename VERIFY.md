@@ -13,6 +13,7 @@ node verify-genesis.mjs
 node verify-key-history.mjs
 node verify-key-pins.mjs
 node verify-coverage.mjs
+node verify-pages.mjs
 ```
 
 `verify.mjs` recomputes the signed bytes, verifies Ed25519, parses the detached
@@ -20,7 +21,9 @@ OTS proof, requires the proof's embedded starting digest to equal
 `content_hash`, and compares its Merkle commitment with the real Bitcoin block
 from Blockstream. It exits nonzero on any failure. `verify-records.mjs` applies
 the offline hash, signature, OTS-digest, and confirmed-block-height checks to
-every indexed standalone record in one command.
+every indexed standalone record in one command. `verify-pages.mjs` runs the same
+served-page proof as `--from-page` across every indexed Note in one pass and
+reports how many needed the public-REST whitespace fallback.
 
 ## Content and page verification
 
@@ -98,5 +101,15 @@ record their effective boundary without invalidating signatures made before it.
 
 `node verify-coverage.mjs` enumerates the public WordPress note collection and
 requires every live slug to have one unique `index.json` row with a confirmed
-genesis or per-note Bitcoin anchor. The success line is `24/24 anchored, 0 gaps`.
-Use `--offline` to validate only the committed manifest.
+genesis or per-note Bitcoin anchor. The success line is `N/N anchored, 0 gaps`,
+where `N` is the number of Notes the live site currently publishes; any live
+slug missing from `index.json` fails as a gap. Use `--offline` to validate only
+the committed manifest.
+
+It also checks each indexed row against `notes/<uid>/v1.json` itself, so a
+`content_hash` or OTS mirror (`standalone_ots_status` /
+`standalone_bitcoin_block`) that has fallen behind the record fails the run.
+This matters because a sweep that confirms a proof rewrites the record only:
+whoever runs one must rebuild the index with `node scripts/build-index.mjs` and
+commit it alongside, or the next verification fails with a stale-index error
+naming the slug. Both checks are offline.
