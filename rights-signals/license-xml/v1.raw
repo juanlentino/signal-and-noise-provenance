@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rsl xmlns="https://rslstandard.org/rsl">
+  <content url="/">
+    <license>
+      <permits type="usage">ai-train</permits>
+      <payment type="attribution">
+        <standard>https://juanlentino.com/tdm-policy/</standard>
+      </payment>
+    </license>
+  </content>
+</rsl>
