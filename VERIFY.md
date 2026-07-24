@@ -105,3 +105,11 @@ genesis or per-note Bitcoin anchor. The success line is `N/N anchored, 0 gaps`,
 where `N` is the number of Notes the live site currently publishes; any live
 slug missing from `index.json` fails as a gap. Use `--offline` to validate only
 the committed manifest.
+
+It also checks each indexed row against `notes/<uid>/v1.json` itself, so a
+`content_hash` or OTS mirror (`standalone_ots_status` /
+`standalone_bitcoin_block`) that has fallen behind the record fails the run.
+This matters because a sweep that confirms a proof rewrites the record only:
+whoever runs one must rebuild the index with `node scripts/build-index.mjs` and
+commit it alongside, or the next verification fails with a stale-index error
+naming the slug. Both checks are offline.

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -15,6 +15,19 @@ for (const entry of entries) {
   if (entry.ots_status !== "confirmed" || !Number.isInteger(entry.bitcoin_block)) throw new Error(`anchor is not confirmed for ${entry.slug}`);
   if (entry.anchor === "genesis" && !/^[0-9a-f]{64}$/.test(entry.leaf_hash || "")) throw new Error(`genesis leaf missing for ${entry.slug}`);
   if (entry.version >= 1 && !/^[0-9a-f]{64}$/.test(entry.content_hash || "")) throw new Error(`standalone hash missing for ${entry.slug}`);
+  // A sweep that confirms an OTS proof rewrites notes/<uid>/v1.json only. If the
+  // index is not rebuilt afterwards it keeps reporting a stale mirror of that
+  // record, which is invisible to the live-slug gap check below. Compare the two.
+  if (entry.version >= 1) {
+    const recordPath = join(root, `notes/${entry.note_uid}/v1.json`);
+    if (!existsSync(recordPath)) throw new Error(`indexed record missing on disk for ${entry.slug}`);
+    const record = JSON.parse(readFileSync(recordPath, "utf8"));
+    const recordBlock = record.ots.bitcoin_block ?? null;
+    if (record.content_hash !== entry.content_hash) throw new Error(`index content_hash disagrees with the record for ${entry.slug}; rerun node scripts/build-index.mjs`);
+    if (record.ots.status !== entry.standalone_ots_status || recordBlock !== (entry.standalone_bitcoin_block ?? null)) {
+      throw new Error(`index is stale for ${entry.slug}: record says ${record.ots.status}/${recordBlock}, index says ${entry.standalone_ots_status}/${entry.standalone_bitcoin_block ?? null}; rerun node scripts/build-index.mjs`);
+    }
+  }
 }
 
 if (!process.argv.includes("--offline")) {
