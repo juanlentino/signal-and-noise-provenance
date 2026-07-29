@@ -7,8 +7,11 @@ on:
     - cron: "17 6 * * *"
   workflow_dispatch:
 
+# contents: write for exactly one step: committing the rebuilt index.json when
+# a Worker record commit outran it (the index is a DERIVED artifact, rebuilt
+# deterministically from committed files — offline, no live-site dependency).
 permissions:
-  contents: read
+  contents: write
 
 # A backfill can publish many immutable records in quick succession. Keep only
 # the newest verification for a branch; the scheduled run remains an
@@ -30,6 +33,32 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Self-heal (2026-07-29): the Worker commits records but never index
+      # rows, so every new anchor used to red the coverage guard until a
+      # human ran build-index (two rows drifted unseen Jul 25-28). Rebuild
+      # from the committed files — deterministic and offline — and, on main
+      # only, push the healed index ([skip ci]: THIS run then verifies the
+      # healed tree and its verdict attaches to the record push). Rebased
+      # push tolerates a Worker commit racing in between; index.json has a
+      # single writer (this step + humans), so conflicts cannot occur on it.
+      - name: Rebuild coverage index from committed records
+        run: node scripts/build-index.mjs
+      - name: Push the healed index (main only)
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          if git diff --quiet index.json; then
+            echo "index already current"
+            exit 0
+          fi
+          git config user.name "sn-ledger-verify"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.json
+          git commit -m "index: rebuild after record commit [skip ci]"
+          git pull --rebase origin main
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" HEAD:main
       - run: npm test
       - run: npm run verify:records
       - run: npm run verify:genesis
