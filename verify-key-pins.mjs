@@ -15,7 +15,24 @@ if (txtAnswers.length !== 1 || txtAnswers[0] !== expectedTxt) {
   throw new Error(`DNS key pin mismatch: ${JSON.stringify(txtAnswers)}`);
 }
 
-const response = await fetch("https://juanlentino.com/.well-known/provenance-keys.json");
+// Explicit headers + bounded retry (2026-07-29): from GitHub runners the
+// edge intermittently answers a bare default-UA fetch with HTTP 415 (seen on
+// the 01:00 UTC main run minutes after the same check passed on the PR).
+// A named UA + Accept matches how every other verifier leg identifies
+// itself; two spaced retries ride out the transient edge verdict, while a
+// consistent failure still fails loudly.
+async function fetchKeyMirror() {
+  let last;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    last = await fetch("https://juanlentino.com/.well-known/provenance-keys.json", {
+      headers: { "Accept": "application/json", "User-Agent": "sn-ledger-verify/1.0 (+https://github.com/juanlentino/signal-and-noise-provenance)" },
+    });
+    if (last.ok) return last;
+    if (attempt < 3) await new Promise((r) => setTimeout(r, attempt * 5000));
+  }
+  return last;
+}
+const response = await fetchKeyMirror();
 if (!response.ok) throw new Error(`HTTPS key mirror failed: HTTP ${response.status}`);
 const document = await response.json();
 const mirrored = document?.keys?.find((key) => key.id === current.id);
