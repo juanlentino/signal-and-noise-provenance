@@ -30,6 +30,17 @@ for (const entry of entries) {
   }
 }
 
+// Reverse coverage (offline-safe): every record directory must have an index
+// row. The forward checks above validate INDEXED rows; a record committed by
+// the Worker after the last index rebuild has no row at all — invisible to
+// them, and the Worker's ledger commits are all [skip ci], so the online
+// live-slug check below may not run for weeks. Caught live 2026-07-28: two
+// confirmed Notes (0ab100ea, 422f8047) had records but no rows while CI
+// stayed green.
+import { readdirSync } from "node:fs";
+const unindexed = readdirSync(join(root, "notes")).filter((dir) => existsSync(join(root, `notes/${dir}/v1.json`)) && !uids.has(dir));
+if (unindexed.length) throw new Error(`records missing from the index: ${unindexed.join(", ")}; rerun node scripts/build-index.mjs`);
+
 if (!process.argv.includes("--offline")) {
   const response = await fetch("https://juanlentino.com/wp-json/wp/v2/posts?per_page=100&_fields=slug");
   if (!response.ok) throw new Error(`WordPress REST failed: HTTP ${response.status}`);

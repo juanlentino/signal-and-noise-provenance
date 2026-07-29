@@ -347,6 +347,32 @@
       "ots_status": "confirmed",
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 959023
+    },
+    {
+      "note_uid": "0ab100ea-492a-41cd-9b1e-b9d3790c2903",
+      "slug": "two-kinds-of-provenance",
+      "title": "Two kinds of provenance",
+      "published_at": "2026-07-25T15:18:23Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "d009d401cd449c26fb7eb76342b26f234cd404899d9aabe20e76c347b56fadd8",
+      "bitcoin_block": 959577,
+      "ots_status": "confirmed",
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 959577
+    },
+    {
+      "note_uid": "422f8047-09f8-42b6-83b0-6608556ede76",
+      "slug": "the-gate-is-not-the-signature",
+      "title": "The gate is not the signature",
+      "published_at": "2026-07-28T16:53:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "2df77cf3d795479e3c1f89bf313076ab30efd3b0068bb8a505b2f0745eba0b59",
+      "bitcoin_block": 960006,
+      "ots_status": "confirmed",
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 960006
     }
   ]
 }
