@@ -373,6 +373,18 @@
       "ots_status": "confirmed",
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 960006
+    },
+    {
+      "note_uid": "afdc55c0-5899-49f1-b9f4-dc61e897f410",
+      "slug": "provenance-signs-the-claim-not-the-truth",
+      "title": "Provenance signs the claim, not the truth",
+      "published_at": "2026-07-31T19:23:36Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "d9fa7b4f72780f4d06bf8c7ef7a3d54d9843c96d20df1d528ae43462fefe40b8",
+      "ots_status": "pending",
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ]
 }
