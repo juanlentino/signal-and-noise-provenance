@@ -382,9 +382,10 @@
       "anchor": "per-note",
       "version": 1,
       "content_hash": "d9fa7b4f72780f4d06bf8c7ef7a3d54d9843c96d20df1d528ae43462fefe40b8",
-      "ots_status": "pending",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "bitcoin_block": 960455,
+      "ots_status": "confirmed",
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 960455
     }
   ]
 }
