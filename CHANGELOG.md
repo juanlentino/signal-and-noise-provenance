@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-07-24 to 2026-07-31 — Coverage self-heal and rights-signal expansion
+
+- Closed the `index.json` coverage drift that had held CI red since
+  2026-07-21 by rebuilding the index from committed records (#1).
+- Fixed the missing-index-rows bug, added a reverse-coverage guard, and
+  closed a twin whitespace-only false-fallback in page verification (#2).
+- Hardened `verify-key-pins.mjs`'s HTTPS mirror fetch with a named User-Agent,
+  an `Accept` header, and bounded retry (#3).
+- Made the coverage index self-healing in CI: the Worker commits records but
+  never writes index rows, so the verify workflow now rebuilds `index.json`
+  from the committed files on every run and pushes the healed tree on `main`
+  (#4).
+- Added confirmed provenance records for rights-signals `robots-txt` (v1,
+  v2), `tdmrep-json` (v1), `license-xml` (v1), and `tdm-policy` (v1) —
+  the ledger's first four rights-signal anchors, documented in the README.
+- Landed four new confirmed Note records
+  (`0ab100ea…`, `15240786…`, `422f8047…`, `afdc55c0…`), taking the ledger
+  from 24/24 to **28/28** confirmed Note records.
+
 ## 2026-07-20 — Provenance ledger hardening
 
 - Added rendered-page extraction, `verify.mjs --from-page`, exact drift tests,

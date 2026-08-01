@@ -38,8 +38,9 @@ live WordPress note list, and checks every served page for drift.
   public v0 derivations, the domain-separated historical tree algorithm, and
   audit-path inputs; `verify-genesis.mjs` proves them offline.
 - `rights-signals/<slug>/v<version>.{raw,json,ots}` — the same anchoring applied
-  to the site's machine-readable rights files (`/robots.txt`, `/license.xml`,
-  and `/.well-known/tdmrep.json`). `.raw` is the exact served bytes; unlike a
+  to the site's rights signals: the machine-readable `/robots.txt`,
+  `/license.xml`, and `/.well-known/tdmrep.json`, plus the human-readable
+  `/tdm-policy/` page. `.raw` is the exact served bytes; unlike a
   Note record there is no `payload` and no `sn-normalize-v1` pass —
   `content_hash` is the plain SHA-256 of those bytes, the Ed25519 signature is
   over the same bytes, and `.ots` is the detached proof over `content_hash`.
