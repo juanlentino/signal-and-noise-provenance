@@ -15,9 +15,15 @@ const index = JSON.parse(readFileSync(join(root, "index.json"), "utf8"));
 // A 404 here means "this Note has no twin", which is a legitimate answer and
 // must stay distinguishable from "the edge intercepted us" — hence `tolerate`
 // rather than swallowing every non-ok status as absence.
+// Returns the markup, or a string EXPLAINING the absence — never a bare null,
+// which told the caller only "missing" and could not separate an unpublished
+// twin from an edge verdict.
 async function twinRendered(slug) {
-  const { body: doc } = await fetchSite(`https://juanlentino.com/notes/${slug}.json`, { expect: "json", tolerate: [404] });
-  return typeof doc?.content_html === "string" ? doc.content_html : null;
+  const url = `https://juanlentino.com/notes/${slug}.json`;
+  const { response, body: doc } = await fetchSite(url, { expect: "json", tolerate: [404] });
+  if (typeof doc?.content_html === "string") return { html: doc.content_html };
+  const why = doc === null ? "tolerated 404 — no twin published" : `200 but keys [${Object.keys(doc).join(",")}]`;
+  return { why: `${url} → ${why}, cf-ray ${response.headers.get("cf-ray") || "(none)"}` };
 }
 let checked = 0;
 let restFallbacks = 0;
@@ -30,9 +36,9 @@ for (const entry of index.entries) {
   const pageHtml = await fetchSiteHtml(`https://juanlentino.com/notes/${entry.slug}/`);
   let result = await verifyPageRecord({ record, pageHtml });
   if (!result.ok) {
-    const restRendered = await twinRendered(entry.slug);
-    if (typeof restRendered !== "string") throw new Error(`twin content_html missing for ${entry.slug}`);
-    result = await verifyPageRecord({ record, pageHtml, restRendered });
+    const twin = await twinRendered(entry.slug);
+    if (twin.why) throw new Error(`twin content_html missing for ${entry.slug} — ${twin.why}`);
+    result = await verifyPageRecord({ record, pageHtml, restRendered: twin.html });
   }
   if (!result.ok) throw new Error(`served-page drift for ${entry.slug} (content=${result.contentOk}, hash=${result.hashOk}, pageText=${result.pageTextOk})`);
   if (result.source === "public-rest+served-page") restFallbacks += 1;
