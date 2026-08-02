@@ -2,6 +2,19 @@
 
 ## 2026-08-02 — Every site fetch validates its payload, not just its status
 
+**Root cause, confirmed on the runner:** the edge answers GitHub Actions
+requests with a **bot-challenge interstitial carrying HTTP 200** — 12,015
+bytes titled `"One moment, please..."` in place of a ~119,000-byte Note
+(`cf-ray …-SJC`, `cf-cache-status BYPASS`). Neither the status nor the
+content-type can see it. It is intermittent: two runs of the *same commit*
+five seconds apart disagreed (PR passed, push failed). The 2026-07-29
+HTTP 415 and this `<!DOCTYPE html>` JSON parse failure are the same
+mitigation wearing different faces.
+
+- `fetch-site.mjs` now detects the interstitial by `<title>` and by the
+  `cf-mitigated` header, treats it as retryable, and names it in the error
+  instead of blaming the payload.
+
 - Fixed the CI failure on the `10bc8a21…` record push: the edge answered
   `scripts/build-index.mjs`'s REST call with **HTTP 200 carrying an HTML
   body**, which walked through `if (!response.ok)` and died as

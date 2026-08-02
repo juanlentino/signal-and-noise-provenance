@@ -24,8 +24,26 @@
 const VERSION = "1.0";
 const USER_AGENT = `sn-ledger-verify/${VERSION} (+https://github.com/juanlentino/signal-and-noise-provenance)`;
 const ATTEMPTS = 3;
-const BACKOFF_MS = [5000, 10000];
+// Worst case 16s per URL. Deliberately not longer: if the edge is challenging
+// this runner persistently rather than transiently, 29 pages must still fail
+// inside the job's 15-minute timeout instead of hanging to it.
+const BACKOFF_MS = [4000, 12000];
 const SNIPPET_CHARS = 220;
+
+// A bot-challenge interstitial is served as HTTP 200 text/html, so neither the
+// status nor the content-type can see it. Observed on run 30771742915
+// (2026-08-02, cf-ray …-SJC): 12,015 bytes titled "One moment, please..." in
+// place of a ~119,000-byte Note. Match on the title, which is unambiguous, and
+// on cf-mitigated, which Cloudflare sets when it acts on a request.
+const CHALLENGE_TITLES = [
+  /one moment,? please/i,
+  /just a moment/i,
+  /checking your browser/i,
+  /attention required/i,
+  /you have been blocked/i,
+  /please wait\.\.\./i,
+  /verifying you are human/i,
+];
 
 // HTML pages ask for `*/*` — the default undici has always sent — ON PURPOSE.
 // Narrowing it to `text/html` measurably changes the response (119,540 vs
@@ -97,6 +115,10 @@ async function attemptOnce(target, expect, tolerate, fetchImpl) {
   if (!response.ok) return { ok: false, detail: { ...detail, body: await safeText(response), reason: "site fetch failed" } };
 
   const body = await safeText(response);
+  const challenge = challengeVerdict(response, body);
+  if (challenge) {
+    return { ok: false, detail: { ...detail, body, reason: `edge served a bot challenge (${challenge})` } };
+  }
   if (!CONTENT_TYPE_PATTERN[expect].test(contentType || "")) {
     // The 2026-08-02 shape: a 200 the transport check happily accepts, carrying
     // an interstitial/error page instead of the API.
@@ -109,6 +131,18 @@ async function attemptOnce(target, expect, tolerate, fetchImpl) {
   } catch {
     return { ok: false, detail: { ...detail, body, reason: "JSON content-type but unparseable body" } };
   }
+}
+
+/**
+ * Name the challenge if this response is one, else null. Title-based, so it
+ * cannot fire on a real Note whose body merely happens to be short.
+ */
+function challengeVerdict(response, body) {
+  const mitigated = response.headers.get("cf-mitigated");
+  if (mitigated) return `cf-mitigated: ${mitigated}`;
+  const title = body.match(/<title[^>]*>([^<]{0,120})/i)?.[1]?.trim();
+  if (!title) return null;
+  return CHALLENGE_TITLES.some((pattern) => pattern.test(title)) ? `title ${JSON.stringify(title)}` : null;
 }
 
 const safeText = async (response) => {

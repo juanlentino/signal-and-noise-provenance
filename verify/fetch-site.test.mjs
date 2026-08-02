@@ -116,6 +116,58 @@ describe("fetchSite — the error is the diagnosis", () => {
   });
 });
 
+// Captured verbatim from run 30771742915 (2026-08-02, cf-ray …-SJC): the edge
+// answered a GitHub runner's Note-page request with HTTP 200, content-type
+// text/html, 12,015 bytes and this title, where the real page is ~119,000
+// bytes. A content-type guard cannot see it — the challenge IS html.
+const INTERSTITIAL = `<!DOCTYPE html><html><head><title>One moment, please...</title></head><body>Please wait while your request is being verified...</body></html>`;
+
+describe("fetchSite — bot-challenge interstitials", () => {
+  it("rejects the 'One moment, please...' interstitial even though it is valid HTML", async () => {
+    const fetchImpl = scripted(reply(200, "text/html; charset=UTF-8", INTERSTITIAL));
+    const error = await fetchSite("https://juanlentino.com/notes/x/", { expect: "html", fetchImpl, sleep: noSleep })
+      .catch((caught) => caught);
+    expect(error).toBeInstanceOf(SiteFetchError);
+    expect(error.message).toMatch(/challenge|interstitial/i);
+  });
+
+  it("retries past a transient challenge and returns the real page", async () => {
+    const realPage = `<!DOCTYPE html><html><head><title>A Note</title></head><body>${"x".repeat(2000)}</body></html>`;
+    const fetchImpl = scripted(reply(200, "text/html", INTERSTITIAL), reply(200, "text/html", realPage));
+    const { body } = await fetchSite("https://juanlentino.com/notes/x/", { expect: "html", fetchImpl, sleep: noSleep });
+    expect(body).toBe(realPage);
+  });
+
+  it("recognises the other known interstitial titles", async () => {
+    for (const title of ["Just a moment...", "Checking your browser before accessing", "Attention Required! | Cloudflare", "Sorry, you have been blocked"]) {
+      const fetchImpl = scripted(reply(200, "text/html", `<html><head><title>${title}</title></head><body>wait</body></html>`));
+      await expect(fetchSite("https://juanlentino.com/notes/x/", { expect: "html", fetchImpl, sleep: noSleep }))
+        .rejects.toThrow(/challenge/i);
+    }
+  });
+
+  it("treats a cf-mitigated header as a challenge whatever the title says", async () => {
+    const fetchImpl = scripted(reply(200, "text/html", "<html><head><title>A Note</title></head><body>x</body></html>", { "cf-mitigated": "challenge" }));
+    await expect(fetchSite("https://juanlentino.com/notes/x/", { expect: "html", fetchImpl, sleep: noSleep }))
+      .rejects.toThrow(/challenge/i);
+  });
+
+  it("does not mistake a real Note page for a challenge", async () => {
+    const realPage = `<!DOCTYPE html><html><head><title>Provenance as a CFO problem</title></head><body>${"content ".repeat(500)}</body></html>`;
+    const fetchImpl = scripted(reply(200, "text/html", realPage));
+    const { body } = await fetchSite("https://juanlentino.com/notes/x/", { expect: "html", fetchImpl, sleep: noSleep });
+    expect(body).toBe(realPage);
+  });
+
+  it("names the challenge in the error rather than blaming the payload", async () => {
+    const fetchImpl = scripted(reply(200, "text/html", INTERSTITIAL, { "cf-ray": "a250c3d3eadbcf1a-SJC" }));
+    const error = await fetchSite("https://juanlentino.com/notes/x/", { expect: "html", fetchImpl, sleep: noSleep })
+      .catch((caught) => caught);
+    expect(error.message).toContain("a250c3d3eadbcf1a-SJC");
+    expect(error.message).toContain("One moment, please");
+  });
+});
+
 describe("fetchSite — bounded retry", () => {
   it("rides out a single intercepted attempt and succeeds on the retry", async () => {
     const fetchImpl = scripted(
@@ -143,7 +195,9 @@ describe("fetchSite — bounded retry", () => {
     const waits = [];
     const fetchImpl = scripted(reply(200, "text/html", CHALLENGE_HTML));
     await fetchSite("https://juanlentino.com/x", { expect: "json", fetchImpl, sleep: async (ms) => void waits.push(ms) }).catch(() => {});
-    expect(waits).toEqual([5000, 10000]);
+    // Bounded on purpose: 16s worst case per URL keeps a persistently
+    // challenged run inside the job's 15-minute timeout across 29 pages.
+    expect(waits).toEqual([4000, 12000]);
   });
 
   it("does not retry a tolerated status, and reports it as absent", async () => {
