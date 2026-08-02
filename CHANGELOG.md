@@ -1,5 +1,43 @@
 # Changelog
 
+## 2026-08-02 — Every site fetch validates its payload, not just its status
+
+**Root cause, confirmed on the runner:** the edge answers GitHub Actions
+requests with a **bot-challenge interstitial carrying HTTP 200** — 12,015
+bytes titled `"One moment, please..."` in place of a ~119,000-byte Note
+(`cf-ray …-SJC`, `cf-cache-status BYPASS`). Neither the status nor the
+content-type can see it. It is intermittent: two runs of the *same commit*
+five seconds apart disagreed (PR passed, push failed). The 2026-07-29
+HTTP 415 and this `<!DOCTYPE html>` JSON parse failure are the same
+mitigation wearing different faces.
+
+- `fetch-site.mjs` now detects the interstitial by `<title>` and by the
+  `cf-mitigated` header, treats it as retryable, and names it in the error
+  instead of blaming the payload.
+
+- Fixed the CI failure on the `10bc8a21…` record push: the edge answered
+  `scripts/build-index.mjs`'s REST call with **HTTP 200 carrying an HTML
+  body**, which walked through `if (!response.ok)` and died as
+  `SyntaxError: Unexpected token '<', "<!DOCTYPE "...` inside `JSON.parse`.
+  The failure discarded the status, content-type, `cf-ray` and body, so the
+  edge's actual verdict was unrecoverable after the fact.
+- Added `fetch-site.mjs`: one hardened path for every juanlentino.com fetch —
+  a named `User-Agent` and `Accept`, an assertion on the payload **shape**
+  and not merely the status, three bounded spaced attempts, and an error that
+  reports the status, content-type, `cf-ray` and a bounded body snippet.
+  14 offline tests cover both observed interception shapes.
+- Routed all eight site call sites through it — `build-index`,
+  `build-genesis-derivations`, `verify-coverage`, `verify-pages` (page +
+  twin), `verify.mjs` (REST + `--from-page`), and `verify-key-pins`, whose
+  bespoke 2026-07-29 retry this generalises. The `.json` twin's 404 stays a
+  *legitimate absence* via an explicit `tolerate`, so "no twin" and
+  "intercepted" can no longer be confused. Blockstream calls are deliberately
+  untouched: different origin, different failure mode.
+- Rebuilt `index.json` with the `10bc8a21…` row. The failed run never reached
+  its self-heal push, so `verify:coverage` was left red on `main` — the
+  reverse-coverage guard correctly catching the record the index had lost.
+  The ledger stands at **29/29** confirmed Note records.
+
 ## 2026-07-24 to 2026-07-31 — Coverage self-heal and rights-signal expansion
 
 - Closed the `index.json` coverage drift that had held CI red since

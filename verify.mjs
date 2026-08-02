@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { canonicalize } from "./normalize/canonical-json.mjs";
 import { extractPostContent, extractRestRenderedContent } from "./normalize/extract-content.mjs";
+import { fetchSiteHtml, fetchSiteJson } from "./fetch-site.mjs";
 import { normalizeV1 } from "./normalize/sn-normalize-v1.mjs";
 import { bitcoinAttestation, stampedDigest, toHex } from "./verify/ots.mjs";
 
@@ -98,9 +99,7 @@ export async function fetchRestRendered(pageUrl) {
   const endpoint = new URL("/wp-json/wp/v2/posts", url.origin);
   endpoint.searchParams.set("slug", slug);
   endpoint.searchParams.set("_fields", "content");
-  const response = await fetch(endpoint);
-  if (!response.ok) throw new Error(`public REST fetch failed: HTTP ${response.status}`);
-  const posts = await response.json();
+  const posts = await fetchSiteJson(endpoint);
   if (!Array.isArray(posts) || posts.length !== 1 || typeof posts[0]?.content?.rendered !== "string") {
     throw new Error(`public REST did not return exactly one rendered post for ${slug}`);
   }
@@ -155,9 +154,7 @@ async function main() {
   console.log(`  4) bitcoin       ${bc.ok ? `✓ merkle root matches block ${bc.height} on-chain` : "✗ " + (bc.reason || `merkle mismatch at block ${bc.height}`)}`);
   let page = { ok: true };
   if (pageUrl) {
-    const response = await fetch(pageUrl);
-    if (!response.ok) throw new Error(`page fetch failed: HTTP ${response.status}`);
-    const pageHtml = await response.text();
+    const pageHtml = await fetchSiteHtml(pageUrl);
     page = await verifyPageRecord({ record, pageHtml });
     if (!page.ok) page = await verifyPageRecord({ record, pageHtml, restRendered: await fetchRestRendered(pageUrl) });
     console.log(`  5) served page   ${page.ok ? `✓ public ${page.source} reproduces the signed content and hash` : `✗ DRIFT (content=${page.contentOk}, hash=${page.hashOk}, pageText=${page.pageTextOk})`}`);

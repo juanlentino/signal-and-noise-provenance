@@ -69,6 +69,39 @@ live WordPress note list, and checks every served page for drift.
   `bitcoin_block` backfill has run (for Notes confirmed before the Worker began
   recording the block).
 
+## CI and the edge
+
+Verification is deliberately **live**: the set of *public* Notes is only
+knowable from the site, and comparing it against the ledger is the whole point
+of the reverse-coverage guard. That puts ~60 requests per run against
+juanlentino.com from a GitHub Actions runner.
+
+The edge intermittently answers those runners with a **bot-challenge
+interstitial carrying HTTP 200** — ~12 KB titled `"One moment, please..."`
+where a real Note is ~119 KB. Because it is a genuine `200` and genuine
+`text/html`, neither a status check nor a content-type check can see it. It has
+also appeared as `HTTP 415` (2026-07-29) and as `<!DOCTYPE html>` on a JSON
+endpoint (2026-08-02). It is genuinely intermittent: the `pull_request` and
+`push` runs of one commit, five seconds apart, have disagreed.
+
+`fetch-site.mjs` is the single hardened path for every site fetch. It sends a
+named `User-Agent`, asserts the payload **shape** rather than the status alone,
+recognises the interstitial by `<title>` and by `cf-mitigated`, retries a
+bounded 4s/12s, and on exhaustion reports the status, content-type, `cf-ray`
+and a body snippet — so a recurrence is diagnosable from the CI log alone.
+
+**The durable fix is a WAF rule, not code.** In Cloudflare →
+Security → WAF → Custom rules:
+
+```
+If    http.user_agent contains "sn-ledger-verify"
+Then  Skip → All remaining custom rules, Super Bot Fight Mode
+```
+
+Optionally scope it to `/wp-json/wp/v2/posts`, `/notes/*` and `/.well-known/*`.
+That is what the named User-Agent exists for. The retry logic stays regardless —
+it makes a challenge survivable, not impossible.
+
 ## Why "bot-written"
 
 The write path is a scoped, fine-grained GitHub PAT

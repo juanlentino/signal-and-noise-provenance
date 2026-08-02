@@ -36,11 +36,19 @@ jobs:
       # Self-heal (2026-07-29): the Worker commits records but never index
       # rows, so every new anchor used to red the coverage guard until a
       # human ran build-index (two rows drifted unseen Jul 25-28). Rebuild
-      # from the committed files — deterministic and offline — and, on main
-      # only, push the healed index ([skip ci]: THIS run then verifies the
-      # healed tree and its verdict attaches to the record push). Rebased
-      # push tolerates a Worker commit racing in between; index.json has a
-      # single writer (this step + humans), so conflicts cannot occur on it.
+      # the index and, on main only, push it ([skip ci]: THIS run then
+      # verifies the healed tree and its verdict attaches to the record
+      # push). Rebased push tolerates a Worker commit racing in between;
+      # index.json has a single writer (this step + humans), so conflicts
+      # cannot occur on it.
+      #
+      # NOT offline (corrected 2026-08-02 — the old comment claimed it was,
+      # which is why an edge failure here read as inexplicable): the step
+      # makes 1 + N live calls to juanlentino.com, because the set of PUBLIC
+      # notes is only knowable from the site and comparing it against the
+      # ledger IS the reverse-coverage guard. Those calls go through
+      # fetch-site.mjs, which validates the payload shape and reports the
+      # status, content-type and cf-ray when the edge intercepts.
       - name: Rebuild coverage index from committed records
         run: node scripts/build-index.mjs
       - name: Push the healed index (main only)
