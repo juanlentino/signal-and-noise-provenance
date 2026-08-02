@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "A German court ruled on July 31, 2026 that an AI music company infringed copyright, and most of the coverage compressed the decision into one sentence about paying for licenses. The ruling rests on two findings that arrived by different routes. One concerns what the model does. The other concerns how the catalog was obtained. Both supported the same result, and only one of them will still be available to the next plaintiff.\n\nThe finding that expires\n\nSix protected works were found to be retained inside the model in reproducible form rather than merely analyzed in passing. That is what pulled the text-and-data-mining exception off the table. The same fact sank the fair use argument covering training conducted on US soil, since earlier US decisions had accepted transformative use partly on the ground that training material never surfaced in outputs. Here, plain prompts returned audio substantially similar to the originals. A venue rule for collecting societies let a German court reach conduct that happened entirely in the United States, and apply US law to it.\n\nEstablishing that took prompting a live system until it reproduced something recognizable, work by work. Six songs were enough for liability. The repertoire standing behind them runs into the millions, and each one would need the same treatment.\n\nSuppression is already the roadmap\n\nMemorization is a failure mode. Labs already spend real effort suppressing it, because a model that regurgitates its training data performs worse and leaks whatever it was fed. Deduplication and output filtering push that direction for reasons predating any of this litigation. Commercial incentive and legal incentive now recommend the same fix.\n\nSo the evidence that won this case is the evidence a competent defendant removes next. The burden on a plaintiff grows with every release that generalizes more cleanly, until probing returns nothing at all. The ingestion is identical and there is nothing left to point at.\n\nThis is the argument against detection arriving in a courtroom rather than a royalty dispute, and it turns on the same distinction that separates a probability score from a signature. The measurement degrades as the thing measured improves. A verdict resting on catching a model in the act carries an expiration date nobody can read in advance.\n\nWhat acquisition leaves behind\n\nThe second finding does not behave this way. However good the model becomes, files were still taken from a platform in a way that required getting around a protection measure, on dates, at volumes something somewhere recorded. Conduct in the past does not improve. No training run reaches back and revises it.\n\nWhat makes that evidence durable is where it lives. It is not a property of the artifact under examination but a record of an event, written while the event was happening, held by parties who were not the defendant. Server logs, platform telemetry, procurement trails, internal messages. A later system cannot argue any of it out of existence, which is why reading a decision for its evidentiary basis rather than its headline usually says more about what comes next.\n\nIf proving what a model consumed gets harder every release cycle, the claims that survive are the ones anchored in records made at the moment of ingestion, by whoever was holding the file. Almost nobody makes those records deliberately. They exist as a byproduct of infrastructure built for unrelated reasons, and byproducts can be switched off.",
+    "note_uid": "10bc8a21-fe13-41b4-a6a5-f63ed3597e7e",
+    "parent": null,
+    "published_at": "2026-08-02T21:43:15Z",
+    "title": "Better models erase the evidence",
+    "version": 1
+  },
+  "content_hash": "9267f9a363baf3504adc76e2f16a82e2bd2a8c1d6d9da0d07452e53c7d801bbe",
+  "signature": "sVRnwKDo1ON2/r76b7IA3MHy6D7FRbSP74YHBgzs5iPR2ADPA8Q96KZUWQytvZgxO/IWQFQvd10ji/0QWU/yDg==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
