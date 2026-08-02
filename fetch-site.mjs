@@ -27,7 +27,14 @@ const ATTEMPTS = 3;
 const BACKOFF_MS = [5000, 10000];
 const SNIPPET_CHARS = 220;
 
-const ACCEPT = { json: "application/json", html: "text/html" };
+// HTML pages ask for `*/*` — the default undici has always sent — ON PURPOSE.
+// Narrowing it to `text/html` measurably changes the response (119,540 vs
+// 119,181 bytes for the same Note), so `Accept` participates in the edge cache
+// key here; a politeness header would quietly move every page fetch onto a
+// different, colder cache variant. We validate the content-type we RECEIVE
+// either way, so nothing is lost by asking broadly. JSON keeps an explicit
+// Accept: that is the request shape verify-key-pins has used since 2026-07-29.
+const ACCEPT = { json: "application/json", html: "*/*" };
 const CONTENT_TYPE_PATTERN = { json: /^application\/(?:[\w.+-]+\+)?json\b/i, html: /^text\/html\b/i };
 
 export class SiteFetchError extends Error {

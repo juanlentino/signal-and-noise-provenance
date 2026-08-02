@@ -42,10 +42,21 @@ describe("fetchSite — identification", () => {
     expect(init.headers.Accept).toBe("application/json");
   });
 
-  it("asks for HTML when HTML is expected", async () => {
+  // Regression guard (2026-08-02): narrowing Accept to text/html changed the
+  // served bytes for the same Note (119,540 vs 119,181), i.e. Accept is part
+  // of the edge cache key for pages. Page fetches must keep asking for */* —
+  // the shape that has worked for months — and rely on validating the
+  // content-type they RECEIVE instead.
+  it("does not narrow Accept on page fetches, to leave the cache variant alone", async () => {
     const fetchImpl = scripted(reply(200, "text/html; charset=UTF-8", "<html></html>"));
     await fetchSite("https://juanlentino.com/notes/x/", { expect: "html", fetchImpl, sleep: noSleep });
-    expect(fetchImpl.calls[0].init.headers.Accept).toBe("text/html");
+    expect(fetchImpl.calls[0].init.headers.Accept).toBe("*/*");
+  });
+
+  it("still rejects a non-HTML payload even though it asked for */*", async () => {
+    const fetchImpl = scripted(reply(200, "application/json", "{}"));
+    await expect(fetchSite("https://juanlentino.com/notes/x/", { expect: "html", fetchImpl, sleep: noSleep }))
+      .rejects.toBeInstanceOf(SiteFetchError);
   });
 });
 
