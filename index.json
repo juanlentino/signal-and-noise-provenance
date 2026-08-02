@@ -386,6 +386,19 @@
       "ots_status": "confirmed",
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 960455
+    },
+    {
+      "note_uid": "10bc8a21-fe13-41b4-a6a5-f63ed3597e7e",
+      "slug": "better-models-erase-the-evidence",
+      "title": "Better models erase the evidence",
+      "published_at": "2026-08-02T21:43:15Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "9267f9a363baf3504adc76e2f16a82e2bd2a8c1d6d9da0d07452e53c7d801bbe",
+      "bitcoin_block": 960776,
+      "ots_status": "confirmed",
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 960776
     }
   ]
 }

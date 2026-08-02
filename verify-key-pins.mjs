@@ -3,6 +3,7 @@ import { resolveTxt } from "node:dns/promises";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { fetchSiteJson } from "./fetch-site.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const history = JSON.parse(readFileSync(join(root, "keys/key-history.json"), "utf8"));
@@ -15,26 +16,13 @@ if (txtAnswers.length !== 1 || txtAnswers[0] !== expectedTxt) {
   throw new Error(`DNS key pin mismatch: ${JSON.stringify(txtAnswers)}`);
 }
 
-// Explicit headers + bounded retry (2026-07-29): from GitHub runners the
-// edge intermittently answers a bare default-UA fetch with HTTP 415 (seen on
-// the 01:00 UTC main run minutes after the same check passed on the PR).
-// A named UA + Accept matches how every other verifier leg identifies
-// itself; two spaced retries ride out the transient edge verdict, while a
-// consistent failure still fails loudly.
-async function fetchKeyMirror() {
-  let last;
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    last = await fetch("https://juanlentino.com/.well-known/provenance-keys.json", {
-      headers: { "Accept": "application/json", "User-Agent": "sn-ledger-verify/1.0 (+https://github.com/juanlentino/signal-and-noise-provenance)" },
-    });
-    if (last.ok) return last;
-    if (attempt < 3) await new Promise((r) => setTimeout(r, attempt * 5000));
-  }
-  return last;
-}
-const response = await fetchKeyMirror();
-if (!response.ok) throw new Error(`HTTPS key mirror failed: HTTP ${response.status}`);
-const document = await response.json();
+// Named UA + Accept + bounded retry originated here (2026-07-29), after the
+// edge answered a bare default-UA fetch from a GitHub runner with HTTP 415.
+// That fix stayed local to this file; on 2026-08-02 the same edge behaviour
+// resurfaced as a 200 carrying HTML on an unhardened leg. The pattern now
+// lives in fetch-site.mjs so every leg gets it — including the payload-shape
+// assertion the original lacked.
+const document = await fetchSiteJson("https://juanlentino.com/.well-known/provenance-keys.json");
 const mirrored = document?.keys?.find((key) => key.id === current.id);
 if (document?.schema !== "sn-provenance-keys-v1"
   || document?.domain !== "juanlentino.com"

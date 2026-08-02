@@ -2,6 +2,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { fetchSiteJson } from "./fetch-site.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const index = JSON.parse(readFileSync(join(root, "index.json"), "utf8"));
@@ -42,9 +43,10 @@ const unindexed = readdirSync(join(root, "notes")).filter((dir) => existsSync(jo
 if (unindexed.length) throw new Error(`records missing from the index: ${unindexed.join(", ")}; rerun node scripts/build-index.mjs`);
 
 if (!process.argv.includes("--offline")) {
-  const response = await fetch("https://juanlentino.com/wp-json/wp/v2/posts?per_page=100&_fields=slug");
-  if (!response.ok) throw new Error(`WordPress REST failed: HTTP ${response.status}`);
-  const live = await response.json();
+  // Same unguarded shape that broke build-index.mjs on 2026-08-02 (an `ok`
+  // status is not a valid payload); routed through fetchSite before it could
+  // fire here too and be misread as coverage drift.
+  const live = await fetchSiteJson("https://juanlentino.com/wp-json/wp/v2/posts?per_page=100&_fields=slug");
   const gaps = live.map((post) => post.slug).filter((slug) => !slugs.has(slug));
   const stale = entries.map((entry) => entry.slug).filter((slug) => !live.some((post) => post.slug === slug));
   if (gaps.length || stale.length) throw new Error(`coverage drift: gaps=${gaps.join(",") || "none"}; stale=${stale.join(",") || "none"}`);

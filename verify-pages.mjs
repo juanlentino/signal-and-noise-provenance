@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { verifyPageRecord } from "./verify.mjs";
+import { fetchSite, fetchSiteHtml } from "./fetch-site.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const index = JSON.parse(readFileSync(join(root, "index.json"), "utf8"));
@@ -11,20 +12,22 @@ const index = JSON.parse(readFileSync(join(root, "index.json"), "utf8"));
 // anonymous callers, killing the old public-REST fallback site-wide. The
 // sanctioned machine-readable copy is the Note's .json twin, whose
 // content_html carries the same rendered markup with source whitespace.
+// A 404 here means "this Note has no twin", which is a legitimate answer and
+// must stay distinguishable from "the edge intercepted us" — hence `tolerate`
+// rather than swallowing every non-ok status as absence.
 async function twinRendered(slug) {
-  const response = await fetch(`https://juanlentino.com/notes/${slug}.json`);
-  if (!response.ok) return null;
-  const doc = await response.json();
-  return typeof doc.content_html === "string" ? doc.content_html : null;
+  const { body: doc } = await fetchSite(`https://juanlentino.com/notes/${slug}.json`, { expect: "json", tolerate: [404] });
+  return typeof doc?.content_html === "string" ? doc.content_html : null;
 }
 let checked = 0;
 let restFallbacks = 0;
 for (const entry of index.entries) {
   if (entry.version < 1) throw new Error(`no standalone record for ${entry.slug}`);
   const record = JSON.parse(readFileSync(join(root, `notes/${entry.note_uid}/v${entry.version}.json`), "utf8"));
-  const response = await fetch(`https://juanlentino.com/notes/${entry.slug}/`);
-  if (!response.ok) throw new Error(`page fetch failed for ${entry.slug}`);
-  const pageHtml = await response.text();
+  // Demanding text/html matters here: an interstitial or error page would
+  // otherwise reach verifyPageRecord and be reported as "served-page drift",
+  // blaming the Note for an edge verdict.
+  const pageHtml = await fetchSiteHtml(`https://juanlentino.com/notes/${entry.slug}/`);
   let result = await verifyPageRecord({ record, pageHtml });
   if (!result.ok) {
     const restRendered = await twinRendered(entry.slug);

@@ -10,18 +10,15 @@ import { fileURLToPath } from "node:url";
 import { canonicalize } from "../normalize/canonical-json.mjs";
 import { leafHash } from "../normalize/merkle-v1.mjs";
 import { normalizeV1 } from "../normalize/sn-normalize-v1.mjs";
+import { fetchSiteHtml, fetchSiteJson } from "../fetch-site.mjs";
 
 const here = join(dirname(fileURLToPath(import.meta.url)), "..");
 const genesis = JSON.parse(readFileSync(join(here, "genesis/2026-07-09-root.json"), "utf8"));
-const response = await fetch("https://juanlentino.com/wp-json/wp/v2/posts?per_page=100&_fields=date,slug,link,title,content");
-if (!response.ok) throw new Error(`WordPress REST failed: HTTP ${response.status}`);
-const posts = await response.json();
+const posts = await fetchSiteJson("https://juanlentino.com/wp-json/wp/v2/posts?per_page=100&_fields=date,slug,link,title,content");
 const byUid = new Map();
 
 for (const post of posts) {
-  const pageResponse = await fetch(post.link);
-  if (!pageResponse.ok) throw new Error(`page fetch failed for ${post.slug}: HTTP ${pageResponse.status}`);
-  const pageHtml = await pageResponse.text();
+  const pageHtml = await fetchSiteHtml(post.link);
   const uid = pageHtml.match(/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}/)?.[0];
   const published = pageHtml.match(/<meta\s+property="article:published_time"\s+content="([^"]+)"/i)?.[1];
   if (!uid || !published) throw new Error(`public provenance metadata missing for ${post.slug}`);
