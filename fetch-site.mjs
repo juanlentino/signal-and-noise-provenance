@@ -72,6 +72,13 @@ const CONTENT_TYPE_PATTERN = { json: /^application\/(?:[\w.+-]+\+)?json\b/i, htm
 // ---------------------------------------------------------------------------
 const stats = { requests: 0, attempts: 0, challenges: 0, recovered: 0, failed: 0, events: [] };
 
+// The unit tests drive dozens of SYNTHETIC challenges through this module. If
+// those printed, a CI log would show ~50 "[challenge] … RECOVERED" lines and a
+// reader would reasonably conclude the edge had challenged the run — the
+// evidence channel would be reporting its own fixtures as findings. Under
+// vitest, count silently; the assertions read the counters directly.
+const announce = (line) => { if (!process.env.VITEST) console.warn(line); };
+
 /** Snapshot of this process's fetch telemetry. */
 export const fetchStats = () => ({ ...stats, events: stats.events.map((event) => ({ ...event })) });
 export const resetFetchStats = () => Object.assign(stats, { requests: 0, attempts: 0, challenges: 0, recovered: 0, failed: 0, events: [] });
@@ -156,7 +163,7 @@ export async function fetchSite(url, { expect, tolerate = [], fetchImpl = fetch,
       // Say it AT THE MOMENT it happens, not only in the summary: if the run
       // later dies for an unrelated reason, this line still records that the
       // edge interfered.
-      console.warn(`[challenge] ${target} attempt ${attempt}/${ATTEMPTS} — ${outcome.challenge.title ? JSON.stringify(outcome.challenge.title) : outcome.challenge.why}, ${outcome.challenge.bytes} bytes, cf-ray ${outcome.challenge.ray || "(none)"}`);
+      announce(`[challenge] ${target} attempt ${attempt}/${ATTEMPTS} — ${outcome.challenge.title ? JSON.stringify(outcome.challenge.title) : outcome.challenge.why}, ${outcome.challenge.bytes} bytes, cf-ray ${outcome.challenge.ray || "(none)"}`);
       captureChallengeBody(target, attempt, outcome.challenge);
     }
 
@@ -164,7 +171,7 @@ export async function fetchSite(url, { expect, tolerate = [], fetchImpl = fetch,
       if (firstChallenge) {
         stats.recovered += 1;
         firstChallenge.recoveredOnAttempt = attempt;
-        console.warn(`[challenge] ${target} — RECOVERED on attempt ${attempt}; the retry did its job`);
+        announce(`[challenge] ${target} — RECOVERED on attempt ${attempt}; the retry did its job`);
       }
       return { response: outcome.response, body: outcome.body, raw: outcome.raw };
     }
