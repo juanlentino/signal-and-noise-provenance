@@ -114,29 +114,47 @@ recognises the interstitial by `<title>` and by `cf-mitigated`, retries a
 bounded 4s/12s, and on exhaustion reports the status, content-type, `cf-ray`
 and a body snippet — so a recurrence is diagnosable from the CI log alone.
 
-**The durable fix is an allowlist somewhere, not code — but WHERE is not yet
-settled, and guessing wrong costs a wasted change.** The evidence says the
-interstitial is probably NOT Cloudflare's edge challenge:
+**Cloudflare is RULED OUT (owner-verified 2026-08-03).** In the zone's
+Security -> Bots panel, Bot Fight Mode is **off** and AI-bot blocking is set to
+**"Allow (do not block)"**. Cloudflare's bot mitigation is not running, so a
+Cloudflare WAF skip rule — recommended in an earlier revision of this file —
+would have been a no-op. Do not re-investigate Cloudflare.
 
-| Observed | Implication |
-|---|---|
-| `HTTP 200` | a Cloudflare managed challenge returns `403` |
-| no `cf-mitigated` header | Cloudflare sets it when *it* acts on a request |
-| `cf-cache-status: BYPASS` | the request was passed *toward the origin* |
-| `x-cache`, `server-timing: wp-total` on normal responses | an origin-side cache/WordPress layer is in play |
-| title `"One moment, please..."` | Cloudflare's interstitial reads `"Just a moment..."` |
+**CONFIRMED: Imunify360 bot-protection on the Cloudways host.** It named
+itself. Run 30775546845 (2026-08-03, `cf-ray …-SEA`) got this on the `.json`
+twin, as HTTP 200 `application/json`:
 
-That points at origin/host-level bot protection (the Cloudways layer) rather
-than Cloudflare. **Do not add a Cloudflare WAF skip rule on this evidence
-alone** — if the challenge is origin-served it will be a no-op, and the
-no-op will read as a failed diagnosis.
+```json
+{"message":"Access denied by Imunify360 bot-protection.
+            IPs used for automation should be whitelisted"}
+```
 
-**Settle it first, for free.** A captured `challenge-evidence-<run_id>`
-artifact contains the interstitial verbatim, and it names its own system in
-its markup. Read one, then allowlist the `sn-ledger-verify` User-Agent in
-*that* system — Cloudflare WAF custom rules if the body is Cloudflare's,
-the host's bot-protection settings if it is not. That is what the named
-User-Agent exists for either way.
+So the same product answers in two shapes depending on what is asked for: an
+HTML splash titled *"One moment, please..."* for page requests, and this JSON
+envelope for `.json` ones. Both are HTTP 200. Also ruled out along the way:
+Cloudflare (above) and this project's own plugin and theme (no interstitial
+markup in either).
+
+**It is not visible in the Cloudways dashboard** — do not hunt for a toggle.
+Note also that the message asks for **IPs** to be whitelisted, and GitHub
+Actions publishes thousands of rotating CIDRs, so an IP allowlist is not
+practical. The support request should lead with the User-Agent and let
+Cloudways say whether Imunify360 can match on it:
+
+> Requests to `juanlentino.com` from GitHub Actions runners intermittently
+> receive `{"message":"Access denied by Imunify360 bot-protection. IPs used
+> for automation should be whitelisted"}` with HTTP 200, and an HTML splash
+> titled "One moment, please..." on page requests. This is automated
+> verification of my own site, identifying itself as
+> `sn-ledger-verify/1.0 (+https://github.com/juanlentino/signal-and-noise-provenance)`.
+> IP allowlisting is impractical — GitHub Actions egress rotates across
+> thousands of CIDRs. Can Imunify360 allowlist by User-Agent, or exempt
+> `/wp-json/wp/v2/posts`, `/notes/*` and `/.well-known/*` for this application?
+
+A captured `challenge-evidence-<run_id>` artifact contains the interstitial
+verbatim and names its own system in its markup. None has been captured yet
+(capture landed after the last challenge). Attach one to the support request
+when it appears — it turns the ticket into a one-look confirmation.
 
 The retry logic stays regardless — it makes a challenge survivable, not
 impossible.

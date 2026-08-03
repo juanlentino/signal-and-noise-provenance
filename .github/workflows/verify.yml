@@ -27,8 +27,12 @@ jobs:
     # A bot challenge cannot be reproduced from a residential IP — it is
     # ASN-based — so the only way to hold a REAL interstitial rather than one
     # hand-written from a log line is for CI to keep the one it was served.
+    # NOT a dotted directory: actions/upload-artifact defaults
+    # include-hidden-files to false and silently skips anything whose path has
+    # a dot-prefixed segment. The first real capture (run 30775546845) wrote
+    # its file and the upload step still reported success with nothing in it.
     env:
-      SN_CHALLENGE_CAPTURE_DIR: ${{ github.workspace }}/.challenge-evidence
+      SN_CHALLENGE_CAPTURE_DIR: ${{ github.workspace }}/challenge-evidence
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -105,6 +109,8 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: challenge-evidence-${{ github.run_id }}
-          path: .challenge-evidence/
+          path: challenge-evidence/
+          # 'ignore' is right — most runs are unchallenged and have nothing to
+          # upload — but it is also what hid the misconfiguration above.
           if-no-files-found: ignore
           retention-days: 30
