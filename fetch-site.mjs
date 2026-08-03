@@ -253,7 +253,12 @@ function captureChallengeBody(url, attempt, challenge) {
  */
 export function captureEvidence(tag, url, body, ext = "txt") {
   const dir = process.env.SN_CHALLENGE_CAPTURE_DIR;
-  if (!dir) return;
+  // Same reason `announce` is silent under vitest, and missed here the first
+  // time: the suite drives dozens of SYNTHETIC interstitials through this
+  // module, and run 30775705768 duly uploaded 20 of them alongside the single
+  // real one. An evidence artifact full of fixtures is worse than no artifact
+  // — a reader cannot tell which body the edge actually served.
+  if (!dir || process.env.VITEST) return;
   try {
     mkdirSync(dir, { recursive: true });
     const safe = String(url).replace(/[^a-z0-9]+/gi, "-").slice(-60);
