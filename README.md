@@ -120,37 +120,36 @@ Security -> Bots panel, Bot Fight Mode is **off** and AI-bot blocking is set to
 Cloudflare WAF skip rule — recommended in an earlier revision of this file —
 would have been a no-op. Do not re-investigate Cloudflare.
 
-**The challenge is origin-served.** Ruled out so far: Cloudflare (above), and
-this project's own plugin and theme (no interstitial markup in either). That
-leaves the Cloudways host stack. The exact product is **not confirmed** — one
-candidate is Imunify360 WebShield, whose splash is titled *"One moment,
-please..."* with a `wsidchk` form and which Cloudways adopted after retiring
-Malcare bot protection — but it is **not visible anywhere in the Cloudways
-dashboard**, so it cannot be confirmed or changed from there. Do not spend
-more time hunting for a toggle. The observable facts, which are what matter:
+**CONFIRMED: Imunify360 bot-protection on the Cloudways host.** It named
+itself. Run 30775546845 (2026-08-03, `cf-ray …-SEA`) got this on the `.json`
+twin, as HTTP 200 `application/json`:
 
-| Observed | Implication |
-|---|---|
-| `HTTP 200` | a Cloudflare managed challenge returns `403` |
-| no `cf-mitigated` header | Cloudflare sets it when *it* acts on a request |
-| `cf-cache-status: BYPASS` | the request was passed *toward the origin* |
-| `x-cache`, `server-timing: wp-total` on normal responses | an origin-side cache/WordPress layer is in play |
-| title `"One moment, please..."` | Cloudflare's interstitial reads `"Just a moment..."` |
+```json
+{"message":"Access denied by Imunify360 bot-protection.
+            IPs used for automation should be whitelisted"}
+```
 
-**The fix is a Cloudways support request**, and it does not require knowing
-which product is responsible — describe the behaviour and let them identify it:
+So the same product answers in two shapes depending on what is asked for: an
+HTML splash titled *"One moment, please..."* for page requests, and this JSON
+envelope for `.json` ones. Both are HTTP 200. Also ruled out along the way:
+Cloudflare (above) and this project's own plugin and theme (no interstitial
+markup in either).
+
+**It is not visible in the Cloudways dashboard** — do not hunt for a toggle.
+Note also that the message asks for **IPs** to be whitelisted, and GitHub
+Actions publishes thousands of rotating CIDRs, so an IP allowlist is not
+practical. The support request should lead with the User-Agent and let
+Cloudways say whether Imunify360 can match on it:
 
 > Requests to `juanlentino.com` from GitHub Actions runners intermittently
-> receive an HTML interstitial titled "One moment, please..." with HTTP 200
-> (~12 KB, in place of a ~119 KB page) instead of the requested page or REST
-> response. Cloudflare bot mitigation is off on this zone and the responses
-> carry no `cf-mitigated` header, so this is server-side. Please identify what
-> is serving it and allowlist the User-Agent `sn-ledger-verify` for this
-> application.
-
-Allowlist by **User-Agent, not IP** — GitHub Actions publishes thousands of
-rotating CIDRs, which is the whole reason the verifier identifies itself by
-name.
+> receive `{"message":"Access denied by Imunify360 bot-protection. IPs used
+> for automation should be whitelisted"}` with HTTP 200, and an HTML splash
+> titled "One moment, please..." on page requests. This is automated
+> verification of my own site, identifying itself as
+> `sn-ledger-verify/1.0 (+https://github.com/juanlentino/signal-and-noise-provenance)`.
+> IP allowlisting is impractical — GitHub Actions egress rotates across
+> thousands of CIDRs. Can Imunify360 allowlist by User-Agent, or exempt
+> `/wp-json/wp/v2/posts`, `/notes/*` and `/.well-known/*` for this application?
 
 A captured `challenge-evidence-<run_id>` artifact contains the interstitial
 verbatim and names its own system in its markup. None has been captured yet
