@@ -120,11 +120,14 @@ Security -> Bots panel, Bot Fight Mode is **off** and AI-bot blocking is set to
 Cloudflare WAF skip rule — recommended in an earlier revision of this file —
 would have been a no-op. Do not re-investigate Cloudflare.
 
-**The challenge is origin-served, and the strong candidate is Imunify360
-WebShield on the Cloudways host.** Cloudways retired the Malcare bot-protection
-integration in favour of Imunify360, whose WebShield splash is titled
-*"One moment, please..."* and carries a `wsidchk` form — matching the
-interstitial byte-for-byte in title, and matching every header we observed:
+**The challenge is origin-served.** Ruled out so far: Cloudflare (above), and
+this project's own plugin and theme (no interstitial markup in either). That
+leaves the Cloudways host stack. The exact product is **not confirmed** — one
+candidate is Imunify360 WebShield, whose splash is titled *"One moment,
+please..."* with a `wsidchk` form and which Cloudways adopted after retiring
+Malcare bot protection — but it is **not visible anywhere in the Cloudways
+dashboard**, so it cannot be confirmed or changed from there. Do not spend
+more time hunting for a toggle. The observable facts, which are what matter:
 
 | Observed | Implication |
 |---|---|
@@ -134,12 +137,20 @@ interstitial byte-for-byte in title, and matching every header we observed:
 | `x-cache`, `server-timing: wp-total` on normal responses | an origin-side cache/WordPress layer is in play |
 | title `"One moment, please..."` | Cloudflare's interstitial reads `"Just a moment..."` |
 
-**The fix is a host-side allowlist**, which on Cloudways means a support
-request: ask them to allowlist the `sn-ledger-verify` User-Agent in
-Imunify360 WebShield for this domain. Also check Application Management for a
-legacy Bot Protection toggle, which some accounts still carry. Allowlist by
-User-Agent rather than by IP — GitHub Actions publishes thousands of CIDRs
-that rotate, which is why the verifier identifies itself by name at all.
+**The fix is a Cloudways support request**, and it does not require knowing
+which product is responsible — describe the behaviour and let them identify it:
+
+> Requests to `juanlentino.com` from GitHub Actions runners intermittently
+> receive an HTML interstitial titled "One moment, please..." with HTTP 200
+> (~12 KB, in place of a ~119 KB page) instead of the requested page or REST
+> response. Cloudflare bot mitigation is off on this zone and the responses
+> carry no `cf-mitigated` header, so this is server-side. Please identify what
+> is serving it and allowlist the User-Agent `sn-ledger-verify` for this
+> application.
+
+Allowlist by **User-Agent, not IP** — GitHub Actions publishes thousands of
+rotating CIDRs, which is the whole reason the verifier identifies itself by
+name.
 
 A captured `challenge-evidence-<run_id>` artifact contains the interstitial
 verbatim and names its own system in its markup. None has been captured yet
