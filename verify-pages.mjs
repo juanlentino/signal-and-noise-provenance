@@ -3,7 +3,8 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { verifyPageRecord } from "./verify.mjs";
-import { fetchSite, fetchSiteHtml } from "./fetch-site.mjs";
+import { fetchSite, fetchSiteHtml, installEvidenceReport } from "./fetch-site.mjs";
+installEvidenceReport("verify:pages");
 
 const root = dirname(fileURLToPath(import.meta.url));
 const index = JSON.parse(readFileSync(join(root, "index.json"), "utf8"));

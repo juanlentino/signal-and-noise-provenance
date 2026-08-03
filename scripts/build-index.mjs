@@ -2,7 +2,8 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { fetchSite, fetchSiteJson } from "../fetch-site.mjs";
+import { fetchSite, fetchSiteJson, installEvidenceReport } from "../fetch-site.mjs";
+installEvidenceReport("build-index");
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const genesisRecord = JSON.parse(readFileSync(join(root, "genesis/2026-07-09-root.json"), "utf8"));

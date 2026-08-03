@@ -3,7 +3,8 @@ import { resolveTxt } from "node:dns/promises";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { fetchSiteJson } from "./fetch-site.mjs";
+import { fetchSiteJson, installEvidenceReport } from "./fetch-site.mjs";
+installEvidenceReport("verify:key-pins");
 
 const root = dirname(fileURLToPath(import.meta.url));
 const history = JSON.parse(readFileSync(join(root, "keys/key-history.json"), "utf8"));

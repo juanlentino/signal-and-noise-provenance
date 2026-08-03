@@ -24,6 +24,11 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # A bot challenge cannot be reproduced from a residential IP — it is
+    # ASN-based — so the only way to hold a REAL interstitial rather than one
+    # hand-written from a log line is for CI to keep the one it was served.
+    env:
+      SN_CHALLENGE_CAPTURE_DIR: ${{ github.workspace }}/.challenge-evidence
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -74,3 +79,32 @@ jobs:
       - run: npm run verify:key-pins
       - run: npm run verify:coverage
       - run: npm run verify:pages
+      # `npm test` reports "N passed | 12 skipped". Those 12 are the live-PHP
+      # cross-checks, which need the plugin source and are absent here BY
+      # DESIGN. Assert that is the ONLY reason anything skipped: without this,
+      # a broken guard could silently skip real tests and the run would still
+      # read as green.
+      - name: Assert the only skipped tests are the PHP-oracle cross-checks
+        run: |
+          npx vitest run --reporter=json --outputFile=.vitest.json >/dev/null 2>&1 || true
+          node -e '
+            const r = require("./.vitest.json");
+            const skipped = r.testResults.flatMap(f => f.assertionResults)
+              .filter(t => t.status === "pending" || t.status === "skipped");
+            const stray = skipped.filter(t => !/live PHP|sample payload/.test(t.fullName ?? t.title));
+            console.log(`${skipped.length} skipped, all PHP-oracle: ${stray.length === 0}`);
+            if (stray.length) {
+              console.error("Unexpected skipped tests:\n  " + stray.map(t => t.fullName ?? t.title).join("\n  "));
+              process.exit(1);
+            }
+          '
+      # Kept whatever the outcome: a GREEN run that absorbed a challenge is the
+      # evidence that the retry works, and it is lost if we only keep failures.
+      - name: Keep any bot-challenge bodies the edge served
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: challenge-evidence-${{ github.run_id }}
+          path: .challenge-evidence/
+          if-no-files-found: ignore
+          retention-days: 30
