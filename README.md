@@ -114,9 +114,17 @@ recognises the interstitial by `<title>` and by `cf-mitigated`, retries a
 bounded 4s/12s, and on exhaustion reports the status, content-type, `cf-ray`
 and a body snippet — so a recurrence is diagnosable from the CI log alone.
 
-**The durable fix is an allowlist somewhere, not code — but WHERE is not yet
-settled, and guessing wrong costs a wasted change.** The evidence says the
-interstitial is probably NOT Cloudflare's edge challenge:
+**Cloudflare is RULED OUT (owner-verified 2026-08-03).** In the zone's
+Security -> Bots panel, Bot Fight Mode is **off** and AI-bot blocking is set to
+**"Allow (do not block)"**. Cloudflare's bot mitigation is not running, so a
+Cloudflare WAF skip rule — recommended in an earlier revision of this file —
+would have been a no-op. Do not re-investigate Cloudflare.
+
+**The challenge is origin-served, and the strong candidate is Imunify360
+WebShield on the Cloudways host.** Cloudways retired the Malcare bot-protection
+integration in favour of Imunify360, whose WebShield splash is titled
+*"One moment, please..."* and carries a `wsidchk` form — matching the
+interstitial byte-for-byte in title, and matching every header we observed:
 
 | Observed | Implication |
 |---|---|
@@ -126,17 +134,17 @@ interstitial is probably NOT Cloudflare's edge challenge:
 | `x-cache`, `server-timing: wp-total` on normal responses | an origin-side cache/WordPress layer is in play |
 | title `"One moment, please..."` | Cloudflare's interstitial reads `"Just a moment..."` |
 
-That points at origin/host-level bot protection (the Cloudways layer) rather
-than Cloudflare. **Do not add a Cloudflare WAF skip rule on this evidence
-alone** — if the challenge is origin-served it will be a no-op, and the
-no-op will read as a failed diagnosis.
+**The fix is a host-side allowlist**, which on Cloudways means a support
+request: ask them to allowlist the `sn-ledger-verify` User-Agent in
+Imunify360 WebShield for this domain. Also check Application Management for a
+legacy Bot Protection toggle, which some accounts still carry. Allowlist by
+User-Agent rather than by IP — GitHub Actions publishes thousands of CIDRs
+that rotate, which is why the verifier identifies itself by name at all.
 
-**Settle it first, for free.** A captured `challenge-evidence-<run_id>`
-artifact contains the interstitial verbatim, and it names its own system in
-its markup. Read one, then allowlist the `sn-ledger-verify` User-Agent in
-*that* system — Cloudflare WAF custom rules if the body is Cloudflare's,
-the host's bot-protection settings if it is not. That is what the named
-User-Agent exists for either way.
+A captured `challenge-evidence-<run_id>` artifact contains the interstitial
+verbatim and names its own system in its markup. None has been captured yet
+(capture landed after the last challenge). Attach one to the support request
+when it appears — it turns the ticket into a one-look confirmation.
 
 The retry logic stays regardless — it makes a challenge survivable, not
 impossible.
