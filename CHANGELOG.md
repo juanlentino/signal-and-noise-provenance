@@ -19,6 +19,15 @@ mitigation wearing different faces.
   failure. CI keeps any interstitial body it is served as a 30-day artifact:
   a challenge is ASN-based and cannot be reproduced from a residential IP, so
   that artifact is the only route to a real one.
+- Replaced the remaining verdict-only assertions with evidence-bearing ones.
+  `verify-key-pins` threw a single opaque `"does not match key history"` from
+  an 8-way `||`, so a runner that hit it on 2026-08-03 — while the same
+  document verified perfectly from a residential IP — could not say whether
+  the mirror was wrong or the edge had served something else. It now names
+  every diverging field with got/expected, the document's keys and its byte
+  count, and keeps the raw bytes. Proven by negative control against a
+  deliberately wrong document. `verify-pages` likewise prints the twin
+  document rather than only its key names.
 - Asserted that the 12 tests CI skips are **only** the live-PHP cross-checks,
   which need the plugin source and are absent by design. Verified by negative
   control — an injected stray `it.skip` fails the step. Without it a broken
