@@ -114,17 +114,32 @@ recognises the interstitial by `<title>` and by `cf-mitigated`, retries a
 bounded 4s/12s, and on exhaustion reports the status, content-type, `cf-ray`
 and a body snippet — so a recurrence is diagnosable from the CI log alone.
 
-**The durable fix is a WAF rule, not code.** In Cloudflare →
-Security → WAF → Custom rules:
+**The durable fix is an allowlist somewhere, not code — but WHERE is not yet
+settled, and guessing wrong costs a wasted change.** The evidence says the
+interstitial is probably NOT Cloudflare's edge challenge:
 
-```
-If    http.user_agent contains "sn-ledger-verify"
-Then  Skip → All remaining custom rules, Super Bot Fight Mode
-```
+| Observed | Implication |
+|---|---|
+| `HTTP 200` | a Cloudflare managed challenge returns `403` |
+| no `cf-mitigated` header | Cloudflare sets it when *it* acts on a request |
+| `cf-cache-status: BYPASS` | the request was passed *toward the origin* |
+| `x-cache`, `server-timing: wp-total` on normal responses | an origin-side cache/WordPress layer is in play |
+| title `"One moment, please..."` | Cloudflare's interstitial reads `"Just a moment..."` |
 
-Optionally scope it to `/wp-json/wp/v2/posts`, `/notes/*` and `/.well-known/*`.
-That is what the named User-Agent exists for. The retry logic stays regardless —
-it makes a challenge survivable, not impossible.
+That points at origin/host-level bot protection (the Cloudways layer) rather
+than Cloudflare. **Do not add a Cloudflare WAF skip rule on this evidence
+alone** — if the challenge is origin-served it will be a no-op, and the
+no-op will read as a failed diagnosis.
+
+**Settle it first, for free.** A captured `challenge-evidence-<run_id>`
+artifact contains the interstitial verbatim, and it names its own system in
+its markup. Read one, then allowlist the `sn-ledger-verify` User-Agent in
+*that* system — Cloudflare WAF custom rules if the body is Cloudflare's,
+the host's bot-protection settings if it is not. That is what the named
+User-Agent exists for either way.
+
+The retry logic stays regardless — it makes a challenge survivable, not
+impossible.
 
 ## Why "bot-written"
 
