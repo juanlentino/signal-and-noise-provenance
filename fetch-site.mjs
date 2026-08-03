@@ -21,6 +21,9 @@
 // Blockstream/esplora calls in verify.mjs deliberately do NOT use this — a
 // different origin with a different failure mode, out of scope here.
 
+import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+
 const VERSION = "1.0";
 const USER_AGENT = `sn-ledger-verify/${VERSION} (+https://github.com/juanlentino/signal-and-noise-provenance)`;
 const ATTEMPTS = 3;
@@ -55,6 +58,64 @@ const CHALLENGE_TITLES = [
 const ACCEPT = { json: "application/json", html: "*/*" };
 const CONTENT_TYPE_PATTERN = { json: /^application\/(?:[\w.+-]+\+)?json\b/i, html: /^text\/html\b/i };
 
+// ---------------------------------------------------------------------------
+// Evidence.
+//
+// Before this existed, a green CI run was AMBIGUOUS: "the retry absorbed a bot
+// challenge" and "no challenge happened" produced byte-identical output. That
+// is precisely why five consecutive green runs were weak evidence that the
+// 2026-08-02 fix worked — they were consistent with the fix never having been
+// exercised at all. Counting challenges turns every run into a statement about
+// which of the two occurred, and builds the record needed to answer the two
+// questions the fix currently assumes: how often is CI challenged, and does
+// retrying the SAME request actually clear it inside the 16s budget?
+// ---------------------------------------------------------------------------
+const stats = { requests: 0, attempts: 0, challenges: 0, recovered: 0, failed: 0, events: [] };
+
+// The unit tests drive dozens of SYNTHETIC challenges through this module. If
+// those printed, a CI log would show ~50 "[challenge] … RECOVERED" lines and a
+// reader would reasonably conclude the edge had challenged the run — the
+// evidence channel would be reporting its own fixtures as findings. Under
+// vitest, count silently; the assertions read the counters directly.
+const announce = (line) => { if (!process.env.VITEST) console.warn(line); };
+
+/** Snapshot of this process's fetch telemetry. */
+export const fetchStats = () => ({ ...stats, events: stats.events.map((event) => ({ ...event })) });
+export const resetFetchStats = () => Object.assign(stats, { requests: 0, attempts: 0, challenges: 0, recovered: 0, failed: 0, events: [] });
+
+/**
+ * One line stating what this leg is entitled to claim. Printed by every
+ * verifier leg, green or red, so the CI log always says whether the edge
+ * interfered — never leaving a pass to be read as immunity.
+ */
+export function fetchEvidenceLine(label) {
+  const { requests, attempts, challenges, recovered, failed, events } = stats;
+  const plural = (n, word) => `${n} ${n === 1 ? word : (word === "fetch" ? "fetches" : `${word}s`)}`;
+  const head = `[evidence] ${label}: ${plural(requests, "fetch")}, ${plural(attempts, "attempt")}`;
+  if (!challenges) return `${head}, no challenge from the edge (this run did not exercise the retry)`;
+  const pops = [...new Set(events.map((event) => event.pop).filter(Boolean))].join(",") || "unknown PoP";
+  const worst = Math.max(...events.map((event) => event.recoveredOnAttempt || ATTEMPTS));
+  return `${head}, ${plural(challenges, "challenge")} from the edge at ${pops} — `
+    + `${recovered} absorbed by retry (worst case: attempt ${worst}), ${failed} exhausted the budget`;
+}
+
+/**
+ * Print the evidence line when the process exits — on success AND on throw.
+ * A summary at the bottom of a script is exactly the code that does not run
+ * when the script dies, which is the run you most need the evidence from.
+ * Also appends to the GitHub step summary so it is on the run page, not buried
+ * in a log. Call once, at the top of a verifier leg.
+ */
+export function installEvidenceReport(label) {
+  process.on("exit", () => {
+    const line = fetchEvidenceLine(label);
+    console.log(line);
+    const summary = process.env.GITHUB_STEP_SUMMARY;
+    if (!summary || !stats.requests) return;
+    try { appendFileSync(summary, `- ${line}\n`); } catch { /* evidence is best-effort */ }
+  });
+}
+
 export class SiteFetchError extends Error {
   constructor(message, detail) {
     super(message);
@@ -87,14 +148,38 @@ export async function fetchSite(url, { expect, tolerate = [], fetchImpl = fetch,
   if (!ACCEPT[expect]) throw new TypeError(`fetchSite: expect must be "json" or "html", got ${JSON.stringify(expect)}`);
   const target = String(url);
   let lastFailure = null;
+  let firstChallenge = null;
+  stats.requests += 1;
 
   for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
+    stats.attempts += 1;
     const outcome = await attemptOnce(target, expect, tolerate, fetchImpl);
-    if (outcome.ok) return { response: outcome.response, body: outcome.body };
+
+    if (outcome.challenge) {
+      stats.challenges += 1;
+      const event = { url: target, attempt, ...outcome.challenge };
+      stats.events.push(event);
+      firstChallenge ??= event;
+      // Say it AT THE MOMENT it happens, not only in the summary: if the run
+      // later dies for an unrelated reason, this line still records that the
+      // edge interfered.
+      announce(`[challenge] ${target} attempt ${attempt}/${ATTEMPTS} — ${outcome.challenge.title ? JSON.stringify(outcome.challenge.title) : outcome.challenge.why}, ${outcome.challenge.bytes} bytes, cf-ray ${outcome.challenge.ray || "(none)"}`);
+      captureChallengeBody(target, attempt, outcome.challenge);
+    }
+
+    if (outcome.ok) {
+      if (firstChallenge) {
+        stats.recovered += 1;
+        firstChallenge.recoveredOnAttempt = attempt;
+        announce(`[challenge] ${target} — RECOVERED on attempt ${attempt}; the retry did its job`);
+      }
+      return { response: outcome.response, body: outcome.body, raw: outcome.raw };
+    }
     lastFailure = outcome;
     if (attempt < ATTEMPTS) await sleep(BACKOFF_MS[attempt - 1]);
   }
 
+  stats.failed += 1;
   throw new SiteFetchError(describe(lastFailure.detail), { url: target, ...lastFailure.detail });
 }
 
@@ -111,13 +196,17 @@ async function attemptOnce(target, expect, tolerate, fetchImpl) {
   const ray = response.headers.get("cf-ray");
   const detail = { url: target, status: response.status, contentType, ray, body: "" };
 
-  if (tolerate.includes(response.status)) return { ok: true, response, body: null };
+  if (tolerate.includes(response.status)) return { ok: true, response, body: null, raw: "" };
   if (!response.ok) return { ok: false, detail: { ...detail, body: await safeText(response), reason: "site fetch failed" } };
 
   const body = await safeText(response);
   const challenge = challengeVerdict(response, body);
   if (challenge) {
-    return { ok: false, detail: { ...detail, body, reason: `edge served a bot challenge (${challenge})` } };
+    return {
+      ok: false,
+      challenge: { ...challenge, ray, pop: ray?.split("-").at(-1) ?? null, bytes: body.length, body },
+      detail: { ...detail, body, reason: `edge served a bot challenge (${challenge.why})` },
+    };
   }
   if (!CONTENT_TYPE_PATTERN[expect].test(contentType || "")) {
     // The 2026-08-02 shape: a 200 the transport check happily accepts, carrying
@@ -125,9 +214,9 @@ async function attemptOnce(target, expect, tolerate, fetchImpl) {
     return { ok: false, detail: { ...detail, body, reason: `edge served ${expect === "json" ? "non-JSON" : "non-HTML"} where ${expect.toUpperCase()} was expected` } };
   }
 
-  if (expect === "html") return { ok: true, response, body };
+  if (expect === "html") return { ok: true, response, body, raw: body };
   try {
-    return { ok: true, response, body: JSON.parse(body) };
+    return { ok: true, response, body: JSON.parse(body), raw: body };
   } catch {
     return { ok: false, detail: { ...detail, body, reason: "JSON content-type but unparseable body" } };
   }
@@ -138,11 +227,38 @@ async function attemptOnce(target, expect, tolerate, fetchImpl) {
  * cannot fire on a real Note whose body merely happens to be short.
  */
 function challengeVerdict(response, body) {
+  const title = body.match(/<title[^>]*>([^<]{0,120})/i)?.[1]?.trim() ?? null;
   const mitigated = response.headers.get("cf-mitigated");
-  if (mitigated) return `cf-mitigated: ${mitigated}`;
-  const title = body.match(/<title[^>]*>([^<]{0,120})/i)?.[1]?.trim();
+  if (mitigated) return { why: `cf-mitigated: ${mitigated}`, title };
   if (!title) return null;
-  return CHALLENGE_TITLES.some((pattern) => pattern.test(title)) ? `title ${JSON.stringify(title)}` : null;
+  return CHALLENGE_TITLES.some((pattern) => pattern.test(title)) ? { why: `title ${JSON.stringify(title)}`, title } : null;
+}
+
+/**
+ * Persist the challenge body when SN_CHALLENGE_CAPTURE_DIR is set (CI does).
+ * We cannot reproduce a challenge from a residential IP — it is ASN-based — so
+ * the only way to get a REAL interstitial to test against, rather than one
+ * hand-written from a log line, is to have CI keep the one it was served.
+ * Best-effort by design: failing to write evidence must never fail a run.
+ */
+function captureChallengeBody(url, attempt, challenge) {
+  captureEvidence(`challenge-a${attempt}-${challenge.ray || "noray"}`, url, challenge.body, "html");
+}
+
+/**
+ * Persist an unexpected payload when SN_CHALLENGE_CAPTURE_DIR is set (CI does).
+ * The edge's odd answers are IP-based and cannot be reproduced from a
+ * residential IP, so the runner keeping the bytes is the only way to see them.
+ * Best-effort by design: failing to write evidence must never fail a run.
+ */
+export function captureEvidence(tag, url, body, ext = "txt") {
+  const dir = process.env.SN_CHALLENGE_CAPTURE_DIR;
+  if (!dir) return;
+  try {
+    mkdirSync(dir, { recursive: true });
+    const safe = String(url).replace(/[^a-z0-9]+/gi, "-").slice(-60);
+    writeFileSync(join(dir, `${tag}-${safe}.${ext}`), String(body ?? ""));
+  } catch { /* evidence is best-effort; never let it break verification */ }
 }
 
 const safeText = async (response) => {

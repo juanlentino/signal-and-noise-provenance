@@ -11,6 +11,27 @@ five seconds apart disagreed (PR passed, push failed). The 2026-07-29
 HTTP 415 and this `<!DOCTYPE html>` JSON parse failure are the same
 mitigation wearing different faces.
 
+- **Made a green run mean something.** A pass could not be distinguished from
+  a pass that never met a challenge, so consecutive green runs were weak
+  evidence the fix worked. Every leg now reports fetches, attempts, challenges,
+  which attempt recovered, and the PoP — to stdout, to the GitHub step summary,
+  and at the moment a challenge occurs so it survives a later unrelated
+  failure. CI keeps any interstitial body it is served as a 30-day artifact:
+  a challenge is ASN-based and cannot be reproduced from a residential IP, so
+  that artifact is the only route to a real one.
+- Replaced the remaining verdict-only assertions with evidence-bearing ones.
+  `verify-key-pins` threw a single opaque `"does not match key history"` from
+  an 8-way `||`, so a runner that hit it on 2026-08-03 — while the same
+  document verified perfectly from a residential IP — could not say whether
+  the mirror was wrong or the edge had served something else. It now names
+  every diverging field with got/expected, the document's keys and its byte
+  count, and keeps the raw bytes. Proven by negative control against a
+  deliberately wrong document. `verify-pages` likewise prints the twin
+  document rather than only its key names.
+- Asserted that the 12 tests CI skips are **only** the live-PHP cross-checks,
+  which need the plugin source and are absent by design. Verified by negative
+  control — an injected stray `it.skip` fails the step. Without it a broken
+  guard could silently skip real tests and still read as green.
 - `fetch-site.mjs` now detects the interstitial by `<title>` and by the
   `cf-mitigated` header, treats it as retryable, and names it in the error
   instead of blaming the payload.

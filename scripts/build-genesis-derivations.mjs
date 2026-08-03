@@ -10,7 +10,8 @@ import { fileURLToPath } from "node:url";
 import { canonicalize } from "../normalize/canonical-json.mjs";
 import { leafHash } from "../normalize/merkle-v1.mjs";
 import { normalizeV1 } from "../normalize/sn-normalize-v1.mjs";
-import { fetchSiteHtml, fetchSiteJson } from "../fetch-site.mjs";
+import { fetchSiteHtml, fetchSiteJson, installEvidenceReport } from "../fetch-site.mjs";
+installEvidenceReport("build-genesis-derivations");
 
 const here = join(dirname(fileURLToPath(import.meta.url)), "..");
 const genesis = JSON.parse(readFileSync(join(here, "genesis/2026-07-09-root.json"), "utf8"));

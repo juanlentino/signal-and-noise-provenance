@@ -84,6 +84,30 @@ also appeared as `HTTP 415` (2026-07-29) and as `<!DOCTYPE html>` on a JSON
 endpoint (2026-08-02). It is genuinely intermittent: the `pull_request` and
 `push` runs of one commit, five seconds apart, have disagreed.
 
+### Reading a green run
+
+A pass used to be ambiguous: "the retry absorbed a challenge" and "no challenge
+happened" produced identical output, so a green run was consistent with the
+retry never having been exercised. Every leg now ends with a line saying which
+it was:
+
+```
+[evidence] verify:pages: 34 fetches, 34 attempts, no challenge from the edge
+                         (this run did not exercise the retry)
+
+[evidence] verify:pages: 34 fetches, 36 attempts, 2 challenges from the edge
+                         at SJC — 2 absorbed by retry (worst case: attempt 2),
+                         0 exhausted the budget
+```
+
+The second line is the evidence that the retry works; the first is an honest
+statement that this run proves nothing about it. Both are appended to the run's
+GitHub step summary, and a challenge that occurs is logged the moment it
+happens, so it survives an unrelated later failure. Any interstitial body CI is
+served is kept as a `challenge-evidence-<run_id>` artifact for 30 days — a
+challenge cannot be reproduced from a residential IP, so that artifact is the
+only way to hold a real one.
+
 `fetch-site.mjs` is the single hardened path for every site fetch. It sends a
 named `User-Agent`, asserts the payload **shape** rather than the status alone,
 recognises the interstitial by `<title>` and by `cf-mitigated`, retries a

@@ -2,7 +2,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { fetchSiteJson } from "./fetch-site.mjs";
+import { fetchSiteJson, installEvidenceReport } from "./fetch-site.mjs";
+installEvidenceReport("verify:coverage");
 
 const root = dirname(fileURLToPath(import.meta.url));
 const index = JSON.parse(readFileSync(join(root, "index.json"), "utf8"));
