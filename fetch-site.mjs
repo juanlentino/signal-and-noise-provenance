@@ -166,7 +166,7 @@ export async function fetchSite(url, { expect, tolerate = [], fetchImpl = fetch,
         firstChallenge.recoveredOnAttempt = attempt;
         console.warn(`[challenge] ${target} — RECOVERED on attempt ${attempt}; the retry did its job`);
       }
-      return { response: outcome.response, body: outcome.body };
+      return { response: outcome.response, body: outcome.body, raw: outcome.raw };
     }
     lastFailure = outcome;
     if (attempt < ATTEMPTS) await sleep(BACKOFF_MS[attempt - 1]);
@@ -189,7 +189,7 @@ async function attemptOnce(target, expect, tolerate, fetchImpl) {
   const ray = response.headers.get("cf-ray");
   const detail = { url: target, status: response.status, contentType, ray, body: "" };
 
-  if (tolerate.includes(response.status)) return { ok: true, response, body: null };
+  if (tolerate.includes(response.status)) return { ok: true, response, body: null, raw: "" };
   if (!response.ok) return { ok: false, detail: { ...detail, body: await safeText(response), reason: "site fetch failed" } };
 
   const body = await safeText(response);
@@ -207,9 +207,9 @@ async function attemptOnce(target, expect, tolerate, fetchImpl) {
     return { ok: false, detail: { ...detail, body, reason: `edge served ${expect === "json" ? "non-JSON" : "non-HTML"} where ${expect.toUpperCase()} was expected` } };
   }
 
-  if (expect === "html") return { ok: true, response, body };
+  if (expect === "html") return { ok: true, response, body, raw: body };
   try {
-    return { ok: true, response, body: JSON.parse(body) };
+    return { ok: true, response, body: JSON.parse(body), raw: body };
   } catch {
     return { ok: false, detail: { ...detail, body, reason: "JSON content-type but unparseable body" } };
   }
@@ -235,12 +235,22 @@ function challengeVerdict(response, body) {
  * Best-effort by design: failing to write evidence must never fail a run.
  */
 function captureChallengeBody(url, attempt, challenge) {
+  captureEvidence(`challenge-a${attempt}-${challenge.ray || "noray"}`, url, challenge.body, "html");
+}
+
+/**
+ * Persist an unexpected payload when SN_CHALLENGE_CAPTURE_DIR is set (CI does).
+ * The edge's odd answers are IP-based and cannot be reproduced from a
+ * residential IP, so the runner keeping the bytes is the only way to see them.
+ * Best-effort by design: failing to write evidence must never fail a run.
+ */
+export function captureEvidence(tag, url, body, ext = "txt") {
   const dir = process.env.SN_CHALLENGE_CAPTURE_DIR;
   if (!dir) return;
   try {
     mkdirSync(dir, { recursive: true });
-    const safe = url.replace(/[^a-z0-9]+/gi, "-").slice(-60);
-    writeFileSync(join(dir, `challenge-${safe}-a${attempt}-${challenge.ray || "noray"}.html`), challenge.body);
+    const safe = String(url).replace(/[^a-z0-9]+/gi, "-").slice(-60);
+    writeFileSync(join(dir, `${tag}-${safe}.${ext}`), String(body ?? ""));
   } catch { /* evidence is best-effort; never let it break verification */ }
 }
 

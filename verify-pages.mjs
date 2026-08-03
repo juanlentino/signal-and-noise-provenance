@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { verifyPageRecord } from "./verify.mjs";
-import { fetchSite, fetchSiteHtml, installEvidenceReport } from "./fetch-site.mjs";
+import { captureEvidence, fetchSite, fetchSiteHtml, installEvidenceReport } from "./fetch-site.mjs";
 installEvidenceReport("verify:pages");
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -21,9 +21,16 @@ const index = JSON.parse(readFileSync(join(root, "index.json"), "utf8"));
 // twin from an edge verdict.
 async function twinRendered(slug) {
   const url = `https://juanlentino.com/notes/${slug}.json`;
-  const { response, body: doc } = await fetchSite(url, { expect: "json", tolerate: [404] });
+  const { response, body: doc, raw } = await fetchSite(url, { expect: "json", tolerate: [404] });
   if (typeof doc?.content_html === "string") return { html: doc.content_html };
-  const why = doc === null ? "tolerated 404 — no twin published" : `200 but keys [${Object.keys(doc).join(",")}]`;
+  // Reporting only the KEYS was still a half-diagnosis: run 30772… said
+  // `200 but keys [message]` and left the message itself unread. Print the
+  // document, bounded, and keep the raw bytes as a CI artifact — the edge's
+  // odd answers are IP-based and unreproducible from a residential IP.
+  captureEvidence("twin-unexpected", url, raw, "json");
+  const why = doc === null
+    ? "tolerated 404 — no twin published"
+    : `HTTP ${response.status} with keys [${Object.keys(doc).join(",")}] — ${JSON.stringify(doc).slice(0, 300)}`;
   return { why: `${url} → ${why}, cf-ray ${response.headers.get("cf-ray") || "(none)"}` };
 }
 let checked = 0;
