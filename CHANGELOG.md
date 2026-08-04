@@ -1,5 +1,55 @@
 # Changelog
 
+## 2026-08-04 — The first edited Note broke the index, because the index assumed no Note was ever edited
+
+**Root cause:** `scripts/build-index.mjs` read `notes/<uid>/v1.json` — hardcoded.
+That held for 29 Notes because none had ever been edited. `start-here` was
+edited on 2026-08-04; the Worker appended a correct, signed `v2.json`, and the
+index row went on naming v1. `verify-pages.mjs` reads
+`v${entry.version}.json`, so it compared the live page against the *superseded*
+record and reported `served-page drift for start-here` — the ledger accusing
+the site of tampering over its own stale index. It was not a race: the failing
+run was the run for the v2 push, with v2 already in the tree.
+
+The failure was permanent, not transient. Every run — including the nightly
+schedule — would have stayed red for as long as the edit stood.
+
+- **The index tracks the newest record.** `recordVersions()` /
+  `latestRecordVersion()` in the new `ledger-records.mjs` are now the single
+  answer to "which record is current?", shared by the index builder, the
+  coverage guard, and the offline record verifier. They sort numerically: a
+  string sort puts v10 before v2 and reports v9 as the newest record of a
+  ten-version Note.
+- **A pending edit no longer un-anchors a Note.** A fresh record is `pending`
+  for the hours between its commit and its Bitcoin confirmation. The row's
+  top-level anchor now names the newest *confirmed* record, and a new
+  `anchored_version` field says which one — a row carrying the current text's
+  `content_hash` beside an older record's `bitcoin_block`, with nothing saying
+  so, reads as a claim that the current text is in that block. `standalone_*`
+  continues to report the current record's own OTS state, which for
+  `start-here` is honestly `pending`/`null` until its v2 confirms. Additive to
+  `sn-provenance-index-v1`; no code outside this repo reads the index.
+- **The guard that should have caught it.** `verify:coverage` compared the row
+  against `v1.json` too, so it could not see the staleness; its live check
+  compares *slugs*, and an edited Note keeps its slug. It now rejects a row
+  pinned to a superseded record, by name, with the command that fixes it — the
+  bug would have surfaced as "index is pinned to a superseded record" instead
+  of as drift.
+- **Superseded records stay verified.** `verify:records` checked only the
+  version the index named, so pointing the row at v2 would have quietly dropped
+  v1 from verification. It now verifies every version on disk and requires them
+  contiguous from v1: 30/30 records across 29 Notes, up from 29/29.
+- **The commit chain is verified for the first time.** `payload.parent` was
+  written but never checked — with one record per Note the link was always
+  null-or-genesis and never load-bearing. The chain runs genesis leaf → v1 → v2
+  → …, and it is what makes an *edit* auditable rather than merely recorded.
+  Note the limit of the end-to-end check: `parent` sits inside the signed
+  payload, so a tampered link fails the hash and signature long before the
+  chain comparison — the rule only fires on a validly signed record naming the
+  wrong predecessor, which cannot be constructed without the signing key. The
+  rule is therefore a unit-tested pure function rather than an unfalsifiable
+  claim in a script.
+
 ## 2026-08-02 — Every site fetch validates its payload, not just its status
 
 **Root cause, confirmed on the runner:** the edge answers GitHub Actions

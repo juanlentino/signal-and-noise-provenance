@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchSiteJson, installEvidenceReport } from "./fetch-site.mjs";
+import { recordVersions } from "./ledger-records.mjs";
 installEvidenceReport("verify:coverage");
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -17,17 +18,37 @@ for (const entry of entries) {
   if (entry.ots_status !== "confirmed" || !Number.isInteger(entry.bitcoin_block)) throw new Error(`anchor is not confirmed for ${entry.slug}`);
   if (entry.anchor === "genesis" && !/^[0-9a-f]{64}$/.test(entry.leaf_hash || "")) throw new Error(`genesis leaf missing for ${entry.slug}`);
   if (entry.version >= 1 && !/^[0-9a-f]{64}$/.test(entry.content_hash || "")) throw new Error(`standalone hash missing for ${entry.slug}`);
-  // A sweep that confirms an OTS proof rewrites notes/<uid>/v1.json only. If the
-  // index is not rebuilt afterwards it keeps reporting a stale mirror of that
-  // record, which is invisible to the live-slug gap check below. Compare the two.
+  // A sweep that confirms an OTS proof rewrites the record in place, and an
+  // edit appends a new one. If the index is not rebuilt afterwards it keeps
+  // reporting a stale mirror, which is invisible to the live-slug gap check
+  // below — that check compares SLUGS, and an edited Note keeps its slug.
+  // Compare the row against the record it claims to describe.
   if (entry.version >= 1) {
-    const recordPath = join(root, `notes/${entry.note_uid}/v1.json`);
-    if (!existsSync(recordPath)) throw new Error(`indexed record missing on disk for ${entry.slug}`);
-    const record = JSON.parse(readFileSync(recordPath, "utf8"));
+    // The row must name the NEWEST record, not merely a real one. Pinned to
+    // v1, this guard stayed green while verify:pages reported the served page
+    // as drift for as long as the edit stood (start-here, 2026-08-04) — the
+    // ledger accusing the site of tampering over its own stale index.
+    const versions = recordVersions(join(root, "notes"), entry.note_uid);
+    if (!versions.includes(entry.version)) throw new Error(`indexed record missing on disk for ${entry.slug} (index says v${entry.version}, on disk: ${versions.map((v) => `v${v}`).join(",") || "none"})`);
+    const latest = versions.at(-1);
+    if (entry.version !== latest) throw new Error(`index is pinned to a superseded record for ${entry.slug}: row says v${entry.version}, newest record is v${latest}; rerun node scripts/build-index.mjs`);
+    const record = JSON.parse(readFileSync(join(root, `notes/${entry.note_uid}/v${entry.version}.json`), "utf8"));
     const recordBlock = record.ots.bitcoin_block ?? null;
     if (record.content_hash !== entry.content_hash) throw new Error(`index content_hash disagrees with the record for ${entry.slug}; rerun node scripts/build-index.mjs`);
     if (record.ots.status !== entry.standalone_ots_status || recordBlock !== (entry.standalone_bitcoin_block ?? null)) {
       throw new Error(`index is stale for ${entry.slug}: record says ${record.ots.status}/${recordBlock}, index says ${entry.standalone_ots_status}/${entry.standalone_bitcoin_block ?? null}; rerun node scripts/build-index.mjs`);
+    }
+    // A per-note row's anchor may name an EARLIER version than the current
+    // record, because a fresh edit is pending for hours while the Note stays
+    // anchored. Whichever version it names must exist and must actually carry
+    // the confirmed block the row advertises — otherwise the row asserts an
+    // anchor no record backs.
+    if ("per-note" === entry.anchor) {
+      if (!versions.includes(entry.anchored_version)) throw new Error(`index anchors ${entry.slug} to v${entry.anchored_version}, which is not on disk; rerun node scripts/build-index.mjs`);
+      const anchorRecord = entry.anchored_version === entry.version ? record : JSON.parse(readFileSync(join(root, `notes/${entry.note_uid}/v${entry.anchored_version}.json`), "utf8"));
+      if (anchorRecord.ots.status !== entry.ots_status || (anchorRecord.ots.bitcoin_block ?? null) !== entry.bitcoin_block) {
+        throw new Error(`index anchor disagrees with v${entry.anchored_version} for ${entry.slug}: record says ${anchorRecord.ots.status}/${anchorRecord.ots.bitcoin_block ?? null}, index says ${entry.ots_status}/${entry.bitcoin_block}; rerun node scripts/build-index.mjs`);
+      }
     }
   }
 }
@@ -40,7 +61,7 @@ for (const entry of entries) {
 // confirmed Notes (0ab100ea, 422f8047) had records but no rows while CI
 // stayed green.
 import { readdirSync } from "node:fs";
-const unindexed = readdirSync(join(root, "notes")).filter((dir) => existsSync(join(root, `notes/${dir}/v1.json`)) && !uids.has(dir));
+const unindexed = readdirSync(join(root, "notes")).filter((dir) => recordVersions(join(root, "notes"), dir).length && !uids.has(dir));
 if (unindexed.length) throw new Error(`records missing from the index: ${unindexed.join(", ")}; rerun node scripts/build-index.mjs`);
 
 if (!process.argv.includes("--offline")) {

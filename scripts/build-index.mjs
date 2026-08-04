@@ -1,11 +1,14 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchSite, fetchSiteJson, installEvidenceReport } from "../fetch-site.mjs";
+import { recordVersions } from "../ledger-records.mjs";
 installEvidenceReport("build-index");
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const notesRoot = join(root, "notes");
+const readRecord = (uid, version) => JSON.parse(readFileSync(join(notesRoot, uid, `v${version}.json`), "utf8"));
 const genesisRecord = JSON.parse(readFileSync(join(root, "genesis/2026-07-09-root.json"), "utf8"));
 const genesis = new Map(genesisRecord.payload.notes.map((note) => [note.note_uid, note.leaf_hash]));
 // The live REST call is load-bearing, not incidental: the set of PUBLIC notes
@@ -31,10 +34,26 @@ for (const post of posts) {
       + `cf-cache-status ${pageResponse.headers.get("cf-cache-status") || "(none)"}, title ${JSON.stringify(title)}`,
     );
   }
-  const recordPath = join(root, `notes/${uid}/v1.json`);
-  const record = existsSync(recordPath) ? JSON.parse(readFileSync(recordPath, "utf8")) : null;
+  // The CURRENT record — the one the served page must reproduce. This read was
+  // hardcoded to v1.json, which held only because no Note had ever been
+  // edited; the first edit pinned the row to a superseded record and
+  // verify:pages reported the live page as drift (start-here, 2026-08-04).
+  const versions = recordVersions(notesRoot, uid);
+  const record = versions.length ? readRecord(uid, versions.at(-1)) : null;
   const leafHash = genesis.get(uid);
   if (!leafHash && !record) throw new Error(`unanchored public note: ${post.slug}`);
+  // The Note's STANDING anchor, which is a different question from the current
+  // record's own OTS state. A record is `pending` for the hours between its
+  // commit and its Bitcoin confirmation, and an edit must not un-anchor a Note
+  // that has been in the chain for weeks — so the top-level anchor names the
+  // newest CONFIRMED record, and `anchored_version` says which one that is.
+  // Without that field a row carrying the current text's content_hash beside an
+  // older record's bitcoin_block would read as a claim that the current text is
+  // in that block. Falls back to the current record when nothing has confirmed
+  // yet, so a never-anchored Note still fails the coverage guard as before.
+  const anchorRecord = leafHash
+    ? null
+    : ([...versions].reverse().map((version) => readRecord(uid, version)).find((r) => "confirmed" === r.ots.status) ?? record);
   entries.push({
     note_uid: uid,
     slug: post.slug,
@@ -44,8 +63,9 @@ for (const post of posts) {
     version: record?.payload?.version ?? 0,
     ...(record ? { content_hash: record.content_hash } : {}),
     ...(leafHash ? { leaf_hash: leafHash } : {}),
-    bitcoin_block: leafHash ? genesisRecord.ots.bitcoin_block : record.ots.bitcoin_block,
-    ots_status: leafHash ? genesisRecord.ots.status : record.ots.status,
+    bitcoin_block: leafHash ? genesisRecord.ots.bitcoin_block : anchorRecord.ots.bitcoin_block,
+    ots_status: leafHash ? genesisRecord.ots.status : anchorRecord.ots.status,
+    ...(leafHash ? {} : { anchored_version: anchorRecord.payload.version }),
     ...(record ? { standalone_ots_status: record.ots.status, standalone_bitcoin_block: record.ots.bitcoin_block ?? null } : {}),
   });
 }
