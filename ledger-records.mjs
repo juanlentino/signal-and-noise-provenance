@@ -50,6 +50,21 @@ export function latestRecordVersion(notesRoot, uid) {
 }
 
 /**
+ * Do these versions form an unbroken run from v1?
+ *
+ * Both ledgers append and never rewrite, so a gap means a record was removed —
+ * and for Notes every later parent link would then point at something absent.
+ * An empty list is not contiguous: a directory that exists with no records in
+ * it is a defect, not a Note at version zero.
+ *
+ * @param {number[]} versions Ascending versions, as returned by recordVersions().
+ * @returns {boolean}
+ */
+export function contiguousFromV1(versions) {
+  return versions.length > 0 && versions.every((version, i) => version === i + 1);
+}
+
+/**
  * The hash a record must name as its parent — the chain rule, stated once.
  *
  * The chain runs genesis leaf → v1 → v2 → …: a Note in the genesis Merkle tree

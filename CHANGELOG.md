@@ -1,5 +1,49 @@
 # Changelog
 
+## 2026-08-04 — The rights-signals ledger was signed, anchored, and checked by nothing
+
+A sweep for the `v1.json` hardcode fixed earlier today found no second instance
+of it — but found that the repo's **other** ledger had no verifier at all. Four
+machine-readable rights surfaces (`robots-txt`, `license-xml`, `tdm-policy`,
+`tdmrep-json`), five records, each hashed, signed with the same production
+ed25519 key as the Notes and anchored in Bitcoin. No `verify:*` script and no
+workflow step read any of it; only `CHANGELOG.md` and `README.md` mentioned it,
+in prose. `robots-txt` already had a v2, so the multi-version case had been
+exercised there unobserved. All five were checked by hand and verify.
+
+- **`verify:rights-signals`** (new), wired into the workflow. Per record: the
+  `.raw` capture hashes to `content_hash`; the signature verifies over those
+  same raw bytes under the published key; the OTS proof commits to the hash; a
+  `confirmed` record's proof attests the block it claims. Per surface: versions
+  contiguous from v1, every version carrying all three of `.json`/`.ots`/`.raw`,
+  and no record filed under another surface's slug.
+- **Its scope is pinned, because it discovers its own scope.** Listing the
+  ledger to decide what to verify means a surface that *disappears* is
+  invisible — deleting one had it report "4/4 across 3 surfaces" and pass. The
+  four surfaces are now a floor, taken from the writer's own `RIGHTS_SIGNALS`
+  list. Additive: a fifth is verified without being listed; none of the four may
+  vanish quietly.
+- **Re-anchoring an unchanged surface is a failure.** The writer appends only
+  when the bytes changed, so two consecutive identical hashes mean dedup did not
+  hold — a version burned and a Bitcoin anchor spent on a surface that never
+  moved.
+- **Deliberately offline, and this is the interesting difference.** A Note's
+  record claims *this is the Note's content*, so `verify:pages` holds the served
+  page to it. A rights-signal record claims *on this date the surface served
+  these bytes*, which a later edit does not falsify. Since the worker re-anchors
+  hourly on change, a live comparison would red CI for the window between an
+  edit and the next sweep — turning worker latency into a ledger integrity
+  failure. Freshness belongs to the worker's monitoring; this script answers
+  only whether every anchored claim is internally sound.
+- `contiguousFromV1()` moved into `ledger-records.mjs` and is unit-tested; both
+  verifiers now state that invariant once.
+
+Each guard was confirmed to fire against a deliberately broken copy — tampered
+capture, tampered signature, wrong slug, wrong block, unpublished key,
+re-anchored unchanged surface, missing `.raw`, version gap, deleted surface, and
+a record attesting to another host. Added as a workflow *step*, not a job, so it
+bills no additional rounded minute.
+
 ## 2026-08-04 — The first edited Note broke the index, because the index assumed no Note was ever edited
 
 **Root cause:** `scripts/build-index.mjs` read `notes/<uid>/v1.json` — hardcoded.
