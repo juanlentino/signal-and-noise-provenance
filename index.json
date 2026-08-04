@@ -408,5 +408,39 @@
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 960776
     }
+  ],
+  "rights_signals": [
+    {
+      "slug": "license-xml",
+      "url": "https://juanlentino.com/license.xml",
+      "version": 1,
+      "content_hash": "d1308fd27030f076c9d5d398ca173972a968a77ae55460ce6a0c1d4102e1f330",
+      "ots_status": "confirmed",
+      "bitcoin_block": 959374
+    },
+    {
+      "slug": "robots-txt",
+      "url": "https://juanlentino.com/robots.txt",
+      "version": 2,
+      "content_hash": "d610fe56cdbbe4da404aa61862d24ea269eb460e516b82ea4b4b132e2da83dec",
+      "ots_status": "confirmed",
+      "bitcoin_block": 959320
+    },
+    {
+      "slug": "tdm-policy",
+      "url": "https://juanlentino.com/tdm-policy/",
+      "version": 1,
+      "content_hash": "5ae6f2d124a98b76527588fa16f59c8d3a4a7f13d6c04eafee9d3013d008bc6b",
+      "ots_status": "confirmed",
+      "bitcoin_block": 960034
+    },
+    {
+      "slug": "tdmrep-json",
+      "url": "https://juanlentino.com/.well-known/tdmrep.json",
+      "version": 1,
+      "content_hash": "421f88383938eeaf8882474c747d1f3cfcd7e51c5d89711fd3df98fc0071ec80",
+      "ots_status": "confirmed",
+      "bitcoin_block": 959348
+    }
   ]
 }

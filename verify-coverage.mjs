@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchSiteJson, installEvidenceReport } from "./fetch-site.mjs";
@@ -53,6 +53,27 @@ for (const entry of entries) {
   }
 }
 
+// The rights-signals rows get the same anti-stale treatment the note rows now
+// get, and for the same reason: a row is only useful if it names the NEWEST
+// record. A consumer that trusts a pinned row compares the live surface against
+// a superseded hash and reports drift that is really index staleness — exactly
+// the failure this repo shipped on 2026-08-04.
+const signalsRoot = join(root, "rights-signals");
+const signalRows = index.rights_signals || [];
+const signalDirs = readdirSync(signalsRoot, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name).sort();
+const unindexedSignals = signalDirs.filter((slug) => !signalRows.some((row) => row.slug === slug));
+if (unindexedSignals.length) throw new Error(`rights-signals missing from the index: ${unindexedSignals.join(", ")}; rerun node scripts/build-index.mjs`);
+for (const row of signalRows) {
+  if (!signalDirs.includes(row.slug)) throw new Error(`index lists rights-signal ${row.slug}, which has no records on disk; rerun node scripts/build-index.mjs`);
+  const latest = recordVersions(signalsRoot, row.slug).at(-1);
+  if (row.version !== latest) throw new Error(`index is pinned to a superseded rights-signal record for ${row.slug}: row says v${row.version}, newest record is v${latest}; rerun node scripts/build-index.mjs`);
+  const record = JSON.parse(readFileSync(join(signalsRoot, row.slug, `v${row.version}.json`), "utf8"));
+  if (record.content_hash !== row.content_hash || record.url !== row.url) throw new Error(`index row disagrees with the rights-signal record for ${row.slug}; rerun node scripts/build-index.mjs`);
+  if ((record.ots?.status ?? "unknown") !== row.ots_status || (record.ots?.bitcoin_block ?? null) !== row.bitcoin_block) {
+    throw new Error(`index anchor is stale for rights-signal ${row.slug}: record says ${record.ots?.status}/${record.ots?.bitcoin_block ?? null}, index says ${row.ots_status}/${row.bitcoin_block}; rerun node scripts/build-index.mjs`);
+  }
+}
+
 // Reverse coverage (offline-safe): every record directory must have an index
 // row. The forward checks above validate INDEXED rows; a record committed by
 // the Worker after the last index rebuild has no row at all — invisible to
@@ -60,7 +81,6 @@ for (const entry of entries) {
 // live-slug check below may not run for weeks. Caught live 2026-07-28: two
 // confirmed Notes (0ab100ea, 422f8047) had records but no rows while CI
 // stayed green.
-import { readdirSync } from "node:fs";
 const unindexed = readdirSync(join(root, "notes")).filter((dir) => recordVersions(join(root, "notes"), dir).length && !uids.has(dir));
 if (unindexed.length) throw new Error(`records missing from the index: ${unindexed.join(", ")}; rerun node scripts/build-index.mjs`);
 
