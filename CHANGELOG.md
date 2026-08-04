@@ -1,5 +1,35 @@
 # Changelog
 
+## 2026-08-04 — index.json carries the rights-signals ledger, so the anchoring gap becomes answerable
+
+`verify:rights-signals` (below) proves every anchored rights-signal claim is
+internally sound. It says nothing about whether the surface the site serves
+*right now* has been anchored at all — if the Worker stopped re-anchoring a
+changed `robots.txt`, the ledger would stay perfectly valid and perfectly stale.
+Answering that from outside needs the newest record's hash per surface, and the
+rights-signals ledger had no index: a reader had to probe `v1`, `v2`, … until a
+404, or spend one of GitHub's 60 unauthenticated tree calls an hour.
+
+- **`index.json` gains a `rights_signals` section** — one row per surface, with
+  `slug`, `url`, `version`, `content_hash`, `ots_status`, `bitcoin_block`.
+  Derived exactly like the note rows (newest record wins), so `robots-txt`
+  correctly lands on v2. One read of a file the ledger already publishes and CI
+  already self-heals. Additive to `sn-provenance-index-v1`.
+- **`verify:coverage` holds the new rows to the records**, with the same
+  anti-stale guard the note rows got this morning: a row pinned to a superseded
+  record, a surface missing from the index, a row whose hash or URL disagrees
+  with its record, a stale anchor, or a row naming a surface with no records —
+  each fails by name with the command that fixes it. Without this the section
+  would become exactly the stale mirror that caused today's earlier incident,
+  and any consumer trusting it would report drift that is really index staleness.
+
+The consumer is the WordPress side: a Content-Health check comparing each live
+surface against its anchored hash. This section is what makes that a single
+cheap read. Note what is deliberately NOT here — a heartbeat from the Worker
+saying "sweep completed" would be a success-only readout, and this Worker has
+exactly that shape (per-signal failures are caught, logged, and stepped over),
+so it would report healthy while a surface silently never anchored.
+
 ## 2026-08-04 — The rights-signals ledger was signed, anchored, and checked by nothing
 
 A sweep for the `v1.json` hardcode fixed earlier today found no second instance

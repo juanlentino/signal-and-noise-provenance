@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchSite, fetchSiteJson, installEvidenceReport } from "../fetch-site.mjs";
@@ -71,5 +71,32 @@ for (const post of posts) {
 }
 
 entries.sort((a, b) => a.published_at.localeCompare(b.published_at));
-writeFileSync(join(root, "index.json"), `${JSON.stringify({ schema: "sn-provenance-index-v1", generated_from: "public-wordpress-and-ledger", entries }, null, 2)}\n`);
-console.log(`wrote ${entries.length} coverage entries`);
+
+// The rights-signals ledger has no index of its own, so anything asking "is the
+// currently served robots.txt the one that is anchored?" had to probe v1, v2, …
+// until a 404, or spend one of GitHub's 60 unauthenticated tree calls an hour.
+// One row per surface makes that a single read of a file the ledger already
+// publishes and CI already self-heals. Derived exactly like the note rows —
+// newest record wins — and held to that by verify:coverage, so it cannot drift
+// into the stale mirror the note rows became (2026-08-04).
+const signalsRoot = join(root, "rights-signals");
+const rightsSignals = readdirSync(signalsRoot, { withFileTypes: true })
+  .filter((e) => e.isDirectory())
+  .map((e) => e.name)
+  .sort()
+  .map((slug) => {
+    const version = recordVersions(signalsRoot, slug).at(-1);
+    if (!version) throw new Error(`rights-signal ${slug} has no records`);
+    const record = JSON.parse(readFileSync(join(signalsRoot, slug, `v${version}.json`), "utf8"));
+    return {
+      slug,
+      url: record.url,
+      version,
+      content_hash: record.content_hash,
+      ots_status: record.ots?.status ?? "unknown",
+      bitcoin_block: record.ots?.bitcoin_block ?? null,
+    };
+  });
+
+writeFileSync(join(root, "index.json"), `${JSON.stringify({ schema: "sn-provenance-index-v1", generated_from: "public-wordpress-and-ledger", entries, rights_signals: rightsSignals }, null, 2)}\n`);
+console.log(`wrote ${entries.length} coverage entries and ${rightsSignals.length} rights-signal rows`);
