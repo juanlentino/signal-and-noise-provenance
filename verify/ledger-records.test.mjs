@@ -2,7 +2,7 @@ import { describe, expect, it, beforeAll, afterAll } from "vitest";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { expectedParent, latestRecordVersion, recordVersions } from "../ledger-records.mjs";
+import { contiguousFromV1, expectedParent, latestRecordVersion, recordVersions } from "../ledger-records.mjs";
 
 // A note directory holds vN.json + vN.ots per version. These helpers are the
 // single place that answers "which record is current?", so every consumer
@@ -66,6 +66,30 @@ describe("latestRecordVersion", () => {
   it("is 0 when a note has no records at all", () => {
     expect(latestRecordVersion(root, "empty")).toBe(0);
     expect(latestRecordVersion(root, "absent")).toBe(0);
+  });
+});
+
+// Both ledgers append and never rewrite, so a gap means a record was removed.
+// Stated once because two verifiers now depend on it.
+describe("contiguousFromV1", () => {
+  it("accepts a single record", () => {
+    expect(contiguousFromV1([1])).toBe(true);
+  });
+
+  it("accepts an unbroken run of any length", () => {
+    expect(contiguousFromV1([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])).toBe(true);
+  });
+
+  it("rejects a run that does not start at v1", () => {
+    expect(contiguousFromV1([2, 3])).toBe(false);
+  });
+
+  it("rejects a gap in the middle", () => {
+    expect(contiguousFromV1([1, 2, 4])).toBe(false);
+  });
+
+  it("rejects an empty ledger directory", () => {
+    expect(contiguousFromV1([])).toBe(false);
   });
 });
 

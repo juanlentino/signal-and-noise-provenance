@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { verifyRecord } from "./verify.mjs";
-import { expectedParent, recordVersions } from "./ledger-records.mjs";
+import { contiguousFromV1, expectedParent, recordVersions } from "./ledger-records.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const notesRoot = join(root, "notes");
@@ -24,10 +24,7 @@ for (const entry of index.entries) {
   // dropped v1 from verification the moment a Note was edited.
   const versions = recordVersions(notesRoot, entry.note_uid);
   if (!versions.includes(entry.version)) throw new Error(`indexed record missing on disk for ${entry.slug} (index says v${entry.version}, on disk: ${versions.map((v) => `v${v}`).join(",") || "none"})`);
-  // An append-only chain cannot skip: a gap means a record was removed, and
-  // every later parent link would then point at something absent.
-  const contiguous = versions.every((version, i) => version === i + 1);
-  if (!contiguous) throw new Error(`record versions are not contiguous from v1 for ${entry.slug}: ${versions.map((v) => `v${v}`).join(",")}`);
+  if (!contiguousFromV1(versions)) throw new Error(`record versions are not contiguous from v1 for ${entry.slug}: ${versions.map((v) => `v${v}`).join(",")}`);
 
   let previous = null;
   for (const version of versions) {

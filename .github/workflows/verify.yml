@@ -78,6 +78,7 @@ jobs:
           git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" HEAD:main
       - run: npm test
       - run: npm run verify:records
+      - run: npm run verify:rights-signals
       - run: npm run verify:genesis
       - run: npm run verify:keys
       - run: npm run verify:key-pins
