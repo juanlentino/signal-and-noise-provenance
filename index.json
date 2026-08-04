@@ -237,8 +237,8 @@
       "leaf_hash": "7e84f5668fb1179dad3bb697143064bc099919134d93d7e18afc05ed40059951",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 960960
     },
     {
       "note_uid": "f1ebff9e-e5f3-4528-92a3-eda1814e27af",
