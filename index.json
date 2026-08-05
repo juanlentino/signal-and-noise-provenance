@@ -407,6 +407,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 960776
+    },
+    {
+      "note_uid": "77468383-8bdb-4c24-a6b0-18e62b812cdb",
+      "slug": "the-pen-is-not-the-notary",
+      "title": "The pen is not the notary",
+      "published_at": "2026-08-05T11:28:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "ae797d26c2f30d7eb7dc6492e49283cd49fe2f7679c675b633de4b95e38225eb",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "rights_signals": [
