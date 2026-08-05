@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchSiteJson, installEvidenceReport } from "./fetch-site.mjs";
 import { recordVersions } from "./ledger-records.mjs";
+import { pendingVerdict, DEFAULT_GRACE_HOURS } from "./anchor-grace.mjs";
 installEvidenceReport("verify:coverage");
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -12,10 +13,18 @@ const entries = index.entries || [];
 const uids = new Set(entries.map((entry) => entry.note_uid));
 const slugs = new Set(entries.map((entry) => entry.slug));
 if (uids.size !== entries.length || slugs.size !== entries.length) throw new Error("coverage index contains duplicate UID or slug");
+// An anchor still waiting on Bitcoin is a state, not a fault — see
+// anchor-grace.mjs. Collected so a pass can still SAY what is outstanding.
+const graceHours = Number(process.env.SN_ANCHOR_GRACE_HOURS ?? DEFAULT_GRACE_HOURS);
+const pending = [];
 for (const entry of entries) {
   if (!/^[0-9a-f-]{36}$/.test(entry.note_uid)) throw new Error(`invalid UID for ${entry.slug}`);
   if (!['genesis', 'per-note'].includes(entry.anchor)) throw new Error(`invalid anchor for ${entry.slug}`);
-  if (entry.ots_status !== "confirmed" || !Number.isInteger(entry.bitcoin_block)) throw new Error(`anchor is not confirmed for ${entry.slug}`);
+  if (entry.ots_status !== "confirmed" || !Number.isInteger(entry.bitcoin_block)) {
+    const verdict = pendingVerdict(entry, { graceHours });
+    if (!verdict.ok) throw new Error(`anchor is not confirmed for ${entry.slug}: ${verdict.reason}`);
+    pending.push({ slug: entry.slug, hours: verdict.hours });
+  }
   if (entry.anchor === "genesis" && !/^[0-9a-f]{64}$/.test(entry.leaf_hash || "")) throw new Error(`genesis leaf missing for ${entry.slug}`);
   if (entry.version >= 1 && !/^[0-9a-f]{64}$/.test(entry.content_hash || "")) throw new Error(`standalone hash missing for ${entry.slug}`);
   // A sweep that confirms an OTS proof rewrites the record in place, and an
@@ -93,6 +102,16 @@ if (!process.argv.includes("--offline")) {
   const stale = entries.map((entry) => entry.slug).filter((slug) => !live.some((post) => post.slug === slug));
   if (gaps.length || stale.length) throw new Error(`coverage drift: gaps=${gaps.join(",") || "none"}; stale=${stale.join(",") || "none"}`);
   console.log(`${live.length}/${live.length} anchored, 0 gaps`);
+  reportPending();
 } else {
-  console.log(`${entries.length}/${entries.length} indexed with confirmed anchors (offline)`);
+  console.log(`${entries.length - pending.length}/${entries.length} indexed with confirmed anchors (offline)`);
+  reportPending();
+}
+
+// A pending anchor passes, but never silently: the run names which Notes are
+// waiting and for how long, so a green build never reads as "all confirmed".
+function reportPending() {
+  if (!pending.length) return;
+  const list = pending.map((p) => `${p.slug} (${p.hours.toFixed(1)}h)`).join(", ");
+  console.log(`${pending.length} anchor${pending.length === 1 ? "" : "s"} pending within the ${graceHours}h grace window: ${list}`);
 }
