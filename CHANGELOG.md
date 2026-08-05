@@ -1,5 +1,45 @@
 # Changelog
 
+## 2026-08-05 — a pending anchor is a state, not a failed build
+
+`verify:coverage` failed at 11:35 with `anchor is not confirmed for
+the-pen-is-not-the-notary`. The Note had been published at 11:28. Seven minutes
+into a wait that routinely takes hours, the trust repo declared a problem — and
+the check would have kept failing until Bitcoin confirmed, on every publication,
+forever. A check that reds the build every time you publish is a check people
+learn to ignore, which defeats the only thing this repo is for.
+
+**Pending is now a state.** `anchor-grace.mjs` decides whether an unconfirmed
+anchor is young or stuck: within the window (24h by default,
+`SN_ANCHOR_GRACE_HOURS` to override) it passes; past it, the build fails **and
+names the age** — `pending for 31.4h, past the 24h grace window` — so the report
+is actionable rather than binary.
+
+Deliberately narrow, because the point is to keep catching real trouble:
+
+- Only `ots_status: "pending"` waits. Any other value — `failed`, missing,
+  misspelled — is a fault regardless of age.
+- An entry whose `published_at` is absent or unparseable **fails**. An age that
+  cannot be established is unknown, and unknown must not pass as young.
+- A future-dated `published_at` fails too: a scheduled post or a clock problem
+  is not evidence an anchor is progressing.
+- A pass that carries pending anchors **says so** — the run prints which Notes
+  are waiting and for how long, so green never reads as "everything confirmed".
+
+The decision is extracted into its own module so it can be tested with an
+injected clock; a grace window tested against the wall clock would pass today
+and fail at some future hour. 21 assertions in `verify/anchor-grace.test.mjs`,
+including the live 11:28/11:35 case and the invariant that a failure always
+carries a reason.
+
+**Also rebuilt `index.json`.** The sweep that confirmed the-pen-is-not-the-notary
+(block 961,153) committed with `[skip ci]`, so nothing rebuilt the index and
+nothing re-ran the checks — the row still read `pending/null` while the record on
+disk read `confirmed/961153`. The staleness guard that catches exactly this was
+already in place and correct; it simply had not run yet. Rebuilt, so the next
+run starts from a consistent ledger.
+
+
 ## 2026-08-04 — index.json carries the rights-signals ledger, so the anchoring gap becomes answerable
 
 `verify:rights-signals` (below) proves every anchored rights-signal claim is
