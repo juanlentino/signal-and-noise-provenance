@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "DAW makers have a reason to keep provenance out of their software. They see liability. Under one design, they are right.\n\nThe design decides everything. Make the tool vouch for the work and you have built a notary. Make the tool let the artist sign their own work and you have built a pen. The two carry completely different risk.\n\nWhen the tool is a notary\n\nIf a DAW attests that a track is authentic, made by a human, built from licensed material, it is standing behind claims that get litigated over money. Its signature becomes evidence. It can be pulled into discovery. If the attestation is ever wrong, the company vouched for something false, and the unforgeable signature means it cannot later say the attestation was not theirs.\n\nCapturing who contributed adds a second exposure. Identity is personal data, with everything that follows from handling it. This is part of why C2PA deliberately left contributor identity out of its core specification. The standard chose to attest to the asset and stay quiet about the people, precisely to avoid this.\n\nUnder the notary model, the lawyers are not being paranoid. They are reading the design correctly.\n\nWhen the tool is a pen\n\nThe DAW does not have to vouch for anything. It can hand the artist a tool to sign their own work with their own key. It attests to nothing about the content beyond the fact that a signature was applied at a given time. The meaning lives with the key holder, not the software.\n\nA pen manufacturer is not liable for what you write with the pen. A camera that records EXIF data is not liable for what you point it at. An operating system that signs an update is not liable for whether the update is any good, only for the fact that the vendor signed it. Built that way, a DAW carries about that much risk. If an artist signs a false claim, the false claim is unforgeably theirs, which is exactly where the liability should sit.\n\nThe liability of doing nothing\n\nThe part the objection misses is that no provenance is not the zero-liability position. It is the rising one.\n\nAs AI-generated material floods the pipeline, the question of what was made by whom, with what, lands on everyone in the chain, and right now no one in that chain can answer it. Regulation is closing the gap from the other side. The EU AI Act requires machine-readable provenance markings on AI-generated audio as of August 2026. Once that is in force, the exposure of not supporting provenance starts to outweigh the exposure of supporting it.\n\nThe liability question has a design answer, and it has been answered before in every industry that signs anything. Build the notary and you own the risk. Build the pen and you hand the risk to the person making the claim, which is where it belonged all along.",
+    "note_uid": "77468383-8bdb-4c24-a6b0-18e62b812cdb",
+    "parent": "ae797d26c2f30d7eb7dc6492e49283cd49fe2f7679c675b633de4b95e38225eb",
+    "published_at": "2026-08-05T11:28:00Z",
+    "title": "The pen is not the notary",
+    "version": 2
+  },
+  "content_hash": "283be0aae89033d5b69201408513b15423d77def0501e40bb86921f1a336b069",
+  "signature": "SNLcdh7bMJlIOYcXD8LOMjItlNreFdGre1STpxXFa+u3P/Y8M9IeiffIhARGIF7yrBZmZsXWjcH13D9nB6zyAQ==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
