@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "It is tempting to say provenance removes the need to trust anyone. It doesn't, and a careful reader catches the overclaim on the first pass. What provenance actually does is move trust. Where it moves it is the whole point.\n\nWhat you stop trusting\n\nToday an attribution engine hands you a number. It was produced by a method you cannot inspect, by a vendor with a stake in the result, and you are asked to act on it as if it were settled. You take the number on faith because the method is sealed and there is no other option.\n\nThat is the trust provenance removes. Not trust in general. Trust in an unauditable box.\n\nWhat you trust instead\n\nIn its place you get things you can check. A signature you verify against a public key. A record you read. A signer you can hold accountable if the record turns out false.\n\nTrust has not vanished here. It has relocated. You still rely on the signers being honest, on the capture pipeline recording faithfully, on the registry that decides which signers count as legitimate. That is a real surface, and pretending it isn't weakens the case rather than strengthening it. The difference that matters is that the surface is small and open to inspection, instead of sealed inside an engine where you can see nothing at all. A handful of named, accountable parties is a different proposition from a black box, even though both involve trust.\n\nCapture shrinks it, it doesn't close it\n\nSigning automatically at the source shrinks the surface further. When the system records what happened rather than what someone reports, there is less room for a claim to be false in the first place. There is not zero room. Anything created outside the instrumented environment still arrives as an assertion, not an observation, and the honest framing says so instead of papering over it.\n\nThis is the same discipline that separates infrastructure from a sales pitch. A system that names the edge of what it can prove is more trustworthy than one that pretends the edge isn't there.\n\nThe goal was never to eliminate trust. No system that touches the real world offers that. The goal was to move trust somewhere you can check it, and to make a lie attributable when it happens. A black box gives you neither. That is the whole case, and it holds up better stated plainly than dressed up as something it isn't.",
+    "note_uid": "420efe27-c853-49a2-9805-3809c1a60aac",
+    "parent": null,
+    "published_at": "2026-08-08T20:19:00Z",
+    "title": "Trust doesn't disappear, it relocates",
+    "version": 1
+  },
+  "content_hash": "a144120676587992375916039e38f9fb7e0eee5225259c9377ccd01884dd5880",
+  "signature": "P3VcOpZD7yopqr8WvgO1LWHeSMPQHbQKZtkj38+bvc7iC23rUN2KUNYnvc+mUnTkxC8bxKaJu3ap2EOz18ATAw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
