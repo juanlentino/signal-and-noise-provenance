@@ -358,13 +358,13 @@
       "title": "Two kinds of provenance",
       "published_at": "2026-07-25T15:18:23Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "d009d401cd449c26fb7eb76342b26f234cd404899d9aabe20e76c347b56fadd8",
+      "version": 3,
+      "content_hash": "c69d18970086f31004b0db4bac3d42fbe4dc7711f91e314c428453256be5be02",
       "bitcoin_block": 959577,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 959577
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "422f8047-09f8-42b6-83b0-6608556ede76",
@@ -437,8 +437,8 @@
       "url": "https://juanlentino.com/robots.txt",
       "version": 3,
       "content_hash": "d3f4255f0445cc616bc714d6722a9c130b11921909d65d3043fe49b55d3a2fad",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 961517
     },
     {
       "slug": "tdm-policy",
