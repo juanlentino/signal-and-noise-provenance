@@ -416,11 +416,11 @@
       "anchor": "per-note",
       "version": 2,
       "content_hash": "283be0aae89033d5b69201408513b15423d77def0501e40bb86921f1a336b069",
-      "bitcoin_block": 961153,
+      "bitcoin_block": 961469,
       "ots_status": "confirmed",
-      "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 2,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 961469
     }
   ],
   "rights_signals": [
@@ -435,10 +435,10 @@
     {
       "slug": "robots-txt",
       "url": "https://juanlentino.com/robots.txt",
-      "version": 2,
-      "content_hash": "d610fe56cdbbe4da404aa61862d24ea269eb460e516b82ea4b4b132e2da83dec",
-      "ots_status": "confirmed",
-      "bitcoin_block": 959320
+      "version": 3,
+      "content_hash": "d3f4255f0445cc616bc714d6722a9c130b11921909d65d3043fe49b55d3a2fad",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "slug": "tdm-policy",
