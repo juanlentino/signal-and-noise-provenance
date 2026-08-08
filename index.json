@@ -421,6 +421,19 @@
       "anchored_version": 2,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 961469
+    },
+    {
+      "note_uid": "420efe27-c853-49a2-9805-3809c1a60aac",
+      "slug": "trust-doesnt-disappear-it-relocates",
+      "title": "Trust doesn't disappear, it relocates",
+      "published_at": "2026-08-08T20:19:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "a144120676587992375916039e38f9fb7e0eee5225259c9377ccd01884dd5880",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "rights_signals": [
