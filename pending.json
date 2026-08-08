@@ -1,3 +1,11 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "note_uid": "robots-txt",
+      "version": 3,
+      "path": "rights-signals/robots-txt/v3",
+      "kind": "rights-signal",
+      "queued_at": "2026-08-08T01:01:01.766Z"
+    }
+  ]
 }
