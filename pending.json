@@ -13,6 +13,13 @@
       "path": "rights-signals/license-xml/v2",
       "kind": "rights-signal",
       "queued_at": "2026-08-09T19:01:04.001Z"
+    },
+    {
+      "note_uid": "tdm-policy",
+      "version": 2,
+      "path": "rights-signals/tdm-policy/v2",
+      "kind": "rights-signal",
+      "queued_at": "2026-08-09T19:01:10.022Z"
     }
   ]
 }
