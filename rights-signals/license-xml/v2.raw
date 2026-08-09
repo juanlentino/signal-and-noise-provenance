@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rsl xmlns="https://rslstandard.org/rsl">
+  <content url="/" lastmod="2026-08-09">
+
+    <copyright type="person" contactUrl="https://juanlentino.com/contact/">Juan Lentino</copyright>
+    <terms>https://juanlentino.com/tdm-policy/</terms>
+
+    <!-- Unconditional. Mirrors Content-Signal search=yes, ai-input=yes and
+         section 3 of the policy: free, no acceptance, no attribution owed.
+
+         "search ai-input" IS ONE ELEMENT ON PURPOSE, AND MUST STAY THAT WAY.
+         Raised in the 2026-08-09 audit as possibly non-conforming, with a
+         proposed split into two <permits type="usage"> elements. Checked
+         against RSL 1.0 section 3.5, which settles it both ways:
+
+           "the listed values, separated by one or more spaces, are allowed"
+
+         so space separation conforms — and, in the same section:
+
+           "A <license> element MAY contain at most one <permits> element for
+            each distinct value of the type attribute"
+
+         so the proposed remedy would itself have been NON-CONFORMING. Two
+         <permits type="usage"> siblings inside one <license> is the thing the
+         spec forbids. Splitting the grant means splitting the <license>, which
+         would say something different: two separate term sets rather than one
+         licence covering both uses.
+
+         The worry behind the audit item was real — a strict parser reading only
+         the first token would silently drop the ai-input grant — but the fix
+         for that is a conforming document plus a test that asserts both tokens
+         survive parsing, which test/rsl.test.mjs does. Do not "fix" this. -->
+    <license>
+      <permits type="usage">search ai-input</permits>
+      <payment type="free"/>
+      <legal type="contact">https://juanlentino.com/tdm-policy/</legal>
+    </license>
+
+    <!-- Conditional. Content-Signal says ai-train=no; that is the default and
+         it is an Article 4(3) reservation, not an oversight. THIS licence is
+         the sole route by which training becomes permitted, and it takes effect
+         only for a party meeting the attribution conditions C1-C5 stated at
+         the <standard> URL below. Attribution is the consideration; there is
+         no monetary term.
+
+         WHY <standard> IS THE POLICY URL AND NOT THE CC BY 4.0 URL, even
+         though RSL's own guide shows CC BY there: the policy INCORPORATES
+         CC BY 4.0 §3(a) as its definition of adequate attribution, and then
+         adds C2-C4 on top (in-output, end-user-visible, corpus disclosure).
+         §3(a) alone is satisfied by a model card; C2 is not. Naming the CC
+         URL here would let a parser read the weaker half as the whole term,
+         and a licensee could satisfy the file while failing the licence. One
+         <standard>, pointing at the complete conditions. The CC reference is
+         published where it cannot be mistaken for the governing term: in the
+         policy prose, and as a namespaced sn:attributionStandard in the ODRL
+         representation. -->
+    <license>
+      <permits type="usage">ai-train</permits>
+      <payment type="attribution">
+        <standard>https://juanlentino.com/tdm-policy/</standard>
+      </payment>
+      <legal type="contact">https://juanlentino.com/contact/</legal>
+    </license>
+
+  </content>
+</rsl>

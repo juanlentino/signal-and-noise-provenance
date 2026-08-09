@@ -6,6 +6,13 @@
       "path": "rights-signals/robots-txt/v4",
       "kind": "rights-signal",
       "queued_at": "2026-08-09T19:00:58.000Z"
+    },
+    {
+      "note_uid": "license-xml",
+      "version": 2,
+      "path": "rights-signals/license-xml/v2",
+      "kind": "rights-signal",
+      "queued_at": "2026-08-09T19:01:04.001Z"
     }
   ]
 }
