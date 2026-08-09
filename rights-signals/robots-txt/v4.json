@@ -1,0 +1,13 @@
+{
+  "slug": "robots-txt",
+  "url": "https://juanlentino.com/robots.txt",
+  "content_hash": "294770dc377a737bac9de8877122179bf9cde552c5bb29a8320cecc417d61464",
+  "signature": "IZy37cN6+Mfqp/YEt3K3b8yFqI3iecN8tvgz0BHdBH7eS6jkBCeGaOfNFv57QsspJPQdVSYx4r+ZdWyHrBh6DQ==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
