@@ -441,26 +441,26 @@
     {
       "slug": "license-xml",
       "url": "https://juanlentino.com/license.xml",
-      "version": 1,
-      "content_hash": "d1308fd27030f076c9d5d398ca173972a968a77ae55460ce6a0c1d4102e1f330",
-      "ots_status": "confirmed",
-      "bitcoin_block": 959374
+      "version": 2,
+      "content_hash": "a645697a9b30edf738270a6351e2765b29048a69f882e81473e3f056c0a0f417",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "slug": "robots-txt",
       "url": "https://juanlentino.com/robots.txt",
-      "version": 3,
-      "content_hash": "d3f4255f0445cc616bc714d6722a9c130b11921909d65d3043fe49b55d3a2fad",
-      "ots_status": "confirmed",
-      "bitcoin_block": 961517
+      "version": 4,
+      "content_hash": "294770dc377a737bac9de8877122179bf9cde552c5bb29a8320cecc417d61464",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "slug": "tdm-policy",
       "url": "https://juanlentino.com/tdm-policy/",
-      "version": 1,
-      "content_hash": "5ae6f2d124a98b76527588fa16f59c8d3a4a7f13d6c04eafee9d3013d008bc6b",
-      "ots_status": "confirmed",
-      "bitcoin_block": 960034
+      "version": 2,
+      "content_hash": "022d947d092e5b71e135f884e7ee55d81f1d92c30fc7531c7fca84e272853fea",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "slug": "tdmrep-json",
