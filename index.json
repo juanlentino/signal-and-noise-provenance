@@ -457,8 +457,8 @@
     {
       "slug": "tdm-policy",
       "url": "https://juanlentino.com/tdm-policy/",
-      "version": 2,
-      "content_hash": "022d947d092e5b71e135f884e7ee55d81f1d92c30fc7531c7fca84e272853fea",
+      "version": 3,
+      "content_hash": "45ef26cb9c100657624f3bcbaa30203d266b8b5f471f5b0b9f68ec25c6f6b4a5",
       "ots_status": "pending",
       "bitcoin_block": null
     },
