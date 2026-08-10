@@ -443,24 +443,24 @@
       "url": "https://juanlentino.com/license.xml",
       "version": 2,
       "content_hash": "a645697a9b30edf738270a6351e2765b29048a69f882e81473e3f056c0a0f417",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 961766
     },
     {
       "slug": "robots-txt",
       "url": "https://juanlentino.com/robots.txt",
       "version": 4,
       "content_hash": "294770dc377a737bac9de8877122179bf9cde552c5bb29a8320cecc417d61464",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 961766
     },
     {
       "slug": "tdm-policy",
       "url": "https://juanlentino.com/tdm-policy/",
       "version": 3,
       "content_hash": "45ef26cb9c100657624f3bcbaa30203d266b8b5f471f5b0b9f68ec25c6f6b4a5",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 961770
     },
     {
       "slug": "tdmrep-json",
