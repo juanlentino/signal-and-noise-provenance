@@ -344,13 +344,13 @@
       "title": "Provenance as a CFO problem",
       "published_at": "2026-07-21T14:53:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "43d059e6f2068102c5a5d5058141d2a47fb6882f3eb9cd594ba1727247f0d234",
+      "version": 2,
+      "content_hash": "bd24be83a6cca6c0a086b8edfab24e68c1b99fd94b0543176e8aca77197eee82",
       "bitcoin_block": 959023,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 959023
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "0ab100ea-492a-41cd-9b1e-b9d3790c2903",
