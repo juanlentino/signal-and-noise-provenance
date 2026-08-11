@@ -451,7 +451,18 @@
       "standalone_bitcoin_block": 962018
     }
   ],
-  "pages": [],
+  "pages": [
+    {
+      "note_uid": "01cea10c-9ad3-4f8b-9d74-d0e7e90dbd1d",
+      "kind": "page",
+      "slug": "about",
+      "title": "About",
+      "version": 1,
+      "content_hash": "c5b61664d36cb6dffd9ba016e2993d77ce784c46ae29eb0b9751e05fe3298193",
+      "ots_status": "pending",
+      "bitcoin_block": null
+    }
+  ],
   "rights_signals": [
     {
       "slug": "license-xml",
