@@ -99,7 +99,18 @@ const sitePages = await fetchSiteJson("https://juanlentino.com/wp-json/wp/v2/pag
 for (const p of sitePages) {
   pagesConsidered++;
   const { body: html } = await fetchSite(p.link, { expect: "html" });
-  const uid = html.match(/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}/)?.[0];
+  // Match the uid inside the PROVENANCE PANEL'S LEDGER LINK, not any
+  // uuid-shaped string in the document. The notes loop can afford the loose
+  // regex because a published note always renders its panel and the only uuid
+  // on the page is its own; an arbitrary page can contain a uuid for any reason
+  // at all. Borrowing the loose pattern here failed immediately and correctly:
+  // /music/ carries a uuid with no record behind it, and the coarse matcher
+  // read that as a signed page whose proof had gone missing.
+  //
+  // Anchoring on `/tree/main/pages/<uid>` also confirms the KIND in the same
+  // match — the panel only emits that path for a subject the plugin resolved as
+  // a page (plugin v10.86.0).
+  const uid = html.match(/\/tree\/main\/pages\/([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/)?.[1];
   if (!uid) { pagesUnsigned++; continue; }          // unsigned page — expected
   const versions = recordVersions(pagesRoot, uid);
   if (!versions.length) {

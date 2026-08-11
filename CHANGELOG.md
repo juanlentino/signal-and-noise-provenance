@@ -8,6 +8,14 @@ ever written outside `notes/`. It was also **invisible**: absent from
 repo's CI runs. CI stayed green over it, because CI only ever checked things
 that were indexed. A page record was not wrong; it was unchecked.
 
+- **The UID is read from the panel's own ledger link**, `/tree/main/pages/<uid>`,
+  not from any uuid-shaped string in the document. The notes loop can afford the
+  loose regex — a published note always renders its panel and the only uuid on
+  the page is its own — but an arbitrary page can contain a uuid for any reason.
+  Borrowing the loose pattern failed immediately and correctly on first CI run:
+  `/music/` carries a uuid with no record behind it, and the coarse matcher read
+  that as a signed page whose proof had gone missing. Anchoring on the link also
+  confirms the KIND in the same match.
 - **`build-index.mjs` discovers signed pages the same way it discovers notes** —
   fetch the site, read the UID out of the rendered page — rather than by walking
   `pages/` on disk. Disk enumeration would publish records with nothing to
