@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "AI disclosure is going mandatory, and every platform is answering with more categories. More categories won't fix it. The problem is that the label is stored where a record belongs.\n\nMore categories, same argument\n\nFor a while, disclosing AI in music was optional. That is ending. Platforms are moving it from a courtesy to a requirement, and the disclosure now travels inside the release metadata whether an artist thinks about it or not.\n\nThe first version was one coarse choice: human, AI-assisted, or AI-generated. It didn't survive contact with real releases. \"AI-assisted\" ended up covering everything from a light touch of automated mastering to a fully generated backing track, and nobody could agree where the line sat. So the platforms split the label. Apple tags AI use across four separate things, the artwork, the recording, the composition, and the video. Spotify credits it per component, down to lyrics, vocals, instrumental performance, and production.\n\nFiner, but not fixed. The dispute didn't disappear when the categories multiplied, it moved up in resolution. \"Is this assisted or generated\" became \"is this AI production or AI instrumental,\" which is the same question with more boxes. Adding categories feels like progress because each new box is more specific than the last, but it is the same model with a finer sieve, and the thing slipping through is the same every time: a judgment call, made once, by hand.\n\nA label is a claim, not a record\n\nHere is the part that rarely gets said. Every one of these schemes asks a person to render a verdict at the moment of release. Somebody opens the upload form and decides that this track counts as assisted, or that stem counts as generated. They decide it once, usually weeks after the session, from memory, under whatever policy the platform happens to be running.\n\nNow look at what actually happened while the music was being made. Each contribution was a plain event. A stem came out of a generator or off a musician's instrument. The vocal was sung by a person or produced by a model. Neither of those is a judgment call. Each is a yes or no you could have written down the moment it happened, inside the tool doing the work.\n\nA better label was never the fix. Record the events first, and let the label follow. The disclosure category becomes a question you ask of that record, under whatever rule is current, at the moment someone actually needs the answer. The label stops being a value baked into the file and becomes a reading taken from it. Record first, label later.\n\nWhy this outlasts the current rules\n\nA record built this way doesn't care which categories are in fashion. When a platform adds a fifth tag next year, or a regulator wants the line drawn somewhere else, you derive the new label from the same events. Nobody re-attests, and nothing already released gets reopened.\n\nThe boundary fights lose their oxygen. There is no line to draw at creation if creation only records what happened. The argument over where \"assisted\" ends and \"generated\" begins is real, but it belongs at the reading layer, where a policy can shift it without disturbing the facts underneath. Each event stays a clean yes or no. The messy spectrum everyone argues about rides on top, where it can be redrawn as often as the rules change.\n\nGet the record right, and the label stops being an argument.",
+    "note_uid": "4880499e-cb88-4b38-bcdd-686799f35879",
+    "parent": null,
+    "published_at": "2026-08-11T13:53:00Z",
+    "title": "The label comes last",
+    "version": 1
+  },
+  "content_hash": "5d55586e46e694320abe3e608ddf98324fb5a3cf1660475b8a66e09a95ef0fec",
+  "signature": "h8iKaAzOoe+h44LmEeR1RJhnmO+64WnGDoDRUBPLGfga0Q14t3S9eVA4xev5UMJkzJLjskamUs18RfTNyue2Cg==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
