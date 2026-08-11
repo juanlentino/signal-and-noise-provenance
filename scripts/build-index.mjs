@@ -72,6 +72,69 @@ for (const post of posts) {
 
 entries.sort((a, b) => a.published_at.localeCompare(b.published_at));
 
+// ── Signed PAGES (2026-08-11) ────────────────────────────────────────────────
+//
+// Pages join by the SAME route notes take — fetch the site, read the UID out of
+// the rendered page — rather than by walking pages/ on disk. That is deliberate:
+// disk enumeration would list records with no way to check them against what
+// the site actually serves, and the site→ledger cross-exam is the whole point
+// of this file. A page record discovered from disk alone would be published
+// without ever being compared to anything.
+//
+// THE ONE ASYMMETRY WITH NOTES: a page with no UID is NORMAL, not an error.
+// Signing a page is opt-in per page (plugin v10.84.0), so most pages carry no
+// provenance at all and are skipped in silence. The notes loop throws on a
+// missing UID because every published note must be signed; applying that rule
+// here would fail CI on every ordinary page the site has.
+//
+// ADDITIVE BY CONTRACT: a new top-level key, never a reshaped `entries` row —
+// the rights_signals rows already have plugin-side readers and the note rows
+// have more.
+const pagesRoot = join(root, "pages");
+const pageEntries = [];
+let pagesConsidered = 0;
+let pagesUnsigned = 0;
+
+const sitePages = await fetchSiteJson("https://juanlentino.com/wp-json/wp/v2/pages?per_page=100&_fields=slug,link,title");
+for (const p of sitePages) {
+  pagesConsidered++;
+  const { body: html } = await fetchSite(p.link, { expect: "html" });
+  // Match the uid inside the PROVENANCE PANEL'S LEDGER LINK, not any
+  // uuid-shaped string in the document. The notes loop can afford the loose
+  // regex because a published note always renders its panel and the only uuid
+  // on the page is its own; an arbitrary page can contain a uuid for any reason
+  // at all. Borrowing the loose pattern here failed immediately and correctly:
+  // /music/ carries a uuid with no record behind it, and the coarse matcher
+  // read that as a signed page whose proof had gone missing.
+  //
+  // Anchoring on `/tree/main/pages/<uid>` also confirms the KIND in the same
+  // match — the panel only emits that path for a subject the plugin resolved as
+  // a page (plugin v10.86.0).
+  const uid = html.match(/\/tree\/main\/pages\/([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/)?.[1];
+  if (!uid) { pagesUnsigned++; continue; }          // unsigned page — expected
+  const versions = recordVersions(pagesRoot, uid);
+  if (!versions.length) {
+    // The page advertises a provenance UID the ledger has never seen. That is a
+    // real contradiction — the site claiming a proof that does not exist — and
+    // is exactly the direction this cross-exam is built to catch.
+    throw new Error(`page ${p.slug} renders provenance uid ${uid} but no record exists at pages/${uid}/`);
+  }
+  const version = versions.at(-1);
+  const record = JSON.parse(readFileSync(join(pagesRoot, uid, `v${version}.json`), "utf8"));
+  pageEntries.push({
+    note_uid: uid,                                   // same field name as note rows: one uid namespace
+    kind: "page",
+    slug: p.slug,
+    title: record?.payload?.title || p.title.rendered,
+    version: record?.payload?.version ?? version,
+    content_hash: record.content_hash,
+    ots_status: record.ots.status,
+    bitcoin_block: record.ots.bitcoin_block ?? null,
+  });
+}
+pageEntries.sort((a, b) => a.slug.localeCompare(b.slug));
+console.log(`pages: ${pageEntries.length} signed of ${pagesConsidered} considered (${pagesUnsigned} carry no provenance uid — expected, signing is opt-in)`);
+
 // The rights-signals ledger has no index of its own, so anything asking "is the
 // currently served robots.txt the one that is anchored?" had to probe v1, v2, …
 // until a 404, or spend one of GitHub's 60 unauthenticated tree calls an hour.
@@ -98,5 +161,10 @@ const rightsSignals = readdirSync(signalsRoot, { withFileTypes: true })
     };
   });
 
-writeFileSync(join(root, "index.json"), `${JSON.stringify({ schema: "sn-provenance-index-v1", generated_from: "public-wordpress-and-ledger", entries, rights_signals: rightsSignals }, null, 2)}\n`);
+// `pages` is appended, never merged into `entries`: existing readers (the
+// plugin's integrity probe, the rights_signals consumers) index into `entries`
+// by shape, and a row with different fields inside it would be a silent
+// contract break. A reader that does not know about pages simply does not see
+// them, which is the correct behaviour for an additive change.
+writeFileSync(join(root, "index.json"), `${JSON.stringify({ schema: "sn-provenance-index-v1", generated_from: "public-wordpress-and-ledger", entries, pages: pageEntries, rights_signals: rightsSignals }, null, 2)}\n`);
 console.log(`wrote ${entries.length} coverage entries and ${rightsSignals.length} rights-signal rows`);

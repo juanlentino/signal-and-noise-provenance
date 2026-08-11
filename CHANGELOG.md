@@ -1,5 +1,53 @@
 # Changelog
 
+## 2026-08-11 — signed pages enter the index (R2A step 4)
+
+The About page was signed today — `pages/01cea10c…/v1.json`, the first record
+ever written outside `notes/`. It was also **invisible**: absent from
+`index.json`, and therefore outside the record↔index consistency check this
+repo's CI runs. CI stayed green over it, because CI only ever checked things
+that were indexed. A page record was not wrong; it was unchecked.
+
+- **The UID is read from the panel's own ledger link**, `/tree/main/pages/<uid>`,
+  not from any uuid-shaped string in the document. The notes loop can afford the
+  loose regex — a published note always renders its panel and the only uuid on
+  the page is its own — but an arbitrary page can contain a uuid for any reason.
+  Borrowing the loose pattern failed immediately and correctly on first CI run:
+  `/music/` carries a uuid with no record behind it, and the coarse matcher read
+  that as a signed page whose proof had gone missing. Anchoring on the link also
+  confirms the KIND in the same match.
+- **`build-index.mjs` discovers signed pages the same way it discovers notes** —
+  fetch the site, read the UID out of the rendered page — rather than by walking
+  `pages/` on disk. Disk enumeration would publish records with nothing to
+  compare them against, and the site→ledger cross-exam is the entire point of
+  this file.
+- **The one asymmetry with notes, stated because it looks like a missing check:**
+  a page with **no UID is normal**, not an error. Signing a page is opt-in per
+  page (plugin v10.84.0), so most pages carry no provenance and are skipped in
+  silence. The notes loop throws on a missing UID because every published note
+  must be signed; the same rule here would fail CI on every ordinary page.
+  Conversely, a page that **renders a UID with no record on disk** throws — the
+  site claiming a proof that does not exist is exactly what this cross-exam is
+  for.
+- **`verify-coverage.mjs` holds page rows to the same record↔index checks** —
+  newest version, matching `content_hash`, matching OTS status and block. The
+  record side reads `?? null` so a record written before worker v1.10.1 (which
+  omitted the key rather than writing null) compares equal to the explicit null
+  the index always writes. That mismatch is what reddened CI earlier today.
+- **The site→ledger reverse-coverage tier is deliberately NOT applied to pages**,
+  and says so in the code: with opt-in signing, "a published page with no record"
+  is normal rather than a gap. Left silent, the missing tier would read as an
+  oversight instead of a decision.
+- **Additive by contract**: `pages` is a new top-level key. `entries` rows are
+  untouched, because plugin-side readers index into them by shape and a row with
+  different fields inside that array would be a silent contract break.
+
+Requires plugin **v10.86.0** to be installed before it finds anything: the UID
+this reads only appears in a signed page's HTML once that release's render
+lands. Until then the pages section is empty and everything behaves exactly as
+before — verified against the current index, which has no `pages` key at all.
+
+
 ## 2026-08-11 — the mirror moved to v2 and the verifier was not told
 
 Every push run since 01:45 failed with:
