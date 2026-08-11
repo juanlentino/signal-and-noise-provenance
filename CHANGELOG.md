@@ -1,5 +1,47 @@
 # Changelog
 
+## 2026-08-11 — the mirror moved to v2 and the verifier was not told
+
+Every push run since 01:45 failed with:
+
+```
+HTTPS key mirror does not match key history — schema: got "sn-provenance-keys-v2",
+expected "sn-provenance-keys-v1".
+```
+
+**The key material was byte-identical.** Id, algorithm, public key, fingerprint, status
+and introduction date all agreed with `keys/key-history.json`, and the DNS pin agreed too.
+The only divergence was the version string: the plugin's v10.77.0 ("key history with a
+future") moved the served document to **v2**, adding a per-key validity window and an
+optional `next_key_commitment`, and this repo — a separate repo, released separately —
+kept asserting v1. It went unnoticed until the plugin carrying v2 reached the live site.
+
+`verify:key-pins` now expects `sn-provenance-keys-v2`, deliberately as a **single accepted
+version** rather than an allow-list. This is the trust root's mirror; "either shape is
+fine" is how a downgrade goes unremarked.
+
+**Bumping the string alone would have traded a loud failure for a blind spot,** because
+v2's entire contribution is the validity window and nothing verified it. So the comparison
+also asserts:
+
+- `valid_from` agrees with the key history's `introduced_at`.
+- `valid_until` is `null` — the key we are still signing with has an open window by
+  definition, and a date there contradicts `status: "active"` rather than refining it.
+- An **absent** `valid_until` is reported as absent, not collapsed to `null`. A mirror that
+  dropped the field would otherwise pass as though it had declared an open window.
+
+**Why this had no test.** The comparison lived inline in `verify-key-pins.mjs`, below a DNS
+lookup and a live fetch at module scope — reaching it from a test meant performing both, so
+it had none. It moves to `key-pins.mjs` as a pure function over `(document, current)`;
+`verify-key-pins.mjs` stays the runner that resolves, fetches and reports. 9 assertions in
+`verify/key-pins.test.mjs`.
+
+**Also refreshed `keys/provenance-keys.json`**, the committed copy of the served document,
+which was still at v1. Nothing read it — no script imports it, only prose points at the live
+URL — which is exactly why it drifted: an artifact with no reader has no guard. It now has
+one: the snapshot is held to the same comparison as the live mirror, so the next skew is a
+red test rather than a red deploy.
+
 ## 2026-08-05 — a pending anchor is a state, not a failed build
 
 `verify:coverage` failed at 11:35 with `anchor is not confirmed for

@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { captureEvidence, fetchSite, installEvidenceReport } from "./fetch-site.mjs";
+import { keyPinDivergences } from "./key-pins.mjs";
 installEvidenceReport("verify:key-pins");
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -24,24 +25,11 @@ if (txtAnswers.length !== 1 || txtAnswers[0] !== expectedTxt) {
 // lives in fetch-site.mjs so every leg gets it — including the payload-shape
 // assertion the original lacked.
 const { body: document, raw } = await fetchSite("https://juanlentino.com/.well-known/provenance-keys.json", { expect: "json" });
-// An 8-way `||` throwing one opaque string told you a mismatch existed but not
-// WHICH field or what arrived — so when a runner hit this on 2026-08-03 while
-// the same document verified perfectly from a residential IP, the log could not
-// say whether the mirror was wrong or the edge had served something else.
-// Compare field by field and report the divergence with the bytes kept.
-const mirrored = document?.keys?.find((key) => key.id === current.id);
-const divergences = [
-  ["schema", document?.schema, "sn-provenance-keys-v1"],
-  ["domain", document?.domain, "juanlentino.com"],
-  [`keys[id=${current.id}]`, mirrored ? "present" : "ABSENT", "present"],
-  ...(mirrored ? [
-    ["algorithm", mirrored.algorithm, current.algorithm],
-    ["public_key_base64", mirrored.public_key_base64, current.public_key_base64],
-    ["sha256_fingerprint", mirrored.sha256_fingerprint, current.sha256_fingerprint],
-    ["status", mirrored.status, current.status],
-    ["introduced_at", mirrored.introduced_at, current.introduced_at],
-  ] : []),
-].filter(([, actual, expected]) => actual !== expected);
+// The comparison itself lives in key-pins.mjs so it can be tested without DNS
+// or a network fetch — see verify/key-pins.test.mjs. It was inline and
+// untestable here until 2026-08-11, which is precisely why a schema bump on the
+// producing side sat unnoticed until it reached the live mirror.
+const divergences = keyPinDivergences(document, current);
 
 if (divergences.length) {
   captureEvidence("key-mirror-mismatch", "provenance-keys.json", raw, "json");
