@@ -134,13 +134,13 @@
       "title": "Detection scales the wrong way",
       "published_at": "2026-05-21T13:32:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "4ab0870c7cb4e37eba32b3adef8e467d244ac7d14538888bdfeb31bbc8b1feb0",
+      "version": 2,
+      "content_hash": "807dcdafd0a7089f926b6e485021211ce6cd8dd943a1d476df623c456a3617f5",
       "leaf_hash": "28318c35f93317ec926128087a02b2b33584ddc3d586613d36474077ac509f39",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "23c62072-a277-4d09-80fc-5cca54d598d3",
@@ -260,13 +260,13 @@
       "title": "Open standards or no standards",
       "published_at": "2026-06-30T13:57:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "60023cd4e9f08fd14e1bbf21f27ee408f551476e462c26cd7dec914f9dffea98",
+      "version": 2,
+      "content_hash": "333f8513ab5680dc02c3ba14823d7650e102a214806a4c363a73f34018ace5ea",
       "leaf_hash": "de3635fcc30bb568b330d3203ab6041fa725d55fc2dead8f23137e56fcde74c7",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "b1d2f576-ef1d-4ac0-b30a-4ce93b11bc90",
@@ -316,13 +316,13 @@
       "title": "Why platforms wait on provenance",
       "published_at": "2026-07-14T14:04:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "0a05a24e397045ce9a2eacf7661570c3b2861fb0a2d73f9bfd4f935bcc46d9ca",
+      "version": 2,
+      "content_hash": "19d65c4c24cb56f4aad5a50ee0275bcc5dd782d92a866feeab31c0ef62e53945",
       "bitcoin_block": 958019,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958019
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "dcb5a07a-aea4-4721-b30e-9da11b00c100",
