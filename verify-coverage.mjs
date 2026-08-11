@@ -93,6 +93,43 @@ for (const row of signalRows) {
 const unindexed = readdirSync(join(root, "notes")).filter((dir) => recordVersions(join(root, "notes"), dir).length && !uids.has(dir));
 if (unindexed.length) throw new Error(`records missing from the index: ${unindexed.join(", ")}; rerun node scripts/build-index.mjs`);
 
+// ── Signed PAGES (2026-08-11) ────────────────────────────────────────────────
+//
+// The `pages` rows get the same record↔index consistency check the note rows
+// get. Without this a page row could claim any hash or status and nothing would
+// contradict it — which was the state the About page landed in: a real record,
+// correctly signed, sitting OUTSIDE every cross-check the ledger runs. CI was
+// green over it because CI only ever checked things that were indexed.
+//
+// The site→ledger reverse-coverage tier (below, for notes) is deliberately NOT
+// applied to pages: signing a page is opt-in, so "a published page with no
+// record" is normal rather than a gap, and asserting otherwise would fail on
+// every ordinary page. Stated here rather than left as an absence, so the
+// missing tier reads as a decision instead of an oversight.
+const pageRows = Array.isArray(index.pages) ? index.pages : [];
+for (const row of pageRows) {
+  const versions = recordVersions(join(root, "pages"), row.note_uid);
+  if (!versions.includes(row.version)) {
+    throw new Error(`indexed page record missing on disk for ${row.slug} (index says v${row.version}, on disk: ${versions.map((v) => `v${v}`).join(",") || "none"})`);
+  }
+  const latest = versions.at(-1);
+  if (row.version !== latest) {
+    throw new Error(`index is pinned to a superseded page record for ${row.slug}: row says v${row.version}, newest is v${latest}; rerun node scripts/build-index.mjs`);
+  }
+  const record = JSON.parse(readFileSync(join(root, `pages/${row.note_uid}/v${row.version}.json`), "utf8"));
+  if (record.content_hash !== row.content_hash) {
+    throw new Error(`index content_hash disagrees with the page record for ${row.slug}; rerun node scripts/build-index.mjs`);
+  }
+  // `?? null` on the record side ONLY. A record written before worker v1.10.1
+  // omits the key entirely, and absent must compare equal to the explicit null
+  // the index always writes — that mismatch is exactly what reddened CI on
+  // 2026-08-11.
+  if (record.ots.status !== row.ots_status || (record.ots.bitcoin_block ?? null) !== (row.bitcoin_block ?? null)) {
+    throw new Error(`index is stale for page ${row.slug}: record says ${record.ots.status}/${record.ots.bitcoin_block ?? null}, index says ${row.ots_status}/${row.bitcoin_block ?? null}; rerun node scripts/build-index.mjs`);
+  }
+}
+if (pageRows.length) console.log(`${pageRows.length} signed page${pageRows.length === 1 ? "" : "s"} checked against their records`);
+
 if (!process.argv.includes("--offline")) {
   // Same unguarded shape that broke build-index.mjs on 2026-08-02 (an `ok`
   // status is not a valid payload); routed through fetchSite before it could
