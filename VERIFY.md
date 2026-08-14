@@ -1,5 +1,20 @@
 # Verify the public provenance ledger
 
+## What you are trusting when you run this
+
+Not the site. Every check below runs from the files in your clone: the
+records, the keys, the proofs, and the verifier itself are all in front of
+you, readable before you run anything. The only network call the per-note
+verifier makes is one public block-explorer lookup for a Bitcoin header —
+and you can point it at any explorer you prefer, or check the header by any
+independent means.
+
+What you ARE trusting: the code in this repository (a few small files —
+read them), your Node runtime, and one block-header source. That is the
+whole list. This is the honest version of "don't trust the site's own
+button": the site's /verify page runs the same checks, but with JavaScript
+the site served; this program removes that residue.
+
 Node 22 is recommended. A fresh clone needs no OTS client:
 
 ```bash
