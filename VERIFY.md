@@ -40,6 +40,27 @@ every indexed standalone record in one command. `verify-pages.mjs` runs the same
 served-page proof as `--from-page` across every indexed Note in one pass and
 reports how many needed the public-REST whitespace fallback.
 
+## Verify the verifier
+
+Releases of this tooling are tagged, built in this repository's public CI, and
+published with a [build provenance attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+(Sigstore). To check a downloaded release tarball:
+
+```bash
+gh attestation verify sn-verifier-<tag>.tar.gz --repo juanlentino/signal-and-noise-provenance
+```
+
+What that proves: the tarball you hold was built by this repository's release
+workflow, from a named commit, unmodified since — so a tampered mirror or a
+corrupted download fails loudly.
+
+What it does not prove, said plainly: the attestation's trust anchor is
+GitHub and Sigstore — the same party hosting the clone. It adds
+tamper-evidence between the build and your download; it does not remove
+GitHub from your trust list. If your concern is GitHub itself, read the code
+in your clone (the section above) — that path never trusted the release
+artifact to begin with.
+
 ## Content and page verification
 
 The canonical artifact is `record.payload.content`. Never feed an entire

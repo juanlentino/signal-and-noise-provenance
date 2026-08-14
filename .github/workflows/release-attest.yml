@@ -1,0 +1,47 @@
+# Signed releases for the code that signs the content (roadmap R5, threat
+# model §9.5 P-54). On every v* tag: build the verifier tarball, attest its
+# build provenance (Sigstore, via GitHub's attestation service), publish a
+# REAL release carrying the artifact.
+#
+# NOTE deliberately breaking the plugin/theme repos' drafts-forever rule:
+# there, the updater reads tags and releases are cosmetic notes. HERE the
+# release IS the distribution — a stranger downloads the tarball and runs
+# `gh attestation verify` against it. A draft would defeat the row.
+#
+# This repo is PUBLIC, so these minutes are free (house CI rules still
+# apply: timeout-minutes always set).
+name: Release attestation
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+jobs:
+  attest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the verifier tarball
+        run: |
+          mkdir -p dist
+          tar -czf "dist/sn-verifier-${GITHUB_REF_NAME}.tar.gz" \
+            verify.mjs verify-records.mjs verify-pages.mjs verify-genesis.mjs \
+            verify-key-history.mjs verify-key-pins.mjs verify-coverage.mjs \
+            verify-rights-signals.mjs \
+            normalize verify fetch-site.mjs ledger-records.mjs key-pins.mjs \
+            anchor-grace.mjs package.json VERIFY.md \
+            keys/key-history.json keys/provenance-keys.json keys/sn-ed25519-2026-07.pub
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: dist/*.tar.gz
+      - name: Publish the release with the artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/*.tar.gz \
+            --title "Verifier $GITHUB_REF_NAME" \
+            --notes "Attested build of the standalone verifier. Check it: \`gh attestation verify sn-verifier-$GITHUB_REF_NAME.tar.gz --repo $GITHUB_REPOSITORY\` — see VERIFY.md's 'Verify the verifier' section for what that proves and what it does not."
