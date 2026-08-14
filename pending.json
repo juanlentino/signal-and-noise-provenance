@@ -13,6 +13,13 @@
       "path": "notes/a0f8393c-9804-4780-9e77-f2d4f6b7d1ff/v2",
       "kind": "note",
       "queued_at": "2026-08-14T17:05:12.683Z"
+    },
+    {
+      "note_uid": "4a32127e-5571-4b85-a1f5-84714682d30e",
+      "version": 2,
+      "path": "notes/4a32127e-5571-4b85-a1f5-84714682d30e/v2",
+      "kind": "note",
+      "queued_at": "2026-08-14T17:05:21.704Z"
     }
   ]
 }
