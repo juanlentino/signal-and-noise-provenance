@@ -204,13 +204,13 @@
       "title": "Who vouches for the independent artist?",
       "published_at": "2026-06-11T21:23:39Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "8e3322f8b650706c41029a7bffb977a997f8a7a20c2d44fa6906fcd095d3c91b",
+      "version": 2,
+      "content_hash": "c4144d7fe4b42bf07724bb46919c42e630f64609bcf0e5ca5d6b575f6e6ac0a1",
       "leaf_hash": "b8c2c9983cc5a02aa63e05c0ef064c420d9f9857aa1666779c05929442463431",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "9519209a-7a01-405e-8de7-d291b80fafd4",
