@@ -8,13 +8,13 @@
       "title": "Why C2PA isn't enough for music",
       "published_at": "2026-04-25T04:07:07Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "9d5f774f30e764cebc767cd21afad946bc0da8a661a498ae40d0490a1f3bab44",
+      "version": 2,
+      "content_hash": "7e4a6590e65f46a1982a0390a7d7fa390909d0963f3c2f74110f1a0509904cd4",
       "leaf_hash": "f850dc9f348a3957474b94489251a7900ce0874211e549b6fa9a5b41b298684f",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 957333
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "3851b2f3-ac70-4df7-89e7-ddee54ceadd2",
@@ -36,13 +36,13 @@
       "title": "Where artist signatures live",
       "published_at": "2026-05-03T01:37:50Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "2bab277c3c3aa9010a78d162bd266b1128ca72439df7ab145529444dc71d210c",
+      "version": 2,
+      "content_hash": "fbca7ce381cdf2d31cf8f59c99e070e1f2885e9a36b227f03255edb8755dcf17",
       "leaf_hash": "659caca9a017b9e4183fee38154be111936a67c82e61e42a67ef9187be3a4953",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "dedf0479-0b1b-4551-a411-7e5840c87097",
@@ -78,13 +78,13 @@
       "title": "Verifying the artist isn't enough",
       "published_at": "2026-05-09T22:33:32Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "b69817067a5c462bc89255bc83782ad79132faa7ab6368544c59db32c01d02c5",
+      "version": 2,
+      "content_hash": "7408dcc14e6cd8fc955a72e5f2783d2d3d8ae8b2e8b498f8823610d5da7f289a",
       "leaf_hash": "6bea3b91d6bfa6aa9dd37cfaf4b87523962e032fdcc148c38f772ac2464c23ed",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "1059fb8d-2602-45a7-912e-18f463c7146d",
