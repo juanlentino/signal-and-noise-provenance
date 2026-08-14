@@ -449,6 +449,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 962018
+    },
+    {
+      "note_uid": "9ff04b24-d270-4f7d-a155-729b2842717a",
+      "slug": "the-master-never-moves",
+      "title": "The master never moves",
+      "published_at": "2026-08-14T18:46:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "06a981770bf1cbe3eebfbc8055aeffb206efa75209898556579cc8b9b8b0f81a",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [],
