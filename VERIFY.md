@@ -40,6 +40,33 @@ every indexed standalone record in one command. `verify-pages.mjs` runs the same
 served-page proof as `--from-page` across every indexed Note in one pass and
 reports how many needed the public-REST whitespace fallback.
 
+## What the signature attests — and what it does not
+
+A passing run proves four things: the record's bytes are unchanged since they
+were signed, the signature verifies against the independently pinned key, the
+content existed no later than the Bitcoin block its OTS proof commits to, and
+the page the site serves still reproduces the signed content exactly.
+
+What it does not prove, said plainly: that a person applied a key by hand over
+these words. The private key is a Cloudflare Worker secret (see "Pin the key
+outside GitHub" below), and the Worker signs when the site tells it a Note was
+published. So the signature attests that **the author's own publishing
+infrastructure witnessed this content at this time** — not that a human signed
+it directly. The trust boundary is the secret shared between the site and that
+Worker, not the author's presence: anyone able to make an authenticated request
+to it could obtain a valid signature.
+
+That is deliberate, and it is narrow. This ledger is one instantiation of a
+larger argument — a solo author signing their own text. Automated signing
+infrastructure under an author's sole control is the same arrangement as a
+digital audio workstation holding a creator's key: an instrument, not an issuing
+authority. What it is not is an independent third party, and nothing claimed here
+depends on it being one.
+
+Nor is it permanent. `key-history.json` introduces new key generations through
+transitions signed by the preceding key, so moving to a differently held key
+later leaves every signature made before it verifiable.
+
 ## Verify the verifier
 
 Releases of this tooling are tagged, built in this repository's public CI, and
