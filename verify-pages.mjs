@@ -64,6 +64,20 @@ async function freshPageMatches(pageUrl, record) {
   }
 }
 
+// --tolerate-stale-edge: pass a PROVEN-stale edge (origin reproduces the signed
+// record, only the cached render lags) as a warning instead of a failure.
+//
+// Set ONLY on the Worker's own record pushes, which run seconds after the edit
+// that triggered them — before any purge can propagate. Every other trigger,
+// the daily schedule included, leaves it off, so a page still stale hours later
+// is caught with nothing tolerated.
+//
+// It never softens `drift`. A page whose ORIGIN disagrees with the signed
+// record still fails here, on a record push, immediately. Tampering has no
+// settling window; only cache propagation does.
+const tolerateStaleEdge = process.argv.includes("--tolerate-stale-edge");
+const staleEdges = [];
+
 let checked = 0;
 let restFallbacks = 0;
 for (const entry of index.entries) {
@@ -88,16 +102,34 @@ for (const entry of index.entries) {
     // so this reads what WordPress renders right now.
     const fresh = await freshPageMatches(pageUrl, record);
     if ("stale-edge" === classifyPageFailure({ bareMatches: false, freshMatches: fresh })) {
-      throw new Error(
+      const why =
         `stale edge cache for ${entry.slug} — the ORIGIN reproduces the signed record and the bare URL does not, ` +
         `so the ledger and the content are intact and a cache is serving an older render (${detail}). ` +
         `Bare URL headers: ${describeEdge(bare.response?.headers)}. ` +
-        `Purge the note URL; if a per-URL purge does not clear it, purge the zone.`
-      );
+        `Purge the note URL; if a per-URL purge does not clear it, purge the zone.`;
+      if (tolerateStaleEdge) {
+        // A record push runs SECONDS after the edit; the purge has not
+        // propagated yet, and that is not a fault. Tolerated here and here
+        // only — the scheduled run has no such excuse and fails on it.
+        staleEdges.push(entry.slug);
+        console.warn(`::warning::${why}`);
+        checked += 1;
+        continue;
+      }
+      throw new Error(why);
     }
     throw new Error(`served-page drift for ${entry.slug} (${detail}) — the origin does not reproduce the signed record either; this is content drift, not a cache`);
   }
   if (result.source === "public-rest+served-page") restFallbacks += 1;
   checked += 1;
 }
-console.log(`${checked}/${checked} served pages reproduce their standalone records (${restFallbacks} twin whitespace fallback(s))`);
+// A tolerated staleness must never read as "all clean" in the summary line —
+// that is how a green run stops meaning anything. Say what was let through.
+const verified = checked - staleEdges.length;
+console.log(`${verified}/${checked} served pages reproduce their standalone records (${restFallbacks} twin whitespace fallback(s))`);
+if (staleEdges.length) {
+  console.log(
+    `${staleEdges.length} page(s) tolerated as stale-edge on a record push, origin verified correct: ${staleEdges.join(", ")}. ` +
+    `The next scheduled run does NOT tolerate these.`
+  );
+}
