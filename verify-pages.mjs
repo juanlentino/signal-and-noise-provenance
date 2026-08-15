@@ -3,7 +3,8 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { verifyPageRecord } from "./verify.mjs";
-import { captureEvidence, fetchSite, fetchSiteHtml, installEvidenceReport } from "./fetch-site.mjs";
+import { captureEvidence, fetchSite, installEvidenceReport } from "./fetch-site.mjs";
+import { classifyPageFailure, describeEdge } from "./stale-edge.mjs";
 installEvidenceReport("verify:pages");
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -33,6 +34,36 @@ async function twinRendered(slug) {
     : `HTTP ${response.status} with keys [${Object.keys(doc).join(",")}] — ${JSON.stringify(doc).slice(0, 300)}`;
   return { why: `${url} → ${why}, cf-ray ${response.headers.get("cf-ray") || "(none)"}` };
 }
+/**
+ * Does the ORIGIN reproduce the signed record right now?
+ *
+ * A cache-busting query string misses both the edge cache and the origin page
+ * cache, so this reads what WordPress renders at this moment. Returns null when
+ * the probe cannot answer — null is NOT "matches", and classifyPageFailure
+ * treats it as inconclusive, so a failed probe never excuses a real drift.
+ *
+ * @param {string} pageUrl Bare page URL.
+ * @param {object} record  The signed record to reproduce.
+ * @returns {Promise<boolean|null>}
+ */
+async function freshPageMatches(pageUrl, record) {
+  // Fixed, non-secret buster: the value never varies by run, so a green CI log
+  // stays reproducible by hand from the log line alone.
+  const url = `${pageUrl}?sn-cache-probe=1`;
+  try {
+    const { body: freshHtml } = await fetchSite(url, { expect: "html" });
+    const direct = await verifyPageRecord({ record, pageHtml: freshHtml });
+    if (direct.ok) return true;
+    // Same twin-whitespace allowance the bare path gets, or an origin that is
+    // merely whitespace-different would read as drift.
+    const twin = await twinRendered(new URL(pageUrl).pathname.split("/").filter(Boolean).at(-1));
+    if (twin.why) return null;
+    return (await verifyPageRecord({ record, pageHtml: freshHtml, restRendered: twin.html })).ok;
+  } catch {
+    return null;
+  }
+}
+
 let checked = 0;
 let restFallbacks = 0;
 for (const entry of index.entries) {
@@ -41,14 +72,31 @@ for (const entry of index.entries) {
   // Demanding text/html matters here: an interstitial or error page would
   // otherwise reach verifyPageRecord and be reported as "served-page drift",
   // blaming the Note for an edge verdict.
-  const pageHtml = await fetchSiteHtml(`https://juanlentino.com/notes/${entry.slug}/`);
+  const pageUrl = `https://juanlentino.com/notes/${entry.slug}/`;
+  const bare = await fetchSite(pageUrl, { expect: "html" });
+  const pageHtml = bare.body;
   let result = await verifyPageRecord({ record, pageHtml });
   if (!result.ok) {
     const twin = await twinRendered(entry.slug);
     if (twin.why) throw new Error(`twin content_html missing for ${entry.slug} — ${twin.why}`);
     result = await verifyPageRecord({ record, pageHtml, restRendered: twin.html });
   }
-  if (!result.ok) throw new Error(`served-page drift for ${entry.slug} (content=${result.contentOk}, hash=${result.hashOk}, pageText=${result.pageTextOk})`);
+  if (!result.ok) {
+    const detail = `content=${result.contentOk}, hash=${result.hashOk}, pageText=${result.pageTextOk}`;
+    // Ask the ORIGIN the same question before accusing anyone of tampering.
+    // A cache-busting query bypasses the edge and the origin page cache alike,
+    // so this reads what WordPress renders right now.
+    const fresh = await freshPageMatches(pageUrl, record);
+    if ("stale-edge" === classifyPageFailure({ bareMatches: false, freshMatches: fresh })) {
+      throw new Error(
+        `stale edge cache for ${entry.slug} — the ORIGIN reproduces the signed record and the bare URL does not, ` +
+        `so the ledger and the content are intact and a cache is serving an older render (${detail}). ` +
+        `Bare URL headers: ${describeEdge(bare.response?.headers)}. ` +
+        `Purge the note URL; if a per-URL purge does not clear it, purge the zone.`
+      );
+    }
+    throw new Error(`served-page drift for ${entry.slug} (${detail}) — the origin does not reproduce the signed record either; this is content drift, not a cache`);
+  }
   if (result.source === "public-rest+served-page") restFallbacks += 1;
   checked += 1;
 }
