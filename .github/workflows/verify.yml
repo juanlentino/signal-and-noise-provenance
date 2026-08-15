@@ -42,6 +42,34 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Is this the Worker's own record push?
+      #
+      # Such a push lands SECONDS after the edit that triggered it, so the page
+      # cache has provably not propagated yet. That one condition — and only
+      # that one — is tolerated by verify:pages below. Every other trigger,
+      # including the daily schedule, verifies with nothing tolerated. Content
+      # drift still fails here, immediately: tampering gets no settling window.
+      #
+      # The message, not the author: the Worker commits under the owner's name
+      # (a PAT), so github.actor cannot tell a record push from a hand push.
+      #
+      # HEAD_MSG is read through env and never interpolated into the script
+      # body — a commit message is attacker-controllable text, and putting it
+      # directly in `run:` is the classic Actions script-injection sink.
+      - name: Classify the trigger
+        id: trigger
+        env:
+          HEAD_MSG: ${{ github.event.head_commit.message }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "push" ] \
+             && printf '%s' "$HEAD_MSG" | grep -qE '^provenance: [0-9a-f-]{36} v[0-9]+'; then
+            echo "record_push=true" >> "$GITHUB_OUTPUT"
+            echo "Worker record push — verify:pages tolerates a PROVEN-stale edge (origin must still match)."
+          else
+            echo "record_push=false" >> "$GITHUB_OUTPUT"
+            echo "Not a record push — verifying with nothing tolerated."
+          fi
       # Self-heal (2026-07-29): the Worker commits records but never index
       # rows, so every new anchor used to red the coverage guard until a
       # human ran build-index (two rows drifted unseen Jul 25-28). Rebuild
@@ -83,7 +111,19 @@ jobs:
       - run: npm run verify:keys
       - run: npm run verify:key-pins
       - run: npm run verify:coverage
-      - run: npm run verify:pages
+      # The ONLY step whose strictness depends on the trigger. Everything else
+      # — records, genesis, keys, key-pins, coverage, the test suite — runs
+      # identically on every trigger, because none of them can be legitimately
+      # wrong just because a push is young.
+      - name: Verify served pages reproduce their records
+        env:
+          RECORD_PUSH: ${{ steps.trigger.outputs.record_push }}
+        run: |
+          if [ "$RECORD_PUSH" = "true" ]; then
+            npm run verify:pages -- --tolerate-stale-edge
+          else
+            npm run verify:pages
+          fi
       # `npm test` reports "N passed | 12 skipped". Those 12 are the live-PHP
       # cross-checks, which need the plugin source and are absent here BY
       # DESIGN. Assert that is the ONLY reason anything skipped: without this,
