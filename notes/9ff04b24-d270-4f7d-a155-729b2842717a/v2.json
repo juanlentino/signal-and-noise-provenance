@@ -13,9 +13,10 @@
   "signature": "FMHo6TGE+s+UbAQuXIsfY2dHaVnAU7GLKNJEmvNgGrJRR2Jv5ricqUBjJ/DIhwGUh74M6mAXMTd3ZxBrYiw+Dw==",
   "pubkey_id": "sn-ed25519-2026-07",
   "ots": {
-    "status": "pending",
+    "status": "confirmed",
     "calendars": [
       "alice.btc.calendar.opentimestamps.org"
-    ]
+    ],
+    "bitcoin_block": 962618
   }
 }
