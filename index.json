@@ -456,13 +456,13 @@
       "title": "The master never moves",
       "published_at": "2026-08-14T18:46:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "06a981770bf1cbe3eebfbc8055aeffb206efa75209898556579cc8b9b8b0f81a",
+      "version": 2,
+      "content_hash": "2a8ab7f11f43446cc7900ff4a054410e516ca2d22db169b9e20bf82928971371",
       "bitcoin_block": 962471,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 962471
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [],
