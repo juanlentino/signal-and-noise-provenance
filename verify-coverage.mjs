@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { fetchSiteJson, installEvidenceReport } from "./fetch-site.mjs";
 import { recordVersions } from "./ledger-records.mjs";
 import { pendingVerdict, DEFAULT_GRACE_HOURS } from "./anchor-grace.mjs";
+import { otsMatches, describeMismatch } from "./index-parity.mjs";
 installEvidenceReport("verify:coverage");
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -42,10 +43,12 @@ for (const entry of entries) {
     const latest = versions.at(-1);
     if (entry.version !== latest) throw new Error(`index is pinned to a superseded record for ${entry.slug}: row says v${entry.version}, newest record is v${latest}; rerun node scripts/build-index.mjs`);
     const record = JSON.parse(readFileSync(join(root, `notes/${entry.note_uid}/v${entry.version}.json`), "utf8"));
-    const recordBlock = record.ots.bitcoin_block ?? null;
     if (record.content_hash !== entry.content_hash) throw new Error(`index content_hash disagrees with the record for ${entry.slug}; rerun node scripts/build-index.mjs`);
-    if (record.ots.status !== entry.standalone_ots_status || recordBlock !== (entry.standalone_bitcoin_block ?? null)) {
-      throw new Error(`index is stale for ${entry.slug}: record says ${record.ots.status}/${recordBlock}, index says ${entry.standalone_ots_status}/${entry.standalone_bitcoin_block ?? null}; rerun node scripts/build-index.mjs`);
+    // The standalone row keeps its own key names; adapt rather than teach
+    // index-parity.mjs about three naming schemes.
+    const standaloneRow = { ots_status: entry.standalone_ots_status, bitcoin_block: entry.standalone_bitcoin_block };
+    if (!otsMatches(record.ots, standaloneRow)) {
+      throw new Error(`index is stale for ${entry.slug}: ${describeMismatch(record.ots, standaloneRow)}; rerun node scripts/build-index.mjs`);
     }
     // A per-note row's anchor may name an EARLIER version than the current
     // record, because a fresh edit is pending for hours while the Note stays
@@ -55,8 +58,8 @@ for (const entry of entries) {
     if ("per-note" === entry.anchor) {
       if (!versions.includes(entry.anchored_version)) throw new Error(`index anchors ${entry.slug} to v${entry.anchored_version}, which is not on disk; rerun node scripts/build-index.mjs`);
       const anchorRecord = entry.anchored_version === entry.version ? record : JSON.parse(readFileSync(join(root, `notes/${entry.note_uid}/v${entry.anchored_version}.json`), "utf8"));
-      if (anchorRecord.ots.status !== entry.ots_status || (anchorRecord.ots.bitcoin_block ?? null) !== entry.bitcoin_block) {
-        throw new Error(`index anchor disagrees with v${entry.anchored_version} for ${entry.slug}: record says ${anchorRecord.ots.status}/${anchorRecord.ots.bitcoin_block ?? null}, index says ${entry.ots_status}/${entry.bitcoin_block}; rerun node scripts/build-index.mjs`);
+      if (!otsMatches(anchorRecord.ots, entry)) {
+        throw new Error(`index anchor disagrees with v${entry.anchored_version} for ${entry.slug}: ${describeMismatch(anchorRecord.ots, entry)}; rerun node scripts/build-index.mjs`);
       }
     }
   }
@@ -120,12 +123,8 @@ for (const row of pageRows) {
   if (record.content_hash !== row.content_hash) {
     throw new Error(`index content_hash disagrees with the page record for ${row.slug}; rerun node scripts/build-index.mjs`);
   }
-  // `?? null` on the record side ONLY. A record written before worker v1.10.1
-  // omits the key entirely, and absent must compare equal to the explicit null
-  // the index always writes — that mismatch is exactly what reddened CI on
-  // 2026-08-11.
-  if (record.ots.status !== row.ots_status || (record.ots.bitcoin_block ?? null) !== (row.bitcoin_block ?? null)) {
-    throw new Error(`index is stale for page ${row.slug}: record says ${record.ots.status}/${record.ots.bitcoin_block ?? null}, index says ${row.ots_status}/${row.bitcoin_block ?? null}; rerun node scripts/build-index.mjs`);
+  if (!otsMatches(record.ots, row)) {
+    throw new Error(`index is stale for page ${row.slug}: ${describeMismatch(record.ots, row)}; rerun node scripts/build-index.mjs`);
   }
 }
 if (pageRows.length) console.log(`${pageRows.length} signed page${pageRows.length === 1 ? "" : "s"} checked against their records`);
