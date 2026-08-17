@@ -162,13 +162,13 @@
       "title": "Falsifiability is the line",
       "published_at": "2026-05-27T19:24:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "bb83343a48edd8d794852bc7f7402d682876cf304c881cfb762530086b9a5d4d",
+      "version": 2,
+      "content_hash": "90fa849fb64a286bcd9cf9293c6ee8859adbdeb8b8f17787d5362d6ee3496265",
       "leaf_hash": "964150870dc7ea8f9df37c11de1095dcead674d2fcd2761779c81b6efe23e7cf",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "5c3d0e61-0f95-4bd4-b665-41571fdad1a3",
@@ -176,13 +176,13 @@
       "title": "Signing the inputs at the source",
       "published_at": "2026-05-30T13:14:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "277a03345b7a438006ce4b5bd74cb01bdbd81ac1f33a60052926027aab07bd1a",
+      "version": 2,
+      "content_hash": "873719b4c4eaae6388d1f331fbd153275cd1125810329ed8ffd16809f56fda59",
       "leaf_hash": "94561986122ffbd421577644227f2e2c99692569da8d5a2db9c65f02f1989fa8",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "45d2204d-7d65-4d63-94f8-2caa25acdd82",
