@@ -388,11 +388,11 @@
       "anchor": "per-note",
       "version": 2,
       "content_hash": "a36232710bb59906582c2b0e89904834812c2df95bfac8c55d3b8c37e69e885e",
-      "bitcoin_block": 960455,
+      "bitcoin_block": 962840,
       "ots_status": "confirmed",
-      "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 2,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 962840
     },
     {
       "note_uid": "10bc8a21-fe13-41b4-a6a5-f63ed3597e7e",
