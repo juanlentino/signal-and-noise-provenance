@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "A payment system can only send money to something it can name. When the record arriving at a distributor identifies a work but not the people who made it, the money still has to go somewhere, so it goes to the largest unit the data supports. Nobody defends this as a policy. It is the default behavior of accounting under missing information, and it produces consequences that look political long after they stopped being informational.\n\nWhat the record can name\n\nRecordings carry identifiers and compositions carry identifiers. Both were designed to name works, and they do that job adequately. The people in the room have no equivalent. A session produces a performance, and who played it survives in memory, in a contract if one was signed, in a credit list if somebody assembled one afterward, in nothing at all more often than anyone admits. None of it travels attached to the audio. By the time the file reaches a party who owes money, the performers are not in the packet.\n\nSo distribution resolves to the level the identifiers support, which means work level and rights-holder level. Everyone below that line becomes a class rather than a set of individuals, because a class is the smallest unit the incoming data can describe.\n\nThe formula and its keeper\n\nClasses require administration. Something has to decide who belongs to which one, what share each receives, and how that share divides internally. Those decisions live in a formula, and the formula becomes the only path between the money and the person who did the work.\n\nWhoever holds that formula did not seize anything. The position was created by the gap, and someone had to occupy it. Society, label, distributor, or platform changes the politics and not the mechanics. Authority accrues to whoever answers a question the record cannot answer for itself.\n\nWhat makes the arrangement durable is that nothing appears broken. Totals reconcile and no individual line is wrong. The contributor receives a number they cannot derive and has no standing to ask how it was produced, because the question requires data that was never captured. Disputes at this layer almost never concern arithmetic. They concern whether the person asking appears in the record at all.\n\nMore money does not shorten the distance\n\nEvery proposed fix arrives downstream. A larger settlement, a new licensing rail, a better matching engine, a fund administered by the same parties. Each increases what reaches the category. None changes what the category contains, since the contents were fixed years earlier by whatever the session did or did not write down. The pattern is old and well documented. In an unrelated dispute over songwriter royalties, a court declined to call a split unfair and found the fairness question unanswerable instead, because the data needed to resolve individuals had never existed.\n\nWhich leaves the uncomfortable version. A system that pays categories keeps paying categories no matter how much money enters it, and the administrator's position grows more valuable as the sums grow. Reform aimed at the payout strengthens the arrangement it was meant to correct.\n\nThe alternative is not a better formula. It is a record that names people while they are present, which is the only point at which anything can.",
+    "note_uid": "ddd6c01d-a269-4a44-aecb-f0a517a1ac3a",
+    "parent": null,
+    "published_at": "2026-08-18T15:41:00Z",
+    "title": "Payment systems pay what they can name",
+    "version": 1
+  },
+  "content_hash": "7da9d32873e48e85349d2a60a9f252bee1ac56e48684b6cb5576a4be980dfa3c",
+  "signature": "S6r/767fyVymzyfd8e/4HQjo0BzMoLkZP8+jwGFqYOqFmZpYjIaKcgiWiA+Q7nMJch4kl8SsHOj+ufQLfGGjCw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
