@@ -1,0 +1,13 @@
+{
+  "schema": "sn-retired-subjects-v1",
+  "why": "A signed record is permanent; the SUBJECT it describes is not. When a Note is converted to a Page, unpublished, or otherwise leaves the posts corpus, its anchored record stays exactly where it is — but two coverage checks then contradict each other: verify-coverage's reverse check demands every record directory have an index row, while its forward check demands every index row have a live post. No converted subject can satisfy both. This file is the third answer: the retirement is STATED, with a date and a reason, so the exemption is evidence rather than silence. Records are never edited or removed to satisfy a check.",
+  "retired": [
+    {
+      "note_uid": "045d4cec-bf8c-4fdc-8b5f-30145d3ed639",
+      "slug": "start-here",
+      "retired_at": "2026-08-17",
+      "reason": "Converted from a Note to a Page, so it no longer answers on /wp/v2/posts. The v2 record remains anchored (genesis leaf, bitcoin block 957359) and untouched; only its index row stops being emitted, because build-index derives entries from the live posts endpoint.",
+      "record_kept": true
+    }
+  ]
+}

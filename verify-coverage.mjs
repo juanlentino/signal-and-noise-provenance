@@ -11,6 +11,20 @@ installEvidenceReport("verify:coverage");
 const root = dirname(fileURLToPath(import.meta.url));
 const index = JSON.parse(readFileSync(join(root, "index.json"), "utf8"));
 const entries = index.entries || [];
+// RETIRED SUBJECTS (2026-08-18). A signed record is permanent; the subject it
+// describes is not. Convert a Note to a Page and the two checks in this file
+// contradict each other — the reverse check below wants every record directory
+// to have an index row, the forward drift check wants every index row to have a
+// live post, and a converted subject can satisfy neither at once. That
+// contradiction is what made this workflow alternate between "records missing
+// from the index" and "coverage drift: stale=..." for two days.
+//
+// The retirement is DECLARED rather than inferred, so the exemption is evidence:
+// a uid, a date and a reason, reviewable in the diff. Records are never edited
+// or deleted to satisfy a check — the anchored claim outlives the subject.
+const retiredDoc = JSON.parse(readFileSync(join(root, "retired-subjects.json"), "utf8"));
+const retiredUids = new Set((retiredDoc.retired || []).map((r) => r.note_uid));
+const retiredSlugs = new Set((retiredDoc.retired || []).map((r) => r.slug));
 const uids = new Set(entries.map((entry) => entry.note_uid));
 const slugs = new Set(entries.map((entry) => entry.slug));
 if (uids.size !== entries.length || slugs.size !== entries.length) throw new Error("coverage index contains duplicate UID or slug");
@@ -93,7 +107,7 @@ for (const row of signalRows) {
 // live-slug check below may not run for weeks. Caught live 2026-07-28: two
 // confirmed Notes (0ab100ea, 422f8047) had records but no rows while CI
 // stayed green.
-const unindexed = readdirSync(join(root, "notes")).filter((dir) => recordVersions(join(root, "notes"), dir).length && !uids.has(dir));
+const unindexed = readdirSync(join(root, "notes")).filter((dir) => recordVersions(join(root, "notes"), dir).length && !uids.has(dir) && !retiredUids.has(dir));
 if (unindexed.length) throw new Error(`records missing from the index: ${unindexed.join(", ")}; rerun node scripts/build-index.mjs`);
 
 // ── Signed PAGES (2026-08-11) ────────────────────────────────────────────────
@@ -135,9 +149,12 @@ if (!process.argv.includes("--offline")) {
   // fire here too and be misread as coverage drift.
   const live = await fetchSiteJson("https://juanlentino.com/wp-json/wp/v2/posts?per_page=100&_fields=slug");
   const gaps = live.map((post) => post.slug).filter((slug) => !slugs.has(slug));
-  const stale = entries.map((entry) => entry.slug).filter((slug) => !live.some((post) => post.slug === slug));
+  const stale = entries.map((entry) => entry.slug).filter((slug) => !live.some((post) => post.slug === slug) && !retiredSlugs.has(slug));
   if (gaps.length || stale.length) throw new Error(`coverage drift: gaps=${gaps.join(",") || "none"}; stale=${stale.join(",") || "none"}`);
   console.log(`${live.length}/${live.length} anchored, 0 gaps`);
+  // An exemption list that grows in silence is the failure this repo's whole
+  // style guards against, so a pass SAYS what it skipped.
+  if (retiredUids.size) console.log(`${retiredUids.size} retired subject${retiredUids.size === 1 ? "" : "s"} excluded (records kept): ${[...retiredSlugs].join(", ")}`);
   reportPending();
 } else {
   console.log(`${entries.length - pending.length}/${entries.length} indexed with confirmed anchors (offline)`);

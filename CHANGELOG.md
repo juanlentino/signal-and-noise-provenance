@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-08-18 — a record outlives its subject
+
+CI had been red since 2026-08-17, alternating between two errors on successive
+runs: `records missing from the index: 045d4cec…` and
+`coverage drift: gaps=…; stale=start-here`. Both name the same object, and the
+alternation was the clue — the two guards in `verify-coverage.mjs` were asking
+for opposite things.
+
+`start-here` was converted from a Note to a Page. `build-index.mjs` derives
+`entries` from the live **posts** endpoint, so a correct rebuild stops emitting a
+row for it. But the reverse-coverage guard (added after the 2026-07-28 incident
+where two anchored Notes had records and no rows) requires **every record
+directory to have an index row**; and the forward drift guard requires **every
+index row to have a live post**. A subject that has left the posts corpus can
+satisfy neither at once, so each rebuild flipped the failure to the other guard.
+
+**The record is not the problem, and it is not what changed.** `045d4cec…`
+remains exactly where it is — a genesis-anchored v2 claim in bitcoin block
+957359, untouched. A signed record is permanent; the *subject* it describes is
+not, and nothing in this repo said what to do when the two part ways.
+
+`retired-subjects.json` says it. A retirement is DECLARED — uid, slug, date,
+reason, and `record_kept: true` — so the exemption is evidence in the diff rather
+than an inference in a script. Both guards consult it, and a passing run now
+prints what it skipped: an exemption list that grows in silence is precisely the
+failure this repo's checks exist to prevent.
+
+The other half of the same failure needed nothing: `payment-systems-…` was a
+genuine gap for a few hours (published 11:41, record committed and confirmed
+later the same day), and the guard was right to say so.
+
 ## 2026-08-11 — signed pages enter the index (R2A step 4)
 
 The About page was signed today — `pages/01cea10c…/v1.json`, the first record
