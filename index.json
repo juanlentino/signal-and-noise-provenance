@@ -449,6 +449,19 @@
       "anchored_version": 3,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 962618
+    },
+    {
+      "note_uid": "ddd6c01d-a269-4a44-aecb-f0a517a1ac3a",
+      "slug": "payment-systems-pay-what-they-can-name",
+      "title": "Payment systems pay what they can name",
+      "published_at": "2026-08-18T15:41:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "7da9d32873e48e85349d2a60a9f252bee1ac56e48684b6cb5576a4be980dfa3c",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [],
