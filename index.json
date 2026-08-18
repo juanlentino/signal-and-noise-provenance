@@ -167,8 +167,8 @@
       "leaf_hash": "964150870dc7ea8f9df37c11de1095dcead674d2fcd2761779c81b6efe23e7cf",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 962946
     },
     {
       "note_uid": "5c3d0e61-0f95-4bd4-b665-41571fdad1a3",
@@ -181,8 +181,8 @@
       "leaf_hash": "94561986122ffbd421577644227f2e2c99692569da8d5a2db9c65f02f1989fa8",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 962946
     },
     {
       "note_uid": "45d2204d-7d65-4d63-94f8-2caa25acdd82",
@@ -225,20 +225,6 @@
       "ots_status": "confirmed",
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 958897
-    },
-    {
-      "note_uid": "045d4cec-bf8c-4fdc-8b5f-30145d3ed639",
-      "slug": "start-here",
-      "title": "Start here",
-      "published_at": "2026-06-20T23:24:55Z",
-      "anchor": "genesis",
-      "version": 2,
-      "content_hash": "6aa5235fc4d64e6f8485d538124abdbf6d7f67c47dd528017073d255a1619f92",
-      "leaf_hash": "7e84f5668fb1179dad3bb697143064bc099919134d93d7e18afc05ed40059951",
-      "bitcoin_block": 957359,
-      "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 960960
     },
     {
       "note_uid": "f1ebff9e-e5f3-4528-92a3-eda1814e27af",
