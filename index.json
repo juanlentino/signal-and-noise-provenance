@@ -472,13 +472,35 @@
       "anchor": "per-note",
       "version": 1,
       "content_hash": "11904cabace3a8ae1e42dffc23aa4a6779c14e55cb91bf7d7b5866922c855016",
-      "ots_status": "pending",
+      "bitcoin_block": 963622,
+      "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 963622
     }
   ],
-  "pages": [],
+  "pages": [
+    {
+      "note_uid": "01cea10c-9ad3-4f8b-9d74-d0e7e90dbd1d",
+      "kind": "page",
+      "slug": "about",
+      "title": "About",
+      "version": 2,
+      "content_hash": "cbbeeeeb9a508a5542ed07ac5f219958115d573e7922b73822fa41e7191ec20c",
+      "ots_status": "confirmed",
+      "bitcoin_block": 963242
+    },
+    {
+      "note_uid": "a51872f0-7b1c-4d25-89f4-3331791ca68c",
+      "kind": "page",
+      "slug": "start-here",
+      "title": "Start Here",
+      "version": 1,
+      "content_hash": "bfd775bed06d8f08d9ca210604416628f725cc611b66d028471ab46e811bcfdb",
+      "ots_status": "confirmed",
+      "bitcoin_block": 963102
+    }
+  ],
   "rights_signals": [
     {
       "slug": "license-xml",

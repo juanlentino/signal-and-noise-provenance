@@ -1,0 +1,17 @@
+{
+  "schema": "sn-misfiled-records-v1",
+  "why": "A record filed in the wrong directory is NOT a retired subject, and saying so in retired-subjects.json would be a false claim in a signed-records repo. The subject kind lives in the DIRECTORY — the signed payload carries no kind and no url — so a bug that resolved a kind to the empty string filed a live page's record under notes/. The record is never edited, moved or deleted: the identical bytes are published at the correct path so the chain resolves, the original stays exactly where it was published, and this file states why the same record exists twice. Declared, not inferred, so the exemption is evidence.",
+  "misfiled": [
+    {
+      "note_uid": "01cea10c-9ad3-4f8b-9d74-d0e7e90dbd1d",
+      "slug": "about",
+      "filed_under": "notes",
+      "true_kind": "page",
+      "declared_at": "2026-08-22",
+      "reason": "The About PAGE's v2 record was written to notes/ because sn_prov_subject_kind() returned the empty string (its per-page signing opt-in was off) and every consumer coerced '' to 'note'. Fixed in plugin v12.11.1, which now refuses to coerce. v1 was filed correctly under pages/ while the opt-in was on, so the chain is genuine: v2.parent == v1.content_hash (c5b61664…). The identical v2 bytes are now also published at pages/ so the chain resolves in one directory and the page's machine manifest stops advertising a 404. The notes/ copy is KEPT: it was published there, the live page advertised it, and removing it would 404 anyone who fetched it.",
+      "record_kept": true,
+      "republished_at": "pages/01cea10c-9ad3-4f8b-9d74-d0e7e90dbd1d/v2.json",
+      "ots_bitcoin_block": 963242
+    }
+  ]
+}
