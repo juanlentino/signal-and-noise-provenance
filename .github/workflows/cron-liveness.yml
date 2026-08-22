@@ -1,0 +1,51 @@
+name: cron-liveness
+
+# A cron cannot witness its own absence. When a scheduled workflow stops firing
+# — GitHub's 60-day inactivity disable (which applies to PUBLIC repos, and this
+# is one), a cron expression that never parsed, a file that never reached the
+# default branch, a repo-level Actions block — it produces NO run, and an
+# absent run reads exactly like a run that passed.
+#
+# So this guard rides push/pull_request, never a schedule, and lives in its OWN
+# file: watching verify.yml from inside verify.yml would mean a
+# disable of that workflow silently takes its watchdog with it.
+#
+# This repo is PUBLIC, so standard-runner minutes are free on any plan. The
+# argument for timeout-minutes here is not money — it is that a hung job holds
+# a runner and leaves a PR's checks unresolved for up to six hours.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cron-liveness-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cron-liveness:
+    name: Scheduled workflows still firing
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    # actions:read is what lists workflow runs. Scoped to this job and
+    # deliberately READ — nothing here writes anything.
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      # Prove the decision table BEFORE trusting it against the live API. Zero
+      # dependencies and no install step: the guard is a single .mjs on the
+      # node that ubuntu-latest already ships.
+      - name: Prove the decision table offline
+        run: node scripts/check-cron-liveness.mjs --selftest
+      - name: Are the scheduled workflows still firing?
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/check-cron-liveness.mjs
