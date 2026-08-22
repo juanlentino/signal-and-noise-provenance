@@ -25,6 +25,28 @@ const entries = index.entries || [];
 const retiredDoc = JSON.parse(readFileSync(join(root, "retired-subjects.json"), "utf8"));
 const retiredUids = new Set((retiredDoc.retired || []).map((r) => r.note_uid));
 const retiredSlugs = new Set((retiredDoc.retired || []).map((r) => r.slug));
+
+// ── MISFILED records (2026-08-22) ───────────────────────────────────────────
+// A record filed under the wrong kind's directory is neither retired nor
+// unindexed: its subject is live and signed, and the record is simply in the
+// wrong place because the subject kind resolved to the empty string and every
+// consumer coerced it to 'note' (plugin bug, fixed in v12.11.1). Saying
+// "retired" in retired-subjects.json would be a FALSE claim in a signed-records
+// repo, so this is its own declaration with its own schema.
+//
+// The exemption is not taken on trust: each entry must name where the identical
+// bytes were republished, that file must exist, and it must match the original
+// byte for byte. A declaration that could drift from the record it describes
+// would be worth less than the check it silences.
+const misfiledDoc = JSON.parse(readFileSync(join(root, "misfiled-records.json"), "utf8"));
+const misfiledUids = new Set((misfiledDoc.misfiled || []).map((r) => r.note_uid));
+for (const m of misfiledDoc.misfiled || []) {
+  const original = join(root, m.filed_under, m.note_uid, `v${JSON.parse(readFileSync(join(root, m.republished_at), "utf8")).payload.version}.json`);
+  const copy = join(root, m.republished_at);
+  if (readFileSync(original).compare(readFileSync(copy)) !== 0) {
+    throw new Error(`misfiled record ${m.note_uid}: the republished copy at ${m.republished_at} is NOT byte-identical to ${original} — a republished record must be the same signed bytes, never a re-signing`);
+  }
+}
 const uids = new Set(entries.map((entry) => entry.note_uid));
 const slugs = new Set(entries.map((entry) => entry.slug));
 if (uids.size !== entries.length || slugs.size !== entries.length) throw new Error("coverage index contains duplicate UID or slug");
@@ -107,8 +129,11 @@ for (const row of signalRows) {
 // live-slug check below may not run for weeks. Caught live 2026-07-28: two
 // confirmed Notes (0ab100ea, 422f8047) had records but no rows while CI
 // stayed green.
-const unindexed = readdirSync(join(root, "notes")).filter((dir) => recordVersions(join(root, "notes"), dir).length && !uids.has(dir) && !retiredUids.has(dir));
+const unindexed = readdirSync(join(root, "notes")).filter((dir) => recordVersions(join(root, "notes"), dir).length && !uids.has(dir) && !retiredUids.has(dir) && !misfiledUids.has(dir));
 if (unindexed.length) throw new Error(`records missing from the index: ${unindexed.join(", ")}; rerun node scripts/build-index.mjs`);
+// An exemption list that grows in silence is the failure these checks exist to
+// prevent, so a PASSING run says what it skipped.
+if (misfiledUids.size) console.log(`${misfiledUids.size} misfiled record${misfiledUids.size === 1 ? "" : "s"} skipped by declaration: ${[...misfiledUids].join(", ")}`);
 
 // ── Signed PAGES (2026-08-11) ────────────────────────────────────────────────
 //

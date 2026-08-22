@@ -110,7 +110,26 @@ for (const p of sitePages) {
   // Anchoring on `/tree/main/pages/<uid>` also confirms the KIND in the same
   // match — the panel only emits that path for a subject the plugin resolved as
   // a page (plugin v10.86.0).
-  const uid = html.match(/\/tree\/main\/pages\/([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/)?.[1];
+  // Two accepted anchors, both of which confirm the KIND in the same match by
+  // containing /pages/ — which is the property this matcher exists for, not the
+  // particular URL shape.
+  //
+  //   /tree/main/pages/<uid>   the human badge's ledger link
+  //   /main/pages/<uid>/       the raw record URL in the machine manifest
+  //
+  // 2026-08-22: only the first was accepted, and the badge now links to the
+  // Bitcoin block on mempool.space instead of the ledger — so the site stopped
+  // emitting /tree/main/ entirely and this loop reported "0 signed of 29
+  // considered … expected, signing is opt-in" while a genuinely signed page sat
+  // outside every cross-check. A matcher that reports a MISS as "expected" is
+  // the reassuring-zero failure; the manifest is a machine contract and is the
+  // more stable anchor of the two.
+  // The manifest is a JSON <script> block, so ITS slashes arrive escaped
+  // (\/main\/pages\/…). Normalise before matching or the machine anchor is
+  // invisible — which is how the first widening of this matcher still reported
+  // "0 signed of 29 considered".
+  const scan = html.replace(/\\\//g, "/");
+  const uid = scan.match(/\/(?:tree\/)?main\/pages\/([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/)?.[1];
   if (!uid) { pagesUnsigned++; continue; }          // unsigned page — expected
   const versions = recordVersions(pagesRoot, uid);
   if (!versions.length) {
