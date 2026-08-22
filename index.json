@@ -463,6 +463,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 963066
+    },
+    {
+      "note_uid": "ef402571-9600-42fd-a00f-9bcf831d6e0b",
+      "slug": "the-rights-files-nobody-reads",
+      "title": "The rights files nobody reads",
+      "published_at": "2026-08-22T18:29:54Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "11904cabace3a8ae1e42dffc23aa4a6779c14e55cb91bf7d7b5866922c855016",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [],
