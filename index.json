@@ -513,10 +513,10 @@
     {
       "slug": "robots-txt",
       "url": "https://juanlentino.com/robots.txt",
-      "version": 4,
-      "content_hash": "294770dc377a737bac9de8877122179bf9cde552c5bb29a8320cecc417d61464",
-      "ots_status": "confirmed",
-      "bitcoin_block": 961766
+      "version": 5,
+      "content_hash": "7d2c712340f63795c008d419dad03d0fe6e6ae93807d5189ae3ed23fa2e868a4",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "slug": "tdm-policy",
