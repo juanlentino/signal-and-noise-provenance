@@ -130,7 +130,39 @@ for (const row of signalRows) {
 // confirmed Notes (0ab100ea, 422f8047) had records but no rows while CI
 // stayed green.
 const unindexed = readdirSync(join(root, "notes")).filter((dir) => recordVersions(join(root, "notes"), dir).length && !uids.has(dir) && !retiredUids.has(dir) && !misfiledUids.has(dir));
-if (unindexed.length) throw new Error(`records missing from the index: ${unindexed.join(", ")}; rerun node scripts/build-index.mjs`);
+if (unindexed.length) {
+  // The message, not the condition. This guard has fired three times now
+  // (2026-07-28, 2026-08-17, 2026-08-20) and only the FIRST of those was an
+  // index rebuild that had not run. The other two were a subject that changed
+  // kind — start-here converted Note to Page, and the About page's v2 written
+  // under notes/ because the producer resolved its kind to the empty string.
+  //
+  // In both of those cases "rerun node scripts/build-index.mjs" is advice that
+  // CANNOT work: a correct rebuild derives entries from the live posts
+  // endpoint, so it will never emit a row for a subject that is no longer a
+  // Note, and it must not emit one for a record filed in the wrong directory.
+  // Each time, the single suggested remedy sent the reader at the one thing
+  // guaranteed not to fix it, and CI stayed red for days.
+  //
+  // So: name the causes, put the likeliest first per record, and use the
+  // evidence already on disk. A UID that ALSO has records under pages/ is a
+  // misfiling with near-certainty — that is exactly the About case.
+  const pageUids = new Set(
+    readdirSync(join(root, "pages"), { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+      .map((e) => e.name),
+  );
+  const lines = unindexed.map((uid) => {
+    if (pageUids.has(uid)) {
+      return `  ${uid} — ALSO has records under pages/, so this is almost certainly a MISFILING: the record was written to the wrong kind's directory. Declare it in misfiled-records.json. Rebuilding the index cannot fix it, because a misfiled record must not be indexed from notes/.`;
+    }
+    return `  ${uid} — no records under pages/. Either the subject is no longer a Note (converted or unpublished), in which case declare it in retired-subjects.json; or the record genuinely belongs in the index, in which case rerun node scripts/build-index.mjs.`;
+  });
+  throw new Error(
+    `records present under notes/ but absent from the index (${unindexed.length}):\n${lines.join("\n")}\n` +
+      `Nothing here is inferred: both exemption files are DECLARATIONS, and a passing run prints what it skipped.`,
+  );
+}
 // An exemption list that grows in silence is the failure these checks exist to
 // prevent, so a PASSING run says what it skipped.
 if (misfiledUids.size) console.log(`${misfiledUids.size} misfiled record${misfiledUids.size === 1 ? "" : "s"} skipped by declaration: ${[...misfiledUids].join(", ")}`);
