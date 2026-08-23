@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-08-23 — the guard was right; its advice was wrong
+
+`records missing from the index: X; rerun node scripts/build-index.mjs` has
+fired three times, and only the first was an index rebuild that had not run:
+
+| when | record | actual cause |
+| --- | --- | --- |
+| 2026-07-28 | `0ab100ea`, `422f8047` | a genuine rebuild that had not happened |
+| 2026-08-17..18 | `045d4cec` | `start-here` converted from a Note to a Page |
+| 2026-08-20..22 | `01cea10c` | the About PAGE's v2 written under `notes/` |
+
+For the last two, the suggested remedy **cannot work**. `build-index.mjs` derives
+`entries` from the live posts endpoint, so it will never emit a row for a subject
+that is no longer a Note, and it must not emit one for a record filed in the
+wrong directory. Each time, the one remedy on offer pointed at the one action
+guaranteed not to fix it, and CI stayed red for days while the fix was a
+one-line declaration.
+
+The condition is unchanged — this guard has never had a false positive, and both
+exemption files are still consulted exactly as before. What changed is the
+message. It now names all three causes, puts the likeliest first **per record**,
+and uses evidence already on disk: a UID that also has records under `pages/` is
+a misfiling with near-certainty, which is precisely the About case.
+
+Verified both branches by forcing them: a UID with a `pages/` counterpart reads
+as a misfiling, one without reads as a retirement-or-rebuild. The clean tree
+still passes, and a passing run still prints what it skipped — an exemption list
+that grows in silence is the failure these checks exist to prevent.
+
 ## 2026-08-18 — a record outlives its subject
 
 CI had been red since 2026-08-17, alternating between two errors on successive
