@@ -515,8 +515,8 @@
       "url": "https://juanlentino.com/robots.txt",
       "version": 5,
       "content_hash": "7d2c712340f63795c008d419dad03d0fe6e6ae93807d5189ae3ed23fa2e868a4",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 963662
     },
     {
       "slug": "tdm-policy",
