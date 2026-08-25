@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v1",
+    "author": "Juan Lentino",
+    "content": "The list is public by construction\n\nAsk an experienced engineer how to spot synthetic audio and the answer comes back consistent enough to write down. Human work carries small timing inconsistencies and room tone. It keeps a take that had a flaw in it, because the flaw was worth keeping. Somewhere on a drive there is a folder of versions that were tried and abandoned. Generated output tends to arrive clean, and it tends to arrive once.\n\nAs a description of what the current tools produce, this is largely right, which is what makes it fragile. Every item is a property of the output, and a property of the output is something a generator can be asked to supply. Imperfection is a request. So is variation between renders.\n\nThe strongest item on the list is the trail of abandoned versions, because it looks like a record of work rather than a description of a file. It is still a description of files. A folder of variant renders with staggered timestamps is an output like any other, and it becomes worth producing the moment somebody decides to check for one.\n\nAccuracy is not the axis\n\nThe usual answer is that detectors improve alongside the generators. They do. That race has been argued past the point of usefulness, and the more interesting objection was always that the economics of checking never get cheaper for the side doing it.\n\nWhat happens when the criteria circulate is a separate failure. A detector that improves is getting better at the outputs that exist now. A criterion that circulates changes which outputs get made. In August 2026 Anthropic published a note describing verbal habits its own models fall into, including a fondness for one sentence construction and an unusual attachment to the word \"quietly.\" That is text rather than audio, and the mechanism carries over without much translation. Once a signal is written down it stops functioning as a measurement and starts functioning as a specification, available to anyone who would rather not be caught by it.\n\nThe readership is also uneven in a way that works against the detector. Someone relying on a tool reads the criteria once, if at all, and takes the score on trust. Someone with a reason to defeat the tool reads them closely and treats each line as a task. The second reader is doing more with the same document, and the document was published for the first.\n\nWhat cannot be requested\n\nEverything on the list describes the artifact. None of it is a record of an event.\n\nA model asked for a rough take will produce a rough take. It will not produce the afternoon on which somebody listened twice and kept the flawed one, because that afternoon happened or it did not, and no instruction reaches backward into a session that never took place. The distinction is invisible in the file and total in a dispute, which is the whole reason the record has to be written while the work is happening. A claim resting on how something sounds is available to anyone with a better generator, and it gets cheaper for them every year. A claim resting on what was written down at the time stays with the people who were in the room, and no amount of capability moves it, because there is nothing there to improve at.\n\nSomething uncomfortable follows for the people doing this research. Publishing a reliable tell is not a neutral act. Every paper that describes one shortens the life of the thing it describes, and there is no way to study the problem without publishing.",
+    "note_uid": "026581ba-4754-4067-895e-8b32387f6781",
+    "parent": null,
+    "published_at": "2026-08-25T19:01:00Z",
+    "title": "Detection publishes the answer key",
+    "version": 1
+  },
+  "content_hash": "4eb153f89c0bef237706159d3e96e41746655c9be85109ab46a9f09eb169e439",
+  "signature": "modL5H+mn6StBZI+CWK4QuKe2S5AmBlVTBxCUffdSoOcKZhCAiznyTPr+bwpWBBeMvX+yYpGkGYnzXVVYcN2AA==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
