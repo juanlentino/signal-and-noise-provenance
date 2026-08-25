@@ -477,6 +477,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 963622
+    },
+    {
+      "note_uid": "026581ba-4754-4067-895e-8b32387f6781",
+      "slug": "detection-publishes-the-answer-key",
+      "title": "Detection publishes the answer key",
+      "published_at": "2026-08-25T19:01:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "4eb153f89c0bef237706159d3e96e41746655c9be85109ab46a9f09eb169e439",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
