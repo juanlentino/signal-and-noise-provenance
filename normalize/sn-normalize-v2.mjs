@@ -41,6 +41,14 @@ export function expandBlockText(content) {
     if (!attrs || typeof attrs !== "object" || Array.isArray(attrs)) return "";
     const parts = [];
     for (const key of Object.keys(attrs)) {
+      // Identifier-shaped keys ONLY: ECMA-262 hoists integer-like keys
+      // ("0", "10") ahead of string keys in Object.keys, while PHP iterates
+      // ALL keys in insertion order — without this grammar restriction the
+      // two reference implementations would sign different prose from the
+      // same bytes. Real block attributes are identifiers (block.json
+      // names); the restriction makes cross-language iteration order
+      // identical by construction. Mirrors inc/provenance-core.php.
+      if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(key)) continue;
       const value = attrs[key];
       if (typeof value === "string" && value !== "") parts.push(value);
     }

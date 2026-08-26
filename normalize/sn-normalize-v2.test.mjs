@@ -82,6 +82,11 @@ describe("normalizeV2 — dynamic-block attribute text becomes signed prose", ()
   );
   expectParityV2("malformed attrs JSON expands to nothing", '<!-- wp:signal-noise/sidenote {"content":broken} /-->', "");
   expectParityV2(
+    "integer-like key skipped — cross-language iteration order stays identical (review MEDIUM repro)",
+    '<!-- wp:signal-noise/future-block {"b":"one","0":"two","a":"three"} /-->',
+    "one\n\nthree"
+  );
+  expectParityV2(
     "non-string top-level values skipped; strings sign",
     '<!-- wp:signal-noise/future-block {"count":3,"flag":true,"text":"Only the words."} /-->',
     "Only the words."
