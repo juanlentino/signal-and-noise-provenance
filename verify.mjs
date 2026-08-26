@@ -15,6 +15,21 @@ import { canonicalize } from "./normalize/canonical-json.mjs";
 import { extractPostContent, extractRestRenderedContent } from "./normalize/extract-content.mjs";
 import { fetchSiteHtml, fetchSiteJson } from "./fetch-site.mjs";
 import { normalizeV1 } from "./normalize/sn-normalize-v1.mjs";
+import { normalizeV2 } from "./normalize/sn-normalize-v2.mjs";
+
+/**
+ * The normalization generation is chosen by the RECORD (payload.algo is a
+ * signed bearing field), never guessed: v1 records verify under v1 forever,
+ * v2 records (which also sign signal-noise dynamic-block attribute text)
+ * under v2. An algo this verifier does not know is a hard error — refusing
+ * is honest; silently normalizing with the wrong generation would report
+ * tampering that is actually version skew (or worse, the reverse).
+ */
+function normalizerForAlgo(algo) {
+  if (algo === undefined || algo === null || algo === "sn-normalize-v1") return normalizeV1;
+  if (algo === "sn-normalize-v2") return normalizeV2;
+  throw new Error(`unknown payload.algo "${algo}" — update the verifier's reference implementations`);
+}
 import { bitcoinAttestation, stampedDigest, toHex } from "./verify/ots.mjs";
 
 const b64 = (s) => Uint8Array.from(Buffer.from(String(s).trim(), "base64"));
@@ -62,7 +77,8 @@ async function pageHash(record, content) {
  */
 export async function verifyPageRecord({ record, pageHtml, restRendered = null }) {
   if (record.payload?.kind === "genesis") throw new Error("--from-page applies to per-note records only");
-  const pageContent = normalizeV1(extractPostContent(pageHtml));
+  const normalize = normalizerForAlgo(record.payload?.algo);
+  const pageContent = normalize(extractPostContent(pageHtml));
   const directHash = await pageHash(record, pageContent);
   const directContentOk = pageContent === record.payload.content;
   const directHashOk = directHash === record.content_hash;
@@ -74,7 +90,7 @@ export async function verifyPageRecord({ record, pageHtml, restRendered = null }
     return { ok: false, contentOk: false, hashOk: directHashOk, pageTextOk: false, recomputed: directHash, source: "served-page" };
   }
 
-  const restContent = normalizeV1(extractRestRenderedContent(restRendered));
+  const restContent = normalize(extractRestRenderedContent(restRendered));
   const recomputed = await pageHash(record, restContent);
   const restContentOk = restContent === record.payload.content;
   const hashOk = recomputed === record.content_hash;

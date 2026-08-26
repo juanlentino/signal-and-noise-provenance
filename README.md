@@ -173,3 +173,19 @@ observable commits. Nothing here is meant to be edited by hand.
 normalization pipeline ever needs to change in a way that would alter output
 for existing content, that requires a new `sn-normalize-v2` file and algo
 name — never silently reordering or editing v1's steps.
+
+That clause was exercised on 2026-08-25: **`sn-normalize-v2`**
+(`normalize/sn-normalize-v2.mjs`) prepends one step to the unchanged v1
+pipeline — every VOID `signal-noise/*` block delimiter expands to its
+top-level string-typed attribute values (the delimiter's own serialized
+JSON, in order, empty strings skipped) as paragraphs in place of the
+delimiter. This signs the text the theme's dynamic blocks (sidenote,
+pull-quote) carry in attributes — text v1 removed with the delimiter, which
+both left it outside the record and broke byte-equality page verification
+(the rendered page shows it; the payload didn't). v2 output is
+byte-identical to v1 for any content with no such block, so no existing
+record re-signs. `verify.mjs` picks the implementation from the record's
+own `payload.algo` and refuses unknown algo names outright. Parity with the
+authoritative PHP (`sn_prov_normalize_v2()`) is proven by
+`normalize/sn-normalize-v2.test.mjs`'s live-PHP oracle, the v1 suite's
+mechanism.

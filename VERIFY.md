@@ -96,7 +96,12 @@ HTML optimizers remove source block whitespace. `--from-page` is the supported
 public-artifact proof. It fetches the URL, isolates
 `div.entry-content.wp-block-post-content`, cuts at the first provenance/share/
 footer boundary, removes the generated `nav.sn-article-toc`, restores
-deterministic block and inline-diagram boundaries, runs `sn-normalize-v1`,
+deterministic block and inline-diagram boundaries, runs the normalization
+generation the record itself names in `payload.algo` (`sn-normalize-v1`, or
+`sn-normalize-v2` for records signed after 2026-08-25 — v2 additionally
+expands `signal-noise/*` void-block attribute text into the prose, so
+sidenote/pull-quote words verify like any other words; an unknown algo is a
+hard error, never a guess),
 replaces only the payload's content, canonicalizes, and requires both the
 content string and SHA-256 to match.
 
