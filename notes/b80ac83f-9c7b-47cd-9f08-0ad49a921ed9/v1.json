@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v2",
+    "author": "Juan Lentino",
+    "content": "A disclosure regime collects claims from the people willing to make them. Everyone else returns the same blank, and the blank sits exactly where the information was supposed to be.\n\nThe form reaches the wrong half\n\nMandatory AI disclosure is arriving on the premise that a completed field carries meaning. It does, for the people who complete it honestly. Coverage of everyone else is the part nobody has costed.\n\nLook at who has a reason to answer. An artist who worked by hand and wants that known has every reason, and receives a checkbox for the trouble. A label with a compliance function has policy pressure and complies. Somebody pushing generated tracks through a distributor at volume has no reason at all, and the cost of leaving the field empty is a moderation risk weighed against a revenue stream and priced accordingly.\n\nEnforcement rigor does not reach this. The record depends on the willingness of the party being recorded, and willingness runs highest among parties with nothing to conceal. What accumulates is a register of the compliant, which is a useful thing to have and a different thing from what the regime was built to produce.\n\nWhat a blank actually contains\n\nA missing disclosure is consistent with at least four situations. The work involved no generative tools and the contributor never thought about the field. The work involved them and the contributor declined to say. The record existed upstream and was stripped somewhere in the supply chain. Or the release predates the requirement entirely.\n\nThose four collapse into one signal. A verifier reading the absence cannot separate them, and no amount of downstream scrutiny recovers the difference, because the distinguishing facts were never written anywhere.\n\nThis is why the absence of a claim reads as noise rather than as a negative finding. In a system where making a claim is voluntary and costless, declining to make one is also costless, and a signal that costs nothing to withhold carries no information when it is withheld. The regime can require the field. It cannot make the empty field mean anything.\n\nThe honest answer buys very little\n\nNow take the other side, the contributor answering truthfully. A declaration anyone can enter, at no cost, without producing anything to support it, is worth roughly what an unsupported declaration is worth. Someone who spent a year on a record and someone who generated one last Tuesday submit the same string into the same box. Nothing in the box distinguishes them.\n\nSo the truthful answer satisfies a requirement and does little else. It does not mark the work out, because the marking signal was never available to the form, and in a dispute the other party enters the same string just as easily. Platforms notice the field is thin and respond by adding categories to it, which sharpens the question being asked without changing what anyone can demonstrate in answering.\n\nBoth halves of the population end up in the same place. One returns a blank nobody can read, the other returns a claim nobody can check, and the form records the distance between them as a checkbox.",
+    "note_uid": "b80ac83f-9c7b-47cd-9f08-0ad49a921ed9",
+    "parent": null,
+    "published_at": "2026-08-29T14:12:08Z",
+    "title": "An empty field says nothing",
+    "version": 1
+  },
+  "content_hash": "f020984b5cb1ae42e44e565830aa0b947111f57004b734eb1e121d638d3af945",
+  "signature": "EjxD0y1J0Jz00FsnBKwJjbhgXkBbhrq5yQRo+QqH1Q4VLDb6MPpICONHoKuifwPEVxmLWKraf33U+IcgEZplDQ==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
