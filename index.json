@@ -537,8 +537,8 @@
       "url": "https://juanlentino.com/tdm-policy/",
       "version": 4,
       "content_hash": "6d3fa5478dcbe1149ee05b34351c9920f5e4ee9487df6caae322000f1d934bca",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 964508
     },
     {
       "slug": "tdmrep-json",
@@ -553,8 +553,8 @@
       "url": "https://juanlentino.com/webmcp/bridge.js",
       "version": 1,
       "content_hash": "b355cb956d87914169f220ad0e57d9d7260314ef942352aa4894afa60fa7563a",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 964512
     }
   ]
 }
