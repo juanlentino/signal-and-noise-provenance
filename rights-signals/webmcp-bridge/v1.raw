@@ -1,0 +1,400 @@
+// juanlentino.com WebMCP bridge. Source of truth: sn-rights-signals-worker
+// src/webmcp-bridge-client.mjs. Anchored hourly as rights-signals/webmcp-bridge
+// in https://github.com/juanlentino/signal-and-noise-provenance.
+
+var __name = function (t) { return t; };
+
+function snAgentApi(w) {
+  var api = w && w.navigator && w.navigator.modelContext || w && w.agent || null;
+  return api && typeof api.registerTool === "function" ? api : null;
+}
+
+async function snGetRightsTerms(fetchFn) {
+  var f = fetchFn || fetch;
+  var res;
+  try {
+    res = await f("/tdm-policy/", { headers: { accept: "application/ld+json" } });
+  } catch (e) {
+    return { error: "policy fetch failed: " + (e && e.message ? e.message : e), links: snRightsPointers() };
+  }
+  if (!res.ok) return { error: "policy fetch failed: " + res.status, links: snRightsPointers() };
+  var odrl;
+  try {
+    odrl = await res.json();
+  } catch (e) {
+    return { error: "policy parse failed: " + (e && e.message ? e.message : e), links: snRightsPointers() };
+  }
+  return { policy: odrl, links: snRightsPointers() };
+}
+
+function snLoadCore(doc, url) {
+  return new Promise(function(resolve, reject) {
+    var w = typeof window !== "undefined" ? window : null;
+    if (w && w.SNProvVerifyCore) return resolve(w.SNProvVerifyCore);
+    var settled = false;
+    var timer = null;
+    var finish = function(fn, arg) {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      fn(arg);
+    };
+    var onLoad = function() {
+      var api = typeof window !== "undefined" && window.SNProvVerifyCore || null;
+      if (api) finish(resolve, api);
+      else finish(reject, new Error("verifier core loaded but exposed no API"));
+    };
+    var onError = function() {
+      finish(reject, new Error("verifier core failed to load"));
+    };
+    var s = doc.querySelector ? doc.querySelector("script[data-sn-prov-core]") : null;
+    var fresh = !s;
+    if (fresh) {
+      s = doc.createElement("script");
+      s.src = url;
+      if (s.setAttribute) s.setAttribute("data-sn-prov-core", "pending");
+    }
+    if (s.addEventListener) {
+      s.addEventListener("load", onLoad);
+      s.addEventListener("error", onError);
+    } else {
+      s.onload = onLoad;
+      s.onerror = onError;
+    }
+    timer = setTimeout(function() {
+      finish(reject, new Error("verifier core timed out after 10 seconds"));
+    }, 1e4);
+    if (fresh) doc.head.appendChild(s);
+  });
+}
+
+function snReadManifest(doc) {
+  var el = doc.getElementById("sn-verification-manifest");
+  if (!el) return null;
+  try {
+    return JSON.parse(el.textContent);
+  } catch (e) {
+    return null;
+  }
+}
+
+function snRightsPointers() {
+  return {
+    human_policy: "https://juanlentino.com/tdm-policy/",
+    license_xml: "https://juanlentino.com/license.xml",
+    tdmrep: "https://juanlentino.com/.well-known/tdmrep.json",
+    robots: "https://juanlentino.com/robots.txt"
+  };
+}
+
+async function snVerifyPage(deps) {
+  var options = deps || {};
+  var doc = options.doc || (typeof document !== "undefined" ? document : null);
+  var fetchFn = options.fetchFn || function(u, init) {
+    return fetch(u, init);
+  };
+  var loadCore = options.loadCore || function() {
+    return snLoadCore(
+      doc,
+      "https://juanlentino.com/wp-content/plugins/signal-and-noise-tools/assets/js/prov-verify-core.js"
+    );
+  };
+  var manifest = doc ? snReadManifest(doc) : null;
+  if (!manifest) {
+    return {
+      signed: false,
+      rights: snRightsPointers(),
+      note: "This page is not a signed subject; nothing to verify."
+    };
+  }
+  var subject = manifest.subject || null;
+  var Core;
+  try {
+    Core = await loadCore();
+  } catch (e) {
+    return {
+      signed: true,
+      subject,
+      error: "verifier core unavailable: " + (e && e.message ? e.message : e)
+    };
+  }
+  if (!Core || !Core.STATE) {
+    return { signed: true, subject, error: "verifier core unavailable: no API" };
+  }
+  var STATE = Core.STATE;
+  var calls = manifest.calls || {};
+  var subtle = typeof crypto !== "undefined" && crypto && crypto.subtle || null;
+  function callUrl(name) {
+    var c = calls[name];
+    return c && c.url || "";
+  }
+  function expectedRecordSuffix() {
+    var roots = Core.SUBJECT_ROOTS || { note: "notes" };
+    var root = roots[subject && subject.kind || "note"] || roots.note || "notes";
+    return "/" + root + "/" + encodeURIComponent(subject && subject.uid || "") + "/v" + (subject && subject.version || 0) + ".json";
+  }
+  function ledgerBase() {
+    var recordUrl = String(callUrl("record"));
+    var suffix = expectedRecordSuffix();
+    var cut = recordUrl.length - suffix.length;
+    if (cut <= 0 || recordUrl.slice(cut) !== suffix) return "";
+    return recordUrl.slice(0, cut);
+  }
+  function mempoolBase() {
+    var t = calls.block_header && calls.block_header.url_template || "";
+    return String(t).replace(/\/block-height\/\{height\}\/?$/, "");
+  }
+  function fetchJSON(u) {
+    if (!u) return Promise.resolve({ ok: false, status: 0, json: null, timedOut: false });
+    var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() {
+      controller.abort();
+    }, 8e3) : null;
+    return Promise.resolve().then(function() {
+      return fetchFn(u, { signal: controller ? controller.signal : void 0, credentials: "omit" });
+    }).then(function(res) {
+      if (timer) clearTimeout(timer);
+      if (!res || !res.ok) {
+        return { ok: false, status: res && res.status || 0, json: null, timedOut: false };
+      }
+      return Promise.resolve(res.json()).then(
+        function(json) {
+          return { ok: true, status: res.status, json, timedOut: false };
+        },
+        function() {
+          return { ok: false, status: res.status, json: null, timedOut: false };
+        }
+      );
+    }).catch(function(err) {
+      if (timer) clearTimeout(timer);
+      var timedOut = !!(controller && controller.signal && controller.signal.aborted) || "AbortError" === (err && err.name);
+      return { ok: false, status: 0, json: null, timedOut };
+    });
+  }
+  function why(res) {
+    if (res.timedOut) return " The request timed out after 8 seconds.";
+    if (res.status) return " The endpoint answered " + res.status + ".";
+    return " The request could not be completed.";
+  }
+  function ed25519Supported() {
+    if (!subtle || !subtle.importKey) return Promise.resolve(false);
+    return Promise.resolve().then(function() {
+      return subtle.importKey(
+        "jwk",
+        { kty: "OKP", crv: "Ed25519", x: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" },
+        { name: "Ed25519" },
+        false,
+        ["verify"]
+      );
+    }).then(function() {
+      return true;
+    }, function() {
+      return false;
+    });
+  }
+  async function signatureLeg(cred2) {
+    var base = ledgerBase();
+    if (!base) {
+      return {
+        state: STATE.UNREACHABLE,
+        detail: "The manifest's ledger record URL does not end with the expected " + expectedRecordSuffix() + ", so the independent ledger copy of the key cannot be located. Refusing to guess: without that third copy this check would quietly become a two-way one and still report a pass."
+      };
+    }
+    var results = await Promise.all([
+      fetchJSON(callUrl("did")),
+      fetchJSON(callUrl("key_history")),
+      fetchJSON(Core.ledgerKeysUrl(base))
+    ]);
+    if (!results[0].ok) {
+      return {
+        state: STATE.UNREACHABLE,
+        detail: "Could not reach this site's did document." + why(results[0])
+      };
+    }
+    if (!await ed25519Supported()) {
+      return {
+        state: STATE.NOTE,
+        detail: "This runtime does not support Ed25519 verification, so no pass/fail verdict is reported for the signature."
+      };
+    }
+    var agreement = Core.deriveKeyAgreement(results[0].json, results[1].json, results[2].json);
+    if (agreement.verdict) return agreement.verdict;
+    var decoded = Core.decodeProofBytes(cred2);
+    if (decoded.malformed) return decoded.verdict;
+    var valid;
+    try {
+      var key = await subtle.importKey("jwk", agreement.jwk, { name: "Ed25519" }, false, ["verify"]);
+      valid = await subtle.verify("Ed25519", key, decoded.sigBytes, decoded.payloadBytes);
+    } catch (e) {
+      return { state: STATE.FAIL, detail: "The signature could not be verified." };
+    }
+    return Core.deriveSignatureVerdict(valid);
+  }
+  async function contentHashLeg(cred2) {
+    if (!subtle || !subtle.digest) {
+      return { state: STATE.UNREACHABLE, detail: "This runtime has no SHA-256 support to run this check with." };
+    }
+    var decoded = Core.decodeSignedPayloadBytes(cred2);
+    if (decoded.malformed) return decoded.verdict;
+    var digest2 = await subtle.digest("SHA-256", decoded.payloadBytes);
+    return Core.deriveContentHashVerdict(
+      Core.bytesToHex(new Uint8Array(digest2)),
+      Core.claimedContentHash(cred2)
+    );
+  }
+  async function liveMatchLeg(cred2) {
+    var twinUrl = Core.liveMatchTwinUrl(cred2);
+    if (!twinUrl) {
+      return { state: STATE.UNREACHABLE, detail: "This credential does not carry a live URL to compare against." };
+    }
+    var pin = subject && subject.url || (typeof location !== "undefined" && location ? location.href : "");
+    var pinOrigin = "";
+    var twinOrigin = "";
+    try {
+      pinOrigin = new URL(pin).origin;
+    } catch (e) {
+      pinOrigin = "";
+    }
+    try {
+      twinOrigin = new URL(twinUrl, pin || void 0).origin;
+    } catch (e2) {
+      twinOrigin = "";
+    }
+    if (!pinOrigin || twinOrigin !== pinOrigin) {
+      return {
+        state: STATE.NOTE,
+        // prov-verify.js:378
+        detail: "This credential's live URL is not on this site, so the live comparison is skipped rather than fetching a foreign origin."
+      };
+    }
+    var res = await fetchJSON(twinUrl);
+    if (!res.ok) {
+      return {
+        state: STATE.UNREACHABLE,
+        detail: "Could not reach the live version of this note to compare." + why(res)
+      };
+    }
+    return Core.deriveLiveMatchVerdict(cred2, res.json);
+  }
+  async function anchorLeg(cred2) {
+    var plan = Core.deriveAnchorPlan(cred2);
+    if (plan.verdict) return plan.verdict;
+    var recordUrl = callUrl("record");
+    if ("block-only" === plan.mode) {
+      var ledgerRes = await fetchJSON(recordUrl);
+      var outcome = Core.deriveBlockOnlyAnchor(plan.anchor, plan.evidence, ledgerRes);
+      if (outcome.verdict) return outcome.verdict;
+      var txRes2 = await fetchJSON(Core.mempoolTxStatusUrl(mempoolBase(), outcome.followTxid));
+      return Core.deriveLedgerTxAnchor(plan.anchor, outcome.blockNote, txRes2);
+    }
+    var both = await Promise.all([
+      fetchJSON(Core.mempoolTxStatusUrl(mempoolBase(), plan.anchor.txid)),
+      fetchJSON(recordUrl)
+    ]);
+    return Core.deriveTxAnchor(plan.anchor, plan.evidence, both[0], both[1]);
+  }
+  function assemble(checks) {
+    return {
+      signed: true,
+      subject,
+      checks,
+      overall: Core.deriveOverallVerdict({
+        signature: checks.signature.state,
+        "content-hash": checks.contentHash.state,
+        "live-match": checks.liveMatch.state,
+        anchor: checks.anchor.state
+      }),
+      ledger_record: callUrl("record"),
+      docket: manifest.spec
+    };
+  }
+  function guard(leg, detail) {
+    return Promise.resolve().then(leg).then(
+      function(v) {
+        return v && v.state ? v : { state: STATE.UNREACHABLE, detail: detail + " It returned no verdict." };
+      },
+      // THIS PORT'S OWN, no docket ancestor. The message is carried through
+      // deliberately: a ReferenceError from a port bug and a dead network
+      // both land here, and an UNREACHABLE that hides which one it was sends
+      // whoever debugs it to the wrong place entirely.
+      function(e) {
+        return {
+          state: STATE.UNREACHABLE,
+          detail: detail + " (" + (e && e.message ? e.message : e) + ")"
+        };
+      }
+    );
+  }
+  try {
+    var credRes = await fetchJSON(callUrl("credential"));
+    if (!credRes.ok) {
+      var noCredential = function() {
+        return {
+          state: STATE.UNREACHABLE,
+          detail: "Could not run: no credential to check." + why(credRes)
+        };
+      };
+      return assemble({
+        signature: noCredential(),
+        contentHash: noCredential(),
+        liveMatch: noCredential(),
+        anchor: noCredential()
+      });
+    }
+    var cred = credRes.json;
+    var settled = await Promise.all([
+      guard(function() {
+        return signatureLeg(cred);
+      }, "The signature check could not be completed."),
+      guard(function() {
+        return contentHashLeg(cred);
+      }, "The content-hash check could not be completed."),
+      guard(function() {
+        return liveMatchLeg(cred);
+      }, "The live-match check could not be completed."),
+      guard(function() {
+        return anchorLeg(cred);
+      }, "The anchor check could not be completed.")
+    ]);
+    return assemble({
+      signature: settled[0],
+      contentHash: settled[1],
+      liveMatch: settled[2],
+      anchor: settled[3]
+    });
+  } catch (e) {
+    return {
+      signed: true,
+      subject,
+      error: "verification failed: " + (e && e.message ? e.message : e)
+    };
+  }
+}
+
+function snWebmcpMain(w) {
+  var win = w || (typeof window !== "undefined" ? window : null);
+  var doc = win && win.document;
+  if (!doc) return;
+  if (win.__snWebmcpRegistered) return;
+  var api = snAgentApi(win);
+  if (!api) return;
+  win.__snWebmcpRegistered = true;
+  api.registerTool({
+    name: "verify-page",
+    description: "Verify this page's provenance: signature, content hash, live match, and anchor, computed in this browser from the page's own verification manifest. Returns the honest absence on unsigned pages.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+    execute: function() {
+      return snVerifyPage();
+    }
+  });
+  api.registerTool({
+    name: "get-rights-terms",
+    description: "The machine-readable rights terms in force for this site: the ODRL policy (W3C TDMRep profile) plus pointers to license.xml, tdmrep.json, and the human-readable policy.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+    execute: function() {
+      return snGetRightsTerms();
+    }
+  });
+}
+
+snWebmcpMain();
