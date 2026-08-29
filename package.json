@@ -11,7 +11,8 @@
     "verify:pages": "node verify-pages.mjs",
     "verify:keys": "node verify-key-history.mjs",
     "verify:key-pins": "node verify-key-pins.mjs",
-    "verify:rights-signals": "node verify-rights-signals.mjs"
+    "verify:rights-signals": "node verify-rights-signals.mjs",
+    "verify:retractions": "node verify-retractions.mjs"
   },
   "devDependencies": {
     "vitest": "^3.0.0"

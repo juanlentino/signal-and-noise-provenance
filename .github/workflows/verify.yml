@@ -110,6 +110,7 @@ jobs:
       - run: npm run verify:genesis
       - run: npm run verify:keys
       - run: npm run verify:key-pins
+      - run: npm run verify:retractions
       - run: npm run verify:coverage
       # The ONLY step whose strictness depends on the trigger. Everything else
       # — records, genesis, keys, key-pins, coverage, the test suite — runs
