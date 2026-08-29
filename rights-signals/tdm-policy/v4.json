@@ -1,0 +1,13 @@
+{
+  "slug": "tdm-policy",
+  "url": "https://juanlentino.com/tdm-policy/",
+  "content_hash": "6d3fa5478dcbe1149ee05b34351c9920f5e4ee9487df6caae322000f1d934bca",
+  "signature": "M4yTU3XKo7eki1GE7zFJkuXgbzPHGuGLfyph/UNyHEvC/8Hnqb/TVXeFG6KGj5DN4Wpvf37KTx/OGvNvJSypCw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
