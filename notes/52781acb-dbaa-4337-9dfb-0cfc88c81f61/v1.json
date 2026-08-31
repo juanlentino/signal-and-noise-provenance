@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v2",
+    "author": "Juan Lentino",
+    "content": "A tea company announced that it had stopped using language models to produce any of its marketing. The post did well: several hundred reactions, a hundred-odd comments, most of them approving. It is a real dated event and I have no reason to doubt a word of it.\n\nIt also cannot be checked by anyone, and that includes the company itself. Whether the decision was a good one is a separate question from whether the statement can be supported, and only the second one is my subject.\n\nThe pledge arrives without a record\n\nWhat went out was a claim about output that had not been produced yet. Every caption, every product description, every email from that day forward sits inside the promise, and none of them existed at the moment it was made. Someone reading the post in six months is being asked to accept a statement about work nobody witnessed being made.\n\nThis runs opposite to the situation the disclosure argument usually covers. Most of that argument concerns the person who enters nothing, and the blank they leave behind is consistent with several unrelated situations that no downstream scrutiny separates. Here somebody spoke at length and in public. The claim is loud, and underneath it sits exactly what sits under the silence.\n\nPositive events can be recorded, absences cannot\n\nA creation-time record answers a bounded question. This file, this person, this key, this time. The work happened, the record was written while it was happening, and later it either verifies or it does not.\n\n\"No model was involved in anything we made\" is a different shape of question entirely. It ranges over every asset, produced by everyone on a team, on every machine they own, across a period with no end date. There is no session to attach it to, because the claim is not about a session. Supporting it would mean recording the non-occurrence of an event everywhere the event could have occurred, indefinitely. No such instrument exists and none is coming.\n\nProvenance does not rescue this pledge, and it is worth saying plainly rather than letting the reader assume otherwise. The temptation for anyone who argues this position for a living is to present the record as the answer to every authorship question. It answers one: what did happen, here, at this moment.\n\nThe falsification runs one way\n\nA pledge like this can be broken in public and never confirmed in public. One forwarded draft, one screenshot of a prompt window from a contractor who was not briefed, and the claim is finished. A year of clean compliance produces nothing at all, because there is no artifact that compliance leaves behind. The shape will look familiar to anyone who has been on the receiving end of a detector: the accusation is cheap, and the defense has no procedure available to it.\n\nThe company has voluntarily taken the position of the accused student, in advance, on a claim it chose to make.\n\nThere was a version available that costs less. Name the person who wrote the copy. Date it. Say that this photograph was taken in that room on that morning by her. Each of those is a positive statement about a bounded event, and a signature attaches attribution rather than truth, which is the smaller promise and the one that survives contact with a dispute. Whether a small brand gains anything commercially by making claims that modest is genuinely unsettled, and the engagement numbers on the sweeping version are not evidence in its favor either way.",
+    "note_uid": "52781acb-dbaa-4337-9dfb-0cfc88c81f61",
+    "parent": null,
+    "published_at": "2026-08-31T00:45:28Z",
+    "title": "Nobody can sign an absence",
+    "version": 1
+  },
+  "content_hash": "fdf60e74cf1ab95f7cfcb2151a047bf1123e7fa5c4e75bb8f091de6ffe9c3808",
+  "signature": "sQw0kg9FQvFk4jUI3V6TU1EawgZ2kenru1hjK/P/bPyXpEy8PksxSDv06wqH7i3jHtcbKgxsanelilJ+ZmzoCw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
