@@ -92,13 +92,13 @@
       "title": "Music's billion-dollar metadata problem",
       "published_at": "2026-05-12T16:33:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "257dfb87043cc7b3fc1da233fb6a0dd83d1e043b8951a1a5b43345b6bcc5aa4b",
+      "version": 2,
+      "content_hash": "328e765902d443316bd13442d5722bf24c3c1b46e221f66ed5b0b29aff8b04ac",
       "leaf_hash": "951f161acbb4a2ddda3143f9ac8d86fa9eb8eb99eda3e086ff824e2428f86248",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 957350
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "37808493-429c-48d0-9fa6-767f4b673d26",
@@ -204,13 +204,13 @@
       "title": "Who vouches for the independent artist?",
       "published_at": "2026-06-11T21:23:39Z",
       "anchor": "genesis",
-      "version": 2,
-      "content_hash": "c4144d7fe4b42bf07724bb46919c42e630f64609bcf0e5ca5d6b575f6e6ac0a1",
+      "version": 3,
+      "content_hash": "4efffede125024463e43f7ffb6115396b77a50e243bfc8d05cf07c85647aafe2",
       "leaf_hash": "b8c2c9983cc5a02aa63e05c0ef064c420d9f9857aa1666779c05929442463431",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 962456
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "9519209a-7a01-405e-8de7-d291b80fafd4",
@@ -514,10 +514,11 @@
       "anchor": "per-note",
       "version": 1,
       "content_hash": "954c84a7deb31740bc6b46645906455c36f3f6e2e71c0947117109f5dcae8f94",
-      "ots_status": "pending",
+      "bitcoin_block": 965045,
+      "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 965045
     }
   ],
   "pages": [
