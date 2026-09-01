@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v2",
+    "author": "Juan Lentino",
+    "content": "Provenance is an art market word. It names the ownership history of an object, evidenced by receipts and by the willingness of an auction house to stand behind the sequence. The painting exists first. The record gets assembled afterward, backward, out of whatever documentation survived the intervening decades.\n\nThat construction is load-bearing in the original trade. Authentication there is a reconstruction problem, because the moment that mattered happened in a room nobody was writing anything down in.\n\nWhat music inherited along with the term\n\nAudio does not behave that way, and the gap is not a detail of usage. A recording arrives finished and then accumulates nothing. No succession of owners leaves marks on it, and no interval exists during which evidence builds up. If a record of how the work was made is absent at delivery, no later process manufactures one.\n\nSo the borrowed word names the part of the system that runs after the fact, while the part carrying the weight runs at creation. Origin is a moment. Provenance is what becomes of the record of that moment over the following decades. Both are real problems. Only one of them can be produced on demand.\n\nWhy the term keeps generating the wrong instrument\n\nThis would be a vocabulary quibble if the word were not shaping what people build.\n\nThe industry has been running an art market apparatus for a century without calling it that. Rights registration reconstructs ownership from paperwork filed after the work already existed, often years after, sometimes by parties who were never in the room when it was made. A claim gets submitted, and an institution decides whether the documents gathered around it hold together well enough to pay against. That is the auction house method pointed at a catalog, and the money it fails to place is a matter of public record.\n\nFor paintings the method is correct. Here it fails, because what needs reconstructing was never written down in the first place, and reconstruction is exactly what the medium forecloses. Anyone arriving at this problem holding the inherited term goes looking for a chain of custody, finds nothing resembling one, and builds an institution to supply the missing links. What the institution produces is a document about a document.\n\nThe plain phrase is the precise one\n\nThe usual arrangement is that technical vocabulary buys accuracy at the cost of reach, and plain language trades precision for a wider audience. Here the arrangement runs backward.\n\nProof of origin describes binding at creation and imports nothing from anywhere else. Provenance sounds more rigorous while carrying a domain in which objects predate their records by a century or more. The accessible phrase is the exact one, and the specialist term is the one doing the smuggling.\n\nThat is not an argument for dropping the word. What happens to a record after creation is a real problem and probably the harder of the two, and provenance is the correct name for it. The mistake is letting a single term cover both halves and then wondering why so many proposals address the second one.\n\nThere is a short test available for anything offered in this space. Ask when the evidence it depends on came into existence. Anything answering \"afterward\" is doing art history, competently or otherwise, on a medium that leaves no trail to research.",
+    "note_uid": "1a560d3d-5224-47d4-bbbe-032254fa5fa2",
+    "parent": null,
+    "published_at": "2026-09-01T13:52:00Z",
+    "title": "Provenance is the wrong half",
+    "version": 1
+  },
+  "content_hash": "954c84a7deb31740bc6b46645906455c36f3f6e2e71c0947117109f5dcae8f94",
+  "signature": "ZZHBnDkltB6d42tpYOUif/Akr0sr07n/NtwAIBhoYS1OroIBB7E4uthOFaMmBULKZ/iNs5M18at7mXvxKWATCw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
