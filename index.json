@@ -97,8 +97,8 @@
       "leaf_hash": "951f161acbb4a2ddda3143f9ac8d86fa9eb8eb99eda3e086ff824e2428f86248",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 965103
     },
     {
       "note_uid": "37808493-429c-48d0-9fa6-767f4b673d26",
@@ -162,13 +162,13 @@
       "title": "Falsifiability is the line",
       "published_at": "2026-05-27T19:24:00Z",
       "anchor": "genesis",
-      "version": 2,
-      "content_hash": "90fa849fb64a286bcd9cf9293c6ee8859adbdeb8b8f17787d5362d6ee3496265",
+      "version": 3,
+      "content_hash": "2a345f3e7201efdbd0e16687b22d5b3674c57bcf95c6f3f1c9e9ce9d422da10b",
       "leaf_hash": "964150870dc7ea8f9df37c11de1095dcead674d2fcd2761779c81b6efe23e7cf",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
       "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 962946
+      "standalone_bitcoin_block": 965106
     },
     {
       "note_uid": "5c3d0e61-0f95-4bd4-b665-41571fdad1a3",
@@ -209,8 +209,8 @@
       "leaf_hash": "b8c2c9983cc5a02aa63e05c0ef064c420d9f9857aa1666779c05929442463431",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 965103
     },
     {
       "note_uid": "9519209a-7a01-405e-8de7-d291b80fafd4",
@@ -330,13 +330,13 @@
       "title": "Provenance as a CFO problem",
       "published_at": "2026-07-21T14:53:00Z",
       "anchor": "per-note",
-      "version": 2,
-      "content_hash": "bd24be83a6cca6c0a086b8edfab24e68c1b99fd94b0543176e8aca77197eee82",
-      "bitcoin_block": 961947,
+      "version": 3,
+      "content_hash": "408e2d752c9952f1de72225f9b58070ff564263a9af7728b416f8f9badaf8c33",
+      "bitcoin_block": 965106,
       "ots_status": "confirmed",
-      "anchored_version": 2,
+      "anchored_version": 3,
       "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 961947
+      "standalone_bitcoin_block": 965106
     },
     {
       "note_uid": "0ab100ea-492a-41cd-9b1e-b9d3790c2903",
@@ -372,13 +372,13 @@
       "title": "Provenance signs the claim, not the truth",
       "published_at": "2026-07-31T19:23:36Z",
       "anchor": "per-note",
-      "version": 2,
-      "content_hash": "a36232710bb59906582c2b0e89904834812c2df95bfac8c55d3b8c37e69e885e",
-      "bitcoin_block": 962840,
+      "version": 3,
+      "content_hash": "f1d6335adb0193da0e7b6ebbc64344402a77abd6c3bd7b09704e801fee5a6927",
+      "bitcoin_block": 965106,
       "ots_status": "confirmed",
-      "anchored_version": 2,
+      "anchored_version": 3,
       "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 962840
+      "standalone_bitcoin_block": 965106
     },
     {
       "note_uid": "10bc8a21-fe13-41b4-a6a5-f63ed3597e7e",
@@ -428,13 +428,13 @@
       "title": "The label comes last",
       "published_at": "2026-08-11T13:53:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "5d55586e46e694320abe3e608ddf98324fb5a3cf1660475b8a66e09a95ef0fec",
-      "bitcoin_block": 962018,
+      "version": 2,
+      "content_hash": "44588b024f2955800913037b606a34e10c826f50df6fff791bdae2ec2566f980",
+      "bitcoin_block": 965106,
       "ots_status": "confirmed",
-      "anchored_version": 1,
+      "anchored_version": 2,
       "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 962018
+      "standalone_bitcoin_block": 965106
     },
     {
       "note_uid": "9ff04b24-d270-4f7d-a155-729b2842717a",
