@@ -528,11 +528,11 @@
       "anchor": "per-note",
       "version": 2,
       "content_hash": "2ac0c7bc93c61d2d4131e190777b18282c34b58e6f4e3063f29e56a4dc1fc8bb",
-      "bitcoin_block": 964812,
+      "bitcoin_block": 965180,
       "ots_status": "confirmed",
-      "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 2,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 965180
     }
   ],
   "pages": [
