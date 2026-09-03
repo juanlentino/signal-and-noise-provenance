@@ -78,13 +78,13 @@
       "title": "Verifying the artist isn't enough",
       "published_at": "2026-05-09T22:33:32Z",
       "anchor": "genesis",
-      "version": 2,
-      "content_hash": "7408dcc14e6cd8fc955a72e5f2783d2d3d8ae8b2e8b498f8823610d5da7f289a",
+      "version": 3,
+      "content_hash": "60d1fc0811e9dfcb552760ffb8b34b47cc642e28232c5859cc3715a7b6ac22e0",
       "leaf_hash": "6bea3b91d6bfa6aa9dd37cfaf4b87523962e032fdcc148c38f772ac2464c23ed",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 962461
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "1059fb8d-2602-45a7-912e-18f463c7146d",
@@ -134,13 +134,13 @@
       "title": "Detection scales the wrong way",
       "published_at": "2026-05-21T13:32:00Z",
       "anchor": "genesis",
-      "version": 2,
-      "content_hash": "807dcdafd0a7089f926b6e485021211ce6cd8dd943a1d476df623c456a3617f5",
+      "version": 4,
+      "content_hash": "e4febe79c095d2e2b8b6d5c062ef8e3eefd3ea28a70fb45ebc7ebbc2a7f2208d",
       "leaf_hash": "28318c35f93317ec926128087a02b2b33584ddc3d586613d36474077ac509f39",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 961947
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "23c62072-a277-4d09-80fc-5cca54d598d3",
@@ -148,13 +148,13 @@
       "title": "Fingerprints, not name tags",
       "published_at": "2026-05-23T14:18:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "64785cf712cbae7faecc63a8048b957cbb38b5295a0e71d820268d26fa2e0c60",
+      "version": 2,
+      "content_hash": "0fd2cc63d79b174564cfbdc085ee699f4a67da136c6b02ae6fead404242d374f",
       "leaf_hash": "7d4144d476b6b3a34a942023e3e1b3c1af18d9c926f0d7c4abc27b730d07d1f1",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "9f0abe29-71ed-4b6d-b3a3-ad00f06b2fc3",
@@ -190,13 +190,13 @@
       "title": "What happens to old music?",
       "published_at": "2026-06-02T13:21:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "a9588f33d1e8189a9da0d4165b1038e7731e06d18bc42960b0980277362696a3",
+      "version": 2,
+      "content_hash": "d0f5cf820cf39a34dbc0be133594f8a397ea39918579b24047a89135d21e7055",
       "leaf_hash": "51c3a3f164d233403e6fc8012aa80308e26dc83c62d9bee155f541dad4f66239",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "c9c4b790-ec73-46ab-b13a-3930fe86ea0a",
