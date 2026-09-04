@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v2",
+    "author": "Juan Lentino",
+    "content": "A signature stays valid for as long as anyone cares to check it. The standing of whoever produced it does not hold still in the same way, and nothing in the design accounts for the gap.\n\nEverything in this architecture is built to stop moving. A master arrives finished and stays that way. A record made at the moment of creation is fixed at that moment, which is exactly what makes it worth consulting years later when a claim arrives. One element keeps moving anyway, and it is the party whose name sits on the record.\n\nWhat verification actually reports\n\nChecking a signature answers one question well. A given key signed this record at a stated time, and the record has not been altered since. That answer never changes, which is the property the whole approach is built on.\n\nWhat it reports on the signer is thinner. Verification looks backward at an event and confirms the event happened. Standing is a live property, and standing is usually what someone is reaching for when they ask whether a record can be relied on. The check returns green either way.\n\nA company is not one posture\n\nCorporate signers make the problem concrete. In the same period, one generative AI company trained its music model on licensed catalog while holding that training its image models fell under fair use. Same company, same board, opposite positions on the question a provenance record exists to settle. Anyone treating the corporate entity as the unit of accountability was tracking a value that did not exist at the entity level.\n\nControl moves as well. Boards turn over, companies are acquired, and brands outlive the organizations that earned their reputations. Napster now names a business with no relationship to the one that made the name mean anything. A signature produced in 2026 will still verify in 2036. What it points at may have been sold twice before anyone checks.\n\nThere is no second window\n\nThe case for binding at creation rests on there being no later moment when evidence naturally attaches to a finished work, which is what makes the moment of delivery decisive. That reasoning holds, and it cuts in a direction worth stating. If the window closes at delivery for the work, it closes for the signer too. Re-attestation is not available when a signer's standing shifts, because a record that could be revised on new information would not be doing the job it was built for.\n\nThe residual trust surface left behind, the small inspectable one that replaces the sealed engine, therefore is not static. It is a set of named parties whose meaning drifts underneath a record that cannot register the drift. Inspecting that surface in year one and inspecting it in year ten are different exercises returning different answers, with nothing in the record itself to indicate anything moved.\n\nThat is a cost the design carries rather than a defect in it. Every alternative on offer is worse, since an estimate produced years after the fact inherits the same problem and adds uncertainty about the artifact on top. Naming the cost is what separates a claim about infrastructure from a claim about magic.\n\nIt does leave a question the architecture has not answered. If standing drifts and the record cannot be updated, then the weight a given signature carries is a function of when it is being read, not only of who produced it. Nothing in current practice treats it that way.",
+    "note_uid": "649a7b6a-d76f-43d5-9880-0f1b1cacdbbd",
+    "parent": null,
+    "published_at": "2026-09-04T14:23:46Z",
+    "title": "The signer keeps moving",
+    "version": 1
+  },
+  "content_hash": "e7c7e815836d16597404ae57124d9a6f10968a662c54a71abbfcae766e208eec",
+  "signature": "3/qjhRZRw9nqR6naqW8WDUoQzElgRhTYTX2q478zggCffHV20lFItsB8KNgceOAzj+do0HBZWwxX4QxDKZa7AQ==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
