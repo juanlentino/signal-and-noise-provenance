@@ -1,18 +1,3 @@
 {
-  "entries": [
-    {
-      "note_uid": "tdm-policy",
-      "version": 5,
-      "path": "rights-signals/tdm-policy/v5",
-      "kind": "rights-signal",
-      "queued_at": "2026-09-12T07:00:43.197Z"
-    },
-    {
-      "note_uid": "webmcp-bridge",
-      "version": 2,
-      "path": "rights-signals/webmcp-bridge/v2",
-      "kind": "rights-signal",
-      "queued_at": "2026-09-12T07:00:47.238Z"
-    }
-  ]
+  "entries": []
 }
