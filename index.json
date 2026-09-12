@@ -619,10 +619,10 @@
     {
       "slug": "tdm-policy",
       "url": "https://juanlentino.com/tdm-policy/",
-      "version": 4,
-      "content_hash": "6d3fa5478dcbe1149ee05b34351c9920f5e4ee9487df6caae322000f1d934bca",
-      "ots_status": "confirmed",
-      "bitcoin_block": 964508
+      "version": 5,
+      "content_hash": "3b2fd663babe2be012dfedaeb7e9739847b160dd3f5d42df69e74d32b1b1437e",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "slug": "tdmrep-json",
@@ -635,10 +635,10 @@
     {
       "slug": "webmcp-bridge",
       "url": "https://juanlentino.com/webmcp/bridge.js",
-      "version": 1,
-      "content_hash": "b355cb956d87914169f220ad0e57d9d7260314ef942352aa4894afa60fa7563a",
-      "ots_status": "confirmed",
-      "bitcoin_block": 964512
+      "version": 2,
+      "content_hash": "ab2192a4748bdca5bc509d3d9498574b81e6113926db6616a53839f8a4950cc6",
+      "ots_status": "pending",
+      "bitcoin_block": null
     }
   ]
 }
