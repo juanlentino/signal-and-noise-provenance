@@ -575,6 +575,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 966399
+    },
+    {
+      "note_uid": "59704151-e71b-477f-9be9-d675d4b661ec",
+      "slug": "the-estate-cannot-sign",
+      "title": "The estate cannot sign",
+      "published_at": "2026-09-14T20:12:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "8d07fe35ae9a275514580cb02aa6172aef4491d1846d610360c8097be02dffe1",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
