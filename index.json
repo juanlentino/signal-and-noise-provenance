@@ -589,14 +589,44 @@
       "bitcoin_block": 963242
     },
     {
+      "note_uid": "5acfdf1d-5894-4353-bdd4-a2425ef21ef4",
+      "kind": "page",
+      "slug": "as-substrate",
+      "title": "Provenance As Substrate",
+      "version": 1,
+      "content_hash": "d872f1a8fc00f140e8d2623298670462c1029a80d27b6d27867285b9d07aa5d9",
+      "ots_status": "pending",
+      "bitcoin_block": null
+    },
+    {
+      "note_uid": "c316c35d-f5ea-424a-a752-ef1d5feec74d",
+      "kind": "page",
+      "slug": "over-detection",
+      "title": "Provenance Over Detection",
+      "version": 1,
+      "content_hash": "68d3044d47e0cad209abdefd433c3b92ddbdd2b70493e25b16d1019920d46180",
+      "ots_status": "pending",
+      "bitcoin_block": null
+    },
+    {
+      "note_uid": "9d49e140-10a2-4c62-943e-e98270fe09d2",
+      "kind": "page",
+      "slug": "provenance",
+      "title": "On Provenance",
+      "version": 1,
+      "content_hash": "4bce8723c084011a269b491099f6e0b65e1f1c44396a433a8c11426940d35a16",
+      "ots_status": "pending",
+      "bitcoin_block": null
+    },
+    {
       "note_uid": "a51872f0-7b1c-4d25-89f4-3331791ca68c",
       "kind": "page",
       "slug": "start-here",
       "title": "Start Here",
-      "version": 1,
-      "content_hash": "bfd775bed06d8f08d9ca210604416628f725cc611b66d028471ab46e811bcfdb",
-      "ots_status": "confirmed",
-      "bitcoin_block": 963102
+      "version": 2,
+      "content_hash": "0aa9d83d543d6f970fe67e51a2fdcbb428d48dd7d59f40f79ca53badd794aa16",
+      "ots_status": "pending",
+      "bitcoin_block": null
     }
   ],
   "rights_signals": [
