@@ -627,6 +627,16 @@
       "content_hash": "0aa9d83d543d6f970fe67e51a2fdcbb428d48dd7d59f40f79ca53badd794aa16",
       "ots_status": "confirmed",
       "bitcoin_block": 966923
+    },
+    {
+      "note_uid": "915e1df8-c35a-4521-9d59-ee029cf4575f",
+      "kind": "page",
+      "slug": "without-institutions",
+      "title": "Provenance Without Institutions",
+      "version": 1,
+      "content_hash": "b8d8b206cda680d72e5603adde81c0f3e04bc5a1563ed8daeb6ad940cd1ae248",
+      "ots_status": "pending",
+      "bitcoin_block": null
     }
   ],
   "rights_signals": [
