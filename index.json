@@ -613,8 +613,8 @@
       "kind": "page",
       "slug": "provenance",
       "title": "On Provenance",
-      "version": 1,
-      "content_hash": "4bce8723c084011a269b491099f6e0b65e1f1c44396a433a8c11426940d35a16",
+      "version": 2,
+      "content_hash": "6ef83d6e62797a86bf621b9d4c1825353f308c4878554b5b7e90bcc28486113a",
       "ots_status": "pending",
       "bitcoin_block": null
     },
