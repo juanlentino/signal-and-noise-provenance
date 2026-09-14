@@ -288,13 +288,13 @@
       "title": "The unlabeled majority",
       "published_at": "2026-07-10T15:19:01Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "0cae856ccb702f7e1017f78abd7ba3d1ab6f8d323c542a18b14d73275fa67066",
+      "version": 2,
+      "content_hash": "196dec626d9b16eab76d3cadb001d3c96ca13ad41fd59dc95ecafe6a080d0d4e",
       "bitcoin_block": 957441,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 957441
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "b89d5f64-194d-42cc-ae18-696efda7662a",
