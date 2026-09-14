@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v2",
+    "author": "Juan Lentino",
+    "content": "A signature made in 2026 will still verify in 2076. Nobody who produced one will be there to answer for it. Copyright has assumed exactly this for a long time and built machinery around it. Keys have none.\n\nTerm is the clearest expression of the assumption. Protection commonly runs decades past the death of the author, and for most commercial recordings the clock is set by publication rather than by a lifespan at all, so the greater part of a copyright's life is spent under someone other than the person who made the work. Everything around it is built for movement. Rights get assigned, inherited, split, and sold, and catalog acquisition is a functioning market with its own valuation practice. Ownership changing hands is the normal case rather than the exception.\n\nWhat an heir receives\n\nAn estate inherits the recordings, the copyrights, the contracts, and a set of verification results it can display but cannot extend. Everything already signed stays checkable, which is the property that makes binding at creation worth doing and makes the record worth consulting decades later. The capacity to produce a new signature under that identity ends with the person.\n\nThat gap has practical shape. Unreleased material surfaces from a hard drive years later. A credit turns out to have been wrong and needs correcting. A remaster ships. Each of those arrives unsigned, in an environment where an untagged track stops being neutral and starts reading as a claim of its own, and the estate has no way to make it read otherwise.\n\nDeath is only the sharpest version. A lost key produces the same structural event with the artist alive and willing to attest. The correction path in these systems supersedes a record with a newer signed one, which presumes the signer still holds the means to sign. Lose the key and the archive freezes in whatever state it was in.\n\nEvery remedy reopens delegation\n\nThe obvious remedies are all forms of handing someone else the key in advance. Escrow with a rights organization. Threshold schemes that split a key so a quorum of trustees can reconstruct it. A recovery share held by a distributor. Each of these works technically, and each dissolves the property that made the signature worth anything, which was that exactly one party could produce it. Give an institution a recovery path and the tool stops being a pen.\n\nNone of this is unsolved in the abstract. Custody engineering is mature and other domains run it at scale. What is missing is a decision about who holds what, in a field where the equivalent question about ownership took a century of contract law to settle and still gets litigated regularly.\n\nTwo rights, one of them with infrastructure\n\nOwning a work and being able to attest to it are separate rights that the industry has treated as one. Ownership transfers cleanly and has done so for generations. Attestation does not transfer at all, and there is no good argument that it should, since a transferable capacity to sign as someone is difficult to distinguish from impersonation.\n\nA separate problem already sits nearby, which is that the party behind a key does not hold still over the decades a signature remains valid. This is the harder version. A name on a record can at least be researched by whoever reads it in forty years. A signing capacity that no longer exists cannot be researched or reconstructed, and the catalogs where it will matter most are the ones being built now by artists who have no reason to think about succession yet.",
+    "note_uid": "59704151-e71b-477f-9be9-d675d4b661ec",
+    "parent": null,
+    "published_at": "2026-09-14T20:12:00Z",
+    "title": "The estate cannot sign",
+    "version": 1
+  },
+  "content_hash": "8d07fe35ae9a275514580cb02aa6172aef4491d1846d610360c8097be02dffe1",
+  "signature": "6nRlGmzilZGiCR4ccDpUXRku7fV78Sb/URdshAXwbgYbFTGH6jnVtCSKKvO5OfCLbV2hyStif4E9IRI+0Ij8Cg==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
