@@ -637,10 +637,10 @@
       "kind": "page",
       "slug": "start-here",
       "title": "Start Here",
-      "version": 2,
-      "content_hash": "0aa9d83d543d6f970fe67e51a2fdcbb428d48dd7d59f40f79ca53badd794aa16",
-      "ots_status": "confirmed",
-      "bitcoin_block": 966923
+      "version": 3,
+      "content_hash": "04841b903caa122be55675fc1478278099a2fb6e3615d2360f58fd36adea660a",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "note_uid": "915e1df8-c35a-4521-9d59-ee029cf4575f",
