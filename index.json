@@ -584,10 +584,11 @@
       "anchor": "per-note",
       "version": 1,
       "content_hash": "8d07fe35ae9a275514580cb02aa6172aef4491d1846d610360c8097be02dffe1",
-      "ots_status": "pending",
+      "bitcoin_block": 967026,
+      "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 967026
     }
   ],
   "pages": [
@@ -626,10 +627,10 @@
       "kind": "page",
       "slug": "provenance",
       "title": "On Provenance",
-      "version": 2,
-      "content_hash": "6ef83d6e62797a86bf621b9d4c1825353f308c4878554b5b7e90bcc28486113a",
-      "ots_status": "confirmed",
-      "bitcoin_block": 966923
+      "version": 3,
+      "content_hash": "c5e5a8db92e4c4fa5926994ce9ef0533f111a186e830338d7518787aee140697",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "note_uid": "a51872f0-7b1c-4d25-89f4-3331791ca68c",
@@ -648,8 +649,8 @@
       "title": "Provenance Without Institutions",
       "version": 1,
       "content_hash": "b8d8b206cda680d72e5603adde81c0f3e04bc5a1563ed8daeb6ad940cd1ae248",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 967020
     }
   ],
   "rights_signals": [
