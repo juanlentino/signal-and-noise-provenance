@@ -629,8 +629,8 @@
       "title": "On Provenance",
       "version": 3,
       "content_hash": "c5e5a8db92e4c4fa5926994ce9ef0533f111a186e830338d7518787aee140697",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 967043
     },
     {
       "note_uid": "a51872f0-7b1c-4d25-89f4-3331791ca68c",
@@ -639,8 +639,8 @@
       "title": "Start Here",
       "version": 3,
       "content_hash": "04841b903caa122be55675fc1478278099a2fb6e3615d2360f58fd36adea660a",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 967046
     },
     {
       "note_uid": "915e1df8-c35a-4521-9d59-ee029cf4575f",
