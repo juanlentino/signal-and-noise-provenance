@@ -702,10 +702,10 @@
     {
       "slug": "webmcp-bridge",
       "url": "https://juanlentino.com/webmcp/bridge.js",
-      "version": 2,
-      "content_hash": "ab2192a4748bdca5bc509d3d9498574b81e6113926db6616a53839f8a4950cc6",
-      "ots_status": "confirmed",
-      "bitcoin_block": 966636
+      "version": 3,
+      "content_hash": "04e18e6c42ef2811eb726de50e977ba41445720b58807cc94e8908a5d01f903b",
+      "ots_status": "pending",
+      "bitcoin_block": null
     }
   ]
 }
