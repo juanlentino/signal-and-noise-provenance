@@ -1,0 +1,13 @@
+{
+  "slug": "webmcp-bridge",
+  "url": "https://juanlentino.com/webmcp/bridge.js",
+  "content_hash": "0feb617385e983aa323da5e5ebd3586efcd3718b502982968a3b2d50b935c9e3",
+  "signature": "WoG9pDlLG75YhNZfy4Q+qxWhHp82PMPNcbPyAyQ1C8IbQ3ZJxVWSFjBRR+kFLgAGzjDTDI9IWXkM5Bl5QWk3Dw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
