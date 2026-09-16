@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v2",
+    "author": "Juan Lentino",
+    "content": "The strongest objection to creation-time records is that they reproduce the exclusion they claim to fix. A signature carries weight when something stands behind the key. An artist with a rights organization and a distributor on file has that. A producer working under a handle, paid in cash, credited to somebody else, hands the system a framework with nowhere to hang an identity claim, and verifiable authorship becomes another door with a list at it. I have made that objection in this corpus and never answered it.\n\nIt is not a hypothetical for anyone who books sessions. Most rooms I have worked in contain at least one person who is not on any list that will still exist when the money arrives, and their absence from those lists has never been evidence that they were not there.\n\nWhat the objection takes for granted\n\nIt holds only if institutional standing is what makes a contributor exist. That assumption was accurate for most of a century, not because anyone argued for it but because nothing else could carry the fact. A name counted because a society entered it, a union covered the session, a label printed it on a sleeve. Absent all three, there was no durable trace anyone could produce years later. The institution was not describing who made the record. It was manufacturing the only version of that description anyone could consult, which is a different job, and the difference stayed invisible while it had no competition.\n\nA record does not wait for admission\n\nA · Standing as gate\n\nThe institution decides\n\nA person outside it leaves no trace that survives the session, so the entry and the fact are the same object.\n\nB · Standing as evidence\n\nThe record exists first\n\nThe institution's entry is read beside it rather than in place of it, and a missing entry stops being a missing person.\n\nA record made at the session is produced by the people in the room, and it exists whether or not any of them were ever on a roll. It certifies nobody. It says a key signed a claim at a time, which is a small enough thing that no admission process is required to produce one. That smallness is the whole of the answer to the gatekeeping objection. A system that confers status has to decide who qualifies. A system that records events does not, and checking credentials before recording one adds permission rather than strength.\n\nWhat the record does not do is make anyone findable. Existing in a sealed claim and being reachable by a payer are separate problems, and only the first one stops depending on admission. Conflating them is how this argument gets oversold, because a contributor who can prove what they did and still cannot be located has gained something real and has not gained money.\n\nWhat recognition is still for\n\nNone of this retires the institutions, and a version of this argument that did would be wrong on the facts. Statutory force is real. A society's roll binds a payer, and no signed record binds anyone. What moves is position. Recognition stops being the thing that brings the contributor into existence and becomes one account of them, read alongside the record instead of standing in for it. It is contributory now rather than constitutive, and the demotion costs it nothing it was actually doing.\n\nWhich leaves the part the reframe does not settle. If recognition is one account among several, somebody has to decide what an institutional entry weighs against a record nobody vouched for, and nothing in music has said who decides or by what rule.",
+    "note_uid": "8cf78cdb-d81f-416d-b489-2e1b03035637",
+    "parent": null,
+    "published_at": "2026-09-16T18:50:24Z",
+    "title": "Recognition was always downstream",
+    "version": 1
+  },
+  "content_hash": "13a452f7714ec871c9da6aee575a1b18539d0428874d1f81699155e0821a51c6",
+  "signature": "5d7z+a7hrKxm5l9zGK1nxe/cwNac3qdx4HIdYcHby89XIYt+PoS9BjX+7mfRBgljdasiw/kEnkxILi76gj7lCg==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
