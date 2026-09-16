@@ -589,6 +589,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 967026
+    },
+    {
+      "note_uid": "8cf78cdb-d81f-416d-b489-2e1b03035637",
+      "slug": "recognition-was-always-downstream",
+      "title": "Recognition was always downstream",
+      "published_at": "2026-09-16T18:50:24Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "13a452f7714ec871c9da6aee575a1b18539d0428874d1f81699155e0821a51c6",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
