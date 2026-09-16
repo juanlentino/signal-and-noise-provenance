@@ -6,6 +6,13 @@
       "path": "notes/8cf78cdb-d81f-416d-b489-2e1b03035637/v1",
       "kind": "note",
       "queued_at": "2026-09-16T19:00:17.142Z"
+    },
+    {
+      "note_uid": "tdm-policy",
+      "version": 6,
+      "path": "rights-signals/tdm-policy/v6",
+      "kind": "rights-signal",
+      "queued_at": "2026-09-16T22:00:09.269Z"
     }
   ]
 }
