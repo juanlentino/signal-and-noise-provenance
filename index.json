@@ -686,10 +686,10 @@
     {
       "slug": "tdm-policy",
       "url": "https://juanlentino.com/tdm-policy/",
-      "version": 5,
-      "content_hash": "3b2fd663babe2be012dfedaeb7e9739847b160dd3f5d42df69e74d32b1b1437e",
-      "ots_status": "confirmed",
-      "bitcoin_block": 966636
+      "version": 6,
+      "content_hash": "1875f0dc17204df91788bbc2028b4f5a950ff62260acbfd6cb7e06b96ef0c9c3",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "slug": "tdmrep-json",
