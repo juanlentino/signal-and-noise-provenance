@@ -598,10 +598,11 @@
       "anchor": "per-note",
       "version": 1,
       "content_hash": "13a452f7714ec871c9da6aee575a1b18539d0428874d1f81699155e0821a51c6",
-      "ots_status": "pending",
+      "bitcoin_block": 967455,
+      "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 967455
     }
   ],
   "pages": [
@@ -640,10 +641,10 @@
       "kind": "page",
       "slug": "provenance",
       "title": "On Provenance",
-      "version": 3,
-      "content_hash": "c5e5a8db92e4c4fa5926994ce9ef0533f111a186e830338d7518787aee140697",
-      "ots_status": "confirmed",
-      "bitcoin_block": 967043
+      "version": 4,
+      "content_hash": "c4fe4719ecaacf5a84581f5d6171abfa4afdf1311d530a1dcb45031db7f403c0",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "note_uid": "a51872f0-7b1c-4d25-89f4-3331791ca68c",
