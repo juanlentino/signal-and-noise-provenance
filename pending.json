@@ -34,6 +34,13 @@
       "path": "rights-signals/webmcp-bridge/v4",
       "kind": "rights-signal",
       "queued_at": "2026-09-16T23:00:13.679Z"
+    },
+    {
+      "note_uid": "tdm-policy",
+      "version": 8,
+      "path": "rights-signals/tdm-policy/v8",
+      "kind": "rights-signal",
+      "queued_at": "2026-09-17T01:00:40.077Z"
     }
   ]
 }
