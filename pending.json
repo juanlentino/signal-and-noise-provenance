@@ -1,13 +1,6 @@
 {
   "entries": [
     {
-      "note_uid": "8cf78cdb-d81f-416d-b489-2e1b03035637",
-      "version": 1,
-      "path": "notes/8cf78cdb-d81f-416d-b489-2e1b03035637/v1",
-      "kind": "note",
-      "queued_at": "2026-09-17T19:01:05.869Z"
-    },
-    {
       "note_uid": "tdm-policy",
       "version": 6,
       "path": "rights-signals/tdm-policy/v6",
