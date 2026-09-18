@@ -1,0 +1,15 @@
+{
+  "title": "Signal & Noise provenance ledger",
+  "upload_type": "dataset",
+  "description": "Append-only provenance ledger for the notes and pillars at juanlentino.com. Every record is a signed (Ed25519), hash-anchored commit for one version of one document, with a detached OpenTimestamps proof against the Bitcoin blockchain. Each release is a monthly snapshot of the whole ledger; verify any record with `node verify.mjs <note_uid>`.",
+  "creators": [
+    { "name": "Lentino, Juan", "orcid": "0009-0006-8151-5920" }
+  ],
+  "license": "cc-by-4.0",
+  "access_right": "open",
+  "keywords": ["provenance", "OpenTimestamps", "Ed25519", "content authenticity", "append-only ledger"],
+  "related_identifiers": [
+    { "identifier": "https://juanlentino.com/provenance/", "relation": "isDocumentedBy", "resource_type": "publication-other" },
+    { "identifier": "https://github.com/juanlentino/signal-and-noise-provenance", "relation": "isSupplementTo", "resource_type": "software" }
+  ]
+}

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { realpathSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 /**
  * check-cron-liveness
@@ -58,6 +59,9 @@ export const DAILY_GRACE_H = 48;
 /** Weekly cadence (168h) + 48h slack. */
 export const WEEKLY_GRACE_H = 216;
 
+/** Monthly cadence (a 31-day month, 744h) + 48h slack. */
+export const MONTHLY_GRACE_H = 792;
+
 /**
  * The scheduled workflows on main, with the cron they actually carry. Kept
  * beside the grace so a cadence change and its window move together — the
@@ -65,6 +69,7 @@ export const WEEKLY_GRACE_H = 216;
  */
 export const WATCHED = [
   { workflow: "verify.yml", cron: "17 6 * * *", graceHours: DAILY_GRACE_H },
+  { workflow: "ledger-snapshot.yml", cron: "23 6 1 * *", graceHours: MONTHLY_GRACE_H },
 ];
 
 const parse = (value) => {
@@ -128,6 +133,9 @@ const api = async (path, token) => {
         headers: { authorization: `Bearer ${token}`, accept: "application/vnd.github+json" },
       });
       if (res.ok) return await res.json();
+      // A 404 is an answer, not a hiccup: the workflow is not registered.
+      // Retrying it three times would only turn a verdict into "unreadable".
+      if (res.status === 404) return { __status: 404 };
     } catch {
       /* fall through to retry */
     }
@@ -160,6 +168,20 @@ async function main() {
 
   for (const { workflow, cron, graceHours } of WATCHED) {
     const meta = await api(`repos/${repo}/actions/workflows/${workflow}`, token);
+    if (meta?.__status === 404) {
+      // Not registered. On a pull request that ADDS the file this is the
+      // expected state: GitHub registers a workflow when it reaches the
+      // default branch, so the row can only be read after merge. On main it
+      // is the failure this guard exists for (the cron never registered).
+      const inTree = existsSync(`.github/workflows/${workflow}`);
+      if (inTree && process.env.GITHUB_EVENT_NAME === "pull_request") {
+        console.log(`  PENDING     ${workflow.padEnd(28)} in this branch, not yet on main; watched from the first push to main`);
+        continue;
+      }
+      console.error(`  FAIL        ${workflow.padEnd(28)} never-registered: the API has no such workflow${inTree ? " although the file is in the tree" : " and the file is not in the tree"}`);
+      failures++;
+      continue;
+    }
     const runs = await api(`repos/${repo}/actions/workflows/${workflow}/runs?event=schedule&per_page=10`, token);
     if (meta === null && runs === null) {
       // The API itself is unreachable — a tooling failure, not a dead cron.

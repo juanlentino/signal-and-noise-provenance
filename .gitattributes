@@ -1,0 +1,12 @@
+# What a release archive carries. Zenodo's GitHub integration archives each
+# release as `git archive` does, and honours export-ignore: the snapshot is
+# the ledger (records, proofs, keys, genesis, index) plus the standalone
+# verifier that reads it, not the CI, the test files or the lockfile.
+.github/          export-ignore
+.gitattributes    export-ignore
+.gitignore        export-ignore
+scripts/          export-ignore
+package-lock.json export-ignore
+vitest.config.mjs export-ignore
+*.test.mjs        export-ignore
+backfill-v1.done  export-ignore
