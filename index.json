@@ -637,16 +637,6 @@
       "bitcoin_block": 966921
     },
     {
-      "note_uid": "9d49e140-10a2-4c62-943e-e98270fe09d2",
-      "kind": "page",
-      "slug": "provenance",
-      "title": "On Provenance",
-      "version": 4,
-      "content_hash": "c4fe4719ecaacf5a84581f5d6171abfa4afdf1311d530a1dcb45031db7f403c0",
-      "ots_status": "confirmed",
-      "bitcoin_block": 967477
-    },
-    {
       "note_uid": "a51872f0-7b1c-4d25-89f4-3331791ca68c",
       "kind": "page",
       "slug": "start-here",
@@ -689,8 +679,8 @@
       "url": "https://juanlentino.com/tdm-policy/",
       "version": 8,
       "content_hash": "11922330cf89bcd42f0a227dc232a3c2f65a966d034dee5e3620b5f4e1ef8206",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 967489
     },
     {
       "slug": "tdmrep-json",
@@ -705,8 +695,8 @@
       "url": "https://juanlentino.com/webmcp/bridge.js",
       "version": 5,
       "content_hash": "aebb3b6755a16f045d742e4744ce2621988af9eb27be9bb3039cc75de8984fd3",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 967489
     }
   ]
 }
