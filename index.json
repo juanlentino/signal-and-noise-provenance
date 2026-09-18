@@ -603,6 +603,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 967455
+    },
+    {
+      "note_uid": "493c295a-0274-4795-bd73-50c0056f8030",
+      "slug": "the-measuring-is-left-to-the-measured",
+      "title": "The measuring is left to the measured",
+      "published_at": "2026-09-18T13:38:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "0de981dc13cb09e34850955c5b5882ebd7d17385e53067008e347260038c1766",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
@@ -635,6 +648,16 @@
       "content_hash": "68d3044d47e0cad209abdefd433c3b92ddbdd2b70493e25b16d1019920d46180",
       "ots_status": "confirmed",
       "bitcoin_block": 966921
+    },
+    {
+      "note_uid": "9d49e140-10a2-4c62-943e-e98270fe09d2",
+      "kind": "page",
+      "slug": "provenance",
+      "title": "On Provenance",
+      "version": 4,
+      "content_hash": "c4fe4719ecaacf5a84581f5d6171abfa4afdf1311d530a1dcb45031db7f403c0",
+      "ots_status": "confirmed",
+      "bitcoin_block": 967477
     },
     {
       "note_uid": "a51872f0-7b1c-4d25-89f4-3331791ca68c",
