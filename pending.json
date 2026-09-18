@@ -2,52 +2,17 @@
   "entries": [
     {
       "note_uid": "tdm-policy",
-      "version": 6,
-      "path": "rights-signals/tdm-policy/v6",
-      "kind": "rights-signal",
-      "queued_at": "2026-09-17T22:01:08.756Z"
-    },
-    {
-      "note_uid": "webmcp-bridge",
-      "version": 3,
-      "path": "rights-signals/webmcp-bridge/v3",
-      "kind": "rights-signal",
-      "queued_at": "2026-09-17T22:01:13.510Z"
-    },
-    {
-      "note_uid": "tdm-policy",
-      "version": 7,
-      "path": "rights-signals/tdm-policy/v7",
-      "kind": "rights-signal",
-      "queued_at": "2026-09-17T23:01:10.506Z"
-    },
-    {
-      "note_uid": "webmcp-bridge",
-      "version": 4,
-      "path": "rights-signals/webmcp-bridge/v4",
-      "kind": "rights-signal",
-      "queued_at": "2026-09-17T23:01:17.371Z"
-    },
-    {
-      "note_uid": "tdm-policy",
       "version": 8,
       "path": "rights-signals/tdm-policy/v8",
       "kind": "rights-signal",
-      "queued_at": "2026-09-17T01:00:40.077Z"
+      "queued_at": "2026-09-18T01:01:32.540Z"
     },
     {
       "note_uid": "webmcp-bridge",
       "version": 5,
       "path": "rights-signals/webmcp-bridge/v5",
       "kind": "rights-signal",
-      "queued_at": "2026-09-17T01:00:45.098Z"
-    },
-    {
-      "note_uid": "9d49e140-10a2-4c62-943e-e98270fe09d2",
-      "version": 4,
-      "path": "pages/9d49e140-10a2-4c62-943e-e98270fe09d2/v4",
-      "kind": "page",
-      "queued_at": "2026-09-17T23:05:24.363Z"
+      "queued_at": "2026-09-18T01:01:37.907Z"
     }
   ]
 }
