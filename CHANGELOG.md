@@ -9,7 +9,9 @@ the record count from `index.json`. `.zenodo.json` makes the record a dataset
 under CC BY 4.0 with the ORCID creator; `release-attest.yml` keeps to `v*`
 tags. The new cron is watched by `check-cron-liveness.mjs` with a monthly
 grace. Per-document DOIs are the plugin's (16.1.0); this one is for citing
-the ledger as a whole.
+the ledger as a whole. `.gitattributes` marks the CI, the test files and the
+lockfile `export-ignore`, so the archive Zenodo keeps is the ledger and the
+verifier, about 1.5 MB, not the scaffolding around them.
 
 ## 2026-08-23 — the guard was right; its advice was wrong
 
