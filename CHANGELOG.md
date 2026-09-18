@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-18 — the ledger gets a DOI of its own
+
+Zenodo's GitHub integration is on for this repository. It mints a DOI per
+GitHub release and nothing per commit, so `ledger-snapshot.yml` tags
+`ledger-YYYY-MM` on the first of each month and publishes a release naming
+the record count from `index.json`. `.zenodo.json` makes the record a dataset
+under CC BY 4.0 with the ORCID creator; `release-attest.yml` keeps to `v*`
+tags. The new cron is watched by `check-cron-liveness.mjs` with a monthly
+grace. Per-document DOIs are the plugin's (16.1.0); this one is for citing
+the ledger as a whole.
+
 ## 2026-08-23 — the guard was right; its advice was wrong
 
 `records missing from the index: X; rerun node scripts/build-index.mjs` has

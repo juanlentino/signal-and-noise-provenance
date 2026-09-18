@@ -1,0 +1,49 @@
+# A monthly snapshot of the ledger, as a GitHub release, so Zenodo mints a
+# DOI for the ledger itself (its GitHub integration acts on RELEASES, never
+# on commits; the Worker's per-record commits do not reach it).
+#
+# One release a month is deliberate: every record's truth is already on
+# Bitcoin, and the DOI exists for citation, so the record list stays readable.
+# Tags are `ledger-YYYY-MM`; release-attest.yml watches `v*` only and stays
+# out of this. Metadata for the Zenodo record comes from .zenodo.json.
+#
+# Public repo, free minutes; timeout-minutes is set for the runner's sake.
+# No `github.event.*` reaches a run step: nothing here is attacker-shaped.
+name: ledger-snapshot
+on:
+  schedule:
+    - cron: "23 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ledger-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    name: Tag and release this month's snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Release the snapshot unless this month already has one
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          tag="ledger-$(date -u +%Y-%m)"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "$tag already released; nothing to do"
+            exit 0
+          fi
+          records=$(jq '.entries | length' index.json)
+          confirmed=$(jq '[.entries[] | select(.ots_status == "confirmed")] | length' index.json)
+          gh release create "$tag" \
+            --target "$GITHUB_SHA" \
+            --title "Ledger snapshot $(date -u +%Y-%m)" \
+            --notes "Monthly snapshot of the provenance ledger at commit ${GITHUB_SHA}: ${records} records in index.json, ${confirmed} confirmed on Bitcoin. Verify any record with \`node verify.mjs <note_uid>\`; see VERIFY.md."

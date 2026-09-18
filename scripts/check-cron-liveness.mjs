@@ -58,6 +58,9 @@ export const DAILY_GRACE_H = 48;
 /** Weekly cadence (168h) + 48h slack. */
 export const WEEKLY_GRACE_H = 216;
 
+/** Monthly cadence (a 31-day month, 744h) + 48h slack. */
+export const MONTHLY_GRACE_H = 792;
+
 /**
  * The scheduled workflows on main, with the cron they actually carry. Kept
  * beside the grace so a cadence change and its window move together — the
@@ -65,6 +68,7 @@ export const WEEKLY_GRACE_H = 216;
  */
 export const WATCHED = [
   { workflow: "verify.yml", cron: "17 6 * * *", graceHours: DAILY_GRACE_H },
+  { workflow: "ledger-snapshot.yml", cron: "23 6 1 * *", graceHours: MONTHLY_GRACE_H },
 ];
 
 const parse = (value) => {
