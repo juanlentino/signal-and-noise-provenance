@@ -1,5 +1,7 @@
 # signal-and-noise-provenance
 
+[![DOI](https://zenodo.org/badge/1295367953.svg)](https://doi.org/10.5281/zenodo.22821768)
+
 Public, append-only provenance ledger for Signal & Noise Tools Notes. Every
 commit is written by the `sn-provenance` Cloudflare Worker in response to a
 Note being published or edited — no human commits here directly.
@@ -20,6 +22,20 @@ node verify.mjs --from-page https://juanlentino.com/notes/<slug>/ <note_uid>
 The root `index.json` is the machine-checkable coverage manifest. The scheduled
 GitHub Action verifies the offline suites, reconstructs genesis, reconciles the
 live WordPress note list, and checks every served page for drift.
+
+## Citing the ledger
+
+The ledger as a whole has a DOI: [10.5281/zenodo.22821768](https://doi.org/10.5281/zenodo.22821768)
+is the concept DOI and always resolves to the newest monthly snapshot; each
+snapshot (`ledger-YYYY-MM`, released on the first of the month by
+`.github/workflows/ledger-snapshot.yml`) carries its own versioned DOI beneath
+it. Cite the concept DOI for the ledger, a versioned one for the exact bytes
+you verified.
+
+Each note and pillar essay also has its own DOI, minted by the site when the
+note's anchor confirms; that record names this ledger as `isPartOf` and
+carries the note's Markdown, its signed record and its `.ots` proof. Cite the
+note's DOI for the note, the ledger's for the chain it sits in.
 
 ## Layout
 
