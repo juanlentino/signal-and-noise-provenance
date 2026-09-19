@@ -1,0 +1,170 @@
+{
+  "payload": {
+    "composed_at": "2026-09-19T23:55:42+00:00",
+    "crawling": {
+      "by_day": {
+        "2026-08-04": {
+          "reads": 15,
+          "train": 0
+        },
+        "2026-08-06": {
+          "reads": 34,
+          "train": 0
+        },
+        "2026-08-07": {
+          "reads": 3,
+          "train": 0
+        },
+        "2026-08-08": {
+          "reads": 56,
+          "train": 0
+        },
+        "2026-08-09": {
+          "reads": 3,
+          "train": 0
+        },
+        "2026-08-10": {
+          "reads": 2,
+          "train": 0
+        },
+        "2026-08-11": {
+          "reads": 1,
+          "train": 1
+        },
+        "2026-08-12": {
+          "reads": 8,
+          "train": 0
+        },
+        "2026-08-13": {
+          "reads": 30,
+          "train": 27
+        },
+        "2026-08-14": {
+          "reads": 54,
+          "train": 40
+        },
+        "2026-08-20": {
+          "reads": 51,
+          "train": 48
+        },
+        "2026-08-21": {
+          "reads": 9,
+          "train": 9
+        },
+        "2026-08-22": {
+          "reads": 60,
+          "train": 60
+        },
+        "2026-08-23": {
+          "reads": 7,
+          "train": 7
+        },
+        "2026-08-24": {
+          "reads": 7,
+          "train": 7
+        },
+        "2026-08-25": {
+          "reads": 9,
+          "train": 9
+        },
+        "2026-08-26": {
+          "reads": 7,
+          "train": 7
+        },
+        "2026-08-27": {
+          "reads": 9,
+          "train": 9
+        },
+        "2026-08-28": {
+          "reads": 4,
+          "train": 4
+        },
+        "2026-08-29": {
+          "reads": 12,
+          "train": 12
+        },
+        "2026-08-30": {
+          "reads": 11,
+          "train": 11
+        },
+        "2026-08-31": {
+          "reads": 4,
+          "train": 4
+        }
+      },
+      "by_surface": {
+        "html": 297,
+        "rights": 1,
+        "robots": 96,
+        "wp-json": 2
+      },
+      "complete": true,
+      "reads": 396,
+      "train": 255
+    },
+    "family": "anthropic",
+    "kind": "rights-evidence",
+    "month": "2026-08",
+    "reservation": {
+      "as_of": "2026-09-19T23:55:42+00:00",
+      "signals": [
+        {
+          "bitcoin_block": 961766,
+          "content_hash": "a645697a9b30edf738270a6351e2765b29048a69f882e81473e3f056c0a0f417",
+          "ots_status": "confirmed",
+          "slug": "license-xml",
+          "version": 2
+        },
+        {
+          "bitcoin_block": 963662,
+          "content_hash": "7d2c712340f63795c008d419dad03d0fe6e6ae93807d5189ae3ed23fa2e868a4",
+          "ots_status": "confirmed",
+          "slug": "robots-txt",
+          "version": 5
+        },
+        {
+          "bitcoin_block": 967489,
+          "content_hash": "11922330cf89bcd42f0a227dc232a3c2f65a966d034dee5e3620b5f4e1ef8206",
+          "ots_status": "confirmed",
+          "slug": "tdm-policy",
+          "version": 8
+        },
+        {
+          "bitcoin_block": 959348,
+          "content_hash": "421f88383938eeaf8882474c747d1f3cfcd7e51c5d89711fd3df98fc0071ec80",
+          "ots_status": "confirmed",
+          "slug": "tdmrep-json",
+          "version": 1
+        },
+        {
+          "bitcoin_block": 967489,
+          "content_hash": "aebb3b6755a16f045d742e4744ce2621988af9eb27be9bb3039cc75de8984fd3",
+          "ots_status": "confirmed",
+          "slug": "webmcp-bridge",
+          "version": 5
+        }
+      ]
+    },
+    "rights_reads": {
+      "by_path": {},
+      "complete": false,
+      "first": "",
+      "last": "",
+      "reads": 0
+    },
+    "sensor": {
+      "taxonomy": "",
+      "version": "1.26.0"
+    },
+    "site": "https://juanlentino.com"
+  },
+  "content_hash": "4c28bc69cd461cd44a04f593cce8afc9baf345a51f21978347c45a2aeeae01e2",
+  "signature": "cHDR/dnxueuSnEMnDX7o2dKjQMcQT2dxTKuhnvY9hJboMDHIUCkPVD72/PsBpAClcbxO0TJSF9W9NkP4CKnLBQ==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
