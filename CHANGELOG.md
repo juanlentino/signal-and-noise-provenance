@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-09-19: a forked proof names several blocks
+
+sn-provenance 1.20.0 sends every digest to every calendar and forks the
+proof at the root, so a proof now carries one Bitcoin attestation per
+calendar that aggregated it, in different blocks: `tdm-policy v8` commits to
+967489 and 967491, the record names 967489. `bitcoinAttestation()` took the
+first attestation in serialization order, which was the other one, and
+`verify:rights-signals` has been red on main since 2026-09-18 for a record
+that is doubly anchored. It now reads every attestation
+(`bitcoinAttestations()`, earliest first) and cites the block the record
+names when the proof carries it, else the earliest. `verifyRecord()` and the
+rights-signal check pass the record's block through; the CLI verifier's
+on-chain step follows. Four tests against the real forked proof in this
+ledger; single-attestation proofs read as before.
+
 ## 2026-09-18 — the ledger gets a DOI of its own
 
 Zenodo's GitHub integration is on for this repository. It mints a DOI per

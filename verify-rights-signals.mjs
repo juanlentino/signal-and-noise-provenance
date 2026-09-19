@@ -101,7 +101,7 @@ for (const slug of slugs) {
 
     if (toHex(stampedDigest(otsBytes)) !== record.content_hash) throw new Error(`rights-signal OTS proof does not commit to the content hash for ${slug} v${version}`);
     if (record.ots?.status === "confirmed") {
-      const btc = await bitcoinAttestation(otsBytes);
+      const btc = await bitcoinAttestation(otsBytes, record.ots.bitcoin_block);
       if (!btc || btc.height !== record.ots.bitcoin_block) {
         throw new Error(`rights-signal confirmed OTS block mismatch for ${slug} v${version}: proof attests height ${btc?.height ?? "none"}, record says ${record.ots.bitcoin_block}`);
       }

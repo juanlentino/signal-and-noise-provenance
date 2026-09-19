@@ -54,7 +54,9 @@ export async function verifyRecord({ record, pubB64, otsBytes }) {
   const key         = await crypto.subtle.importKey("raw", b64(pubB64), { name: "Ed25519" }, false, ["verify"]);
   const sigOk       = await crypto.subtle.verify({ name: "Ed25519" }, key, b64(record.signature), canonical);
   const otsHashOk   = toHex(stampedDigest(otsBytes)) === record.content_hash;
-  const btc         = await bitcoinAttestation(otsBytes);
+  // A forked proof (worker 1.20.0) may carry several Bitcoin attestations;
+  // cite the block the record names when the proof has it.
+  const btc         = await bitcoinAttestation(otsBytes, record.ots?.bitcoin_block ?? null);
   return { hashOk, sigOk, otsHashOk, recomputed, btc };
 }
 
