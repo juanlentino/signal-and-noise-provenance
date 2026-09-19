@@ -1,0 +1,211 @@
+{
+  "payload": {
+    "composed_at": "2026-09-19T23:55:42+00:00",
+    "crawling": {
+      "by_day": {
+        "2026-08-01": {
+          "reads": 7,
+          "train": 0
+        },
+        "2026-08-02": {
+          "reads": 1,
+          "train": 0
+        },
+        "2026-08-03": {
+          "reads": 4,
+          "train": 0
+        },
+        "2026-08-04": {
+          "reads": 56,
+          "train": 0
+        },
+        "2026-08-05": {
+          "reads": 3,
+          "train": 0
+        },
+        "2026-08-06": {
+          "reads": 179,
+          "train": 0
+        },
+        "2026-08-07": {
+          "reads": 31,
+          "train": 0
+        },
+        "2026-08-08": {
+          "reads": 731,
+          "train": 0
+        },
+        "2026-08-09": {
+          "reads": 187,
+          "train": 0
+        },
+        "2026-08-10": {
+          "reads": 39,
+          "train": 0
+        },
+        "2026-08-11": {
+          "reads": 41,
+          "train": 1
+        },
+        "2026-08-12": {
+          "reads": 7,
+          "train": 0
+        },
+        "2026-08-13": {
+          "reads": 269,
+          "train": 45
+        },
+        "2026-08-14": {
+          "reads": 213,
+          "train": 45
+        },
+        "2026-08-15": {
+          "reads": 37,
+          "train": 0
+        },
+        "2026-08-16": {
+          "reads": 4,
+          "train": 0
+        },
+        "2026-08-17": {
+          "reads": 4,
+          "train": 0
+        },
+        "2026-08-18": {
+          "reads": 5,
+          "train": 0
+        },
+        "2026-08-19": {
+          "reads": 75,
+          "train": 9
+        },
+        "2026-08-20": {
+          "reads": 308,
+          "train": 72
+        },
+        "2026-08-21": {
+          "reads": 3,
+          "train": 0
+        },
+        "2026-08-22": {
+          "reads": 226,
+          "train": 46
+        },
+        "2026-08-23": {
+          "reads": 18,
+          "train": 0
+        },
+        "2026-08-24": {
+          "reads": 1,
+          "train": 0
+        },
+        "2026-08-25": {
+          "reads": 8,
+          "train": 0
+        },
+        "2026-08-26": {
+          "reads": 6,
+          "train": 0
+        },
+        "2026-08-27": {
+          "reads": 6,
+          "train": 0
+        },
+        "2026-08-28": {
+          "reads": 4,
+          "train": 0
+        },
+        "2026-08-29": {
+          "reads": 4,
+          "train": 0
+        },
+        "2026-08-30": {
+          "reads": 6,
+          "train": 0
+        },
+        "2026-08-31": {
+          "reads": 21,
+          "train": 0
+        }
+      },
+      "by_surface": {
+        "agents-manifest": 3,
+        "asset": 39,
+        "feed": 8,
+        "html": 2308,
+        "rights": 7,
+        "robots": 83,
+        "sitemap": 2,
+        "well-known": 12,
+        "wp-json": 42
+      },
+      "complete": true,
+      "reads": 2504,
+      "train": 218
+    },
+    "family": "openai",
+    "kind": "rights-evidence",
+    "month": "2026-08",
+    "reservation": {
+      "as_of": "2026-09-19T23:55:42+00:00",
+      "signals": [
+        {
+          "bitcoin_block": 961766,
+          "content_hash": "a645697a9b30edf738270a6351e2765b29048a69f882e81473e3f056c0a0f417",
+          "ots_status": "confirmed",
+          "slug": "license-xml",
+          "version": 2
+        },
+        {
+          "bitcoin_block": 963662,
+          "content_hash": "7d2c712340f63795c008d419dad03d0fe6e6ae93807d5189ae3ed23fa2e868a4",
+          "ots_status": "confirmed",
+          "slug": "robots-txt",
+          "version": 5
+        },
+        {
+          "bitcoin_block": 967489,
+          "content_hash": "11922330cf89bcd42f0a227dc232a3c2f65a966d034dee5e3620b5f4e1ef8206",
+          "ots_status": "confirmed",
+          "slug": "tdm-policy",
+          "version": 8
+        },
+        {
+          "bitcoin_block": 959348,
+          "content_hash": "421f88383938eeaf8882474c747d1f3cfcd7e51c5d89711fd3df98fc0071ec80",
+          "ots_status": "confirmed",
+          "slug": "tdmrep-json",
+          "version": 1
+        },
+        {
+          "bitcoin_block": 967489,
+          "content_hash": "aebb3b6755a16f045d742e4744ce2621988af9eb27be9bb3039cc75de8984fd3",
+          "ots_status": "confirmed",
+          "slug": "webmcp-bridge",
+          "version": 5
+        }
+      ]
+    },
+    "rights_reads": {
+      "by_path": {},
+      "complete": false,
+      "first": "",
+      "last": "",
+      "reads": 0
+    },
+    "sensor": {
+      "taxonomy": "",
+      "version": "1.26.0"
+    },
+    "site": "https://juanlentino.com"
+  },
+  "content_hash": "7d795b27a0acaee6c4e882407524045e1016a04b690a8220f1dab1889a179ca3",
+  "signature": "b/nKWVD42GLdKzGbw+ZvbYyVTPKp9sg2r+DX4ozUMZFXunhy09QdOP27Li06R2b5DbDER0mDwXZwWmcYGXLkAw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
