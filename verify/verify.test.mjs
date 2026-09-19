@@ -5,7 +5,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { bitcoinAttestation } from "./ots.mjs";
+import { bitcoinAttestation, bitcoinAttestations } from "./ots.mjs";
 import { createHash } from "node:crypto";
 import { canonicalize } from "../normalize/canonical-json.mjs";
 import { verifyRecord, verifyPageRecord, confirmBitcoin } from "../verify.mjs";
@@ -27,6 +27,28 @@ describe("bitcoinAttestation (OTS reader)", () => {
     const btc = await bitcoinAttestation(otsBytes);
     expect(btc.height).toBe(BLOCK);
     expect(btc.merkleRoot).toBe(MERKLE); // internal LE reversed to explorer display order
+  });
+});
+
+describe("bitcoinAttestation on a FORKED proof (worker 1.20.0: every calendar, several blocks)", () => {
+  // A real record from this ledger: alice and another calendar aggregated the
+  // same digest into two blocks; the record names the earlier one.
+  const forked = new Uint8Array(readFileSync(new URL("../rights-signals/tdm-policy/v8.ots", import.meta.url)));
+  it("lists every Bitcoin attestation, earliest first", async () => {
+    const all = await bitcoinAttestations(forked);
+    expect(all.map((a) => a.height)).toEqual([967489, 967491]);
+  });
+  it("cites the block the record names when the proof carries it", async () => {
+    expect((await bitcoinAttestation(forked, 967491)).height).toBe(967491);
+    expect((await bitcoinAttestation(forked, 967489)).height).toBe(967489);
+  });
+  it("cites the earliest block when the record names none, or one the proof lacks", async () => {
+    expect((await bitcoinAttestation(forked)).height).toBe(967489);
+    expect((await bitcoinAttestation(forked, 1)).height).toBe(967489);
+  });
+  it("still reads a single-attestation proof as before", async () => {
+    expect((await bitcoinAttestations(otsBytes)).map((a) => a.height)).toEqual([BLOCK]);
+    expect((await bitcoinAttestation(otsBytes, 1)).height).toBe(BLOCK);
   });
 });
 

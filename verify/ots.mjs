@@ -88,16 +88,29 @@ async function parseAttestations(otsBytes) {
   return attestations;
 }
 
-// The Bitcoin block a proof commits to: { height, merkleRoot } where merkleRoot
-// is display (big-endian) hex — directly comparable to a block explorer's
-// `merkle_root`. The OTS running message at the attestation is the merkle root
-// in Bitcoin's internal little-endian order, so it's byte-reversed here. Returns
-// null when the proof carries no BitcoinBlockHeaderAttestation yet (pending).
-export async function bitcoinAttestation(otsBytes) {
+// Every Bitcoin block a proof commits to, as { height, merkleRoot } with
+// merkleRoot in display (big-endian) hex, directly comparable to a block
+// explorer's `merkle_root`. The OTS running message at the attestation is the
+// merkle root in Bitcoin's internal little-endian order, so it is byte-reversed
+// here. Empty when the proof carries no BitcoinBlockHeaderAttestation yet.
+//
+// Since sn-provenance 1.20.0 a digest goes to every calendar and the proof
+// forks at the root, so a proof can carry SEVERAL Bitcoin attestations (one per
+// calendar that aggregated it, in different blocks: tdm-policy v8 commits to
+// 967489 and 967491). Each is a genuine anchor of the same digest.
+export async function bitcoinAttestations(otsBytes) {
   const atts = await parseAttestations(otsBytes);
-  const btc = atts.find((a) => a.attTag === ATT_BITCOIN);
-  if (!btc) return null;
-  const height = readVaruint(btc.payload, { i: 0 });
-  const merkleRoot = toHex(btc.commitment.slice().reverse()); // internal LE → display BE
-  return { height, merkleRoot };
+  return atts
+    .filter((a) => a.attTag === ATT_BITCOIN)
+    .map((a) => ({ height: readVaruint(a.payload, { i: 0 }), merkleRoot: toHex(a.commitment.slice().reverse()) }))
+    .sort((a, b) => a.height - b.height);
+}
+
+// The ONE block to cite for a proof: the attestation at `preferHeight` when the
+// proof carries it (the block the record names), else the earliest, which is
+// the strongest "existed by" claim. null while the proof is pending.
+export async function bitcoinAttestation(otsBytes, preferHeight = null) {
+  const all = await bitcoinAttestations(otsBytes);
+  if (!all.length) return null;
+  return all.find((a) => a.height === preferHeight) ?? all[0];
 }
