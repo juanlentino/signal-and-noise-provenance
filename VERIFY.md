@@ -181,3 +181,22 @@ This matters because a sweep that confirms a proof rewrites the record only:
 whoever runs one must rebuild the index with `node scripts/build-index.mjs` and
 commit it alongside, or the next verification fails with a stale-index error
 naming the slug. Both checks are offline.
+
+## Rights evidence
+
+`node verify-rights-evidence.mjs` walks `rights-evidence/` (absent until the
+first record lands, which is not a failure): for every record it recomputes
+the content hash over the canonical payload, verifies the Ed25519 signature
+under the published key, checks that the OTS proof commits to that hash and,
+for a confirmed proof, that it attests the block the record names. Then the
+claim: `payload.kind` is `rights-evidence`, `payload.site` is an https URL on
+`juanlentino.com`, `payload.month` is a calendar month, the directory name is
+the UUIDv5 the site, family and month derive, the record is a v1 (a month is
+minted once), the reservation names at least one signal with a SHA-256 hash,
+the counts are counts and the training share does not exceed the reads, and
+no month and family is filed twice. The rules live in
+`rights-evidence-checks.mjs` with offline tests, including the ids the
+plugin's own derivation produces, so the two sides cannot drift apart
+unnoticed. Offline, like the rights-signal check: a month's counts are a claim
+about the past that nothing served today can confirm.
+

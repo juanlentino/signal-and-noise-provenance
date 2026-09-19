@@ -60,6 +60,18 @@ note's DOI for the note, the ledger's for the chain it sits in.
   Note record there is no `payload` and no `sn-normalize-v1` pass —
   `content_hash` is the plain SHA-256 of those bytes, the Ed25519 signature is
   over the same bytes, and `.ots` is the detached proof over `content_hash`.
+- `rights-evidence/<uuid>/v1.{json,ots}`: one record per crawler family per
+  calendar month, composed by the site from its edge sensor (plugin 17.0.0)
+  and signed through the ordinary webhook (worker 1.21.0): the reservation in
+  force (the `rights-signals` versions and hashes above, as of composition),
+  that family's fetches of the rights files (per path, first and last), and
+  its crawling per day with the training share, each block saying whether the
+  sensor read covered the whole month. Counts and paths only, never a
+  user-agent string. A Note's envelope (hash and signature over
+  `canonical(payload)`); the `<uuid>` is the UUIDv5 of
+  `<site>/rights-evidence/<family>/<month>`, so the path is derivable from the
+  claim and `verify-rights-evidence.mjs` checks that it was. Minted once per
+  month; a correction is a retraction, never a v2.
 - `index.json` + `verify-coverage.mjs` — one coverage row per public Note and
   live-site gap detection.
 - `keys/key-history.json` + `verify-key-history.mjs` — key lifecycle and

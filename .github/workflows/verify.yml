@@ -107,6 +107,7 @@ jobs:
       - run: npm test
       - run: npm run verify:records
       - run: npm run verify:rights-signals
+      - run: npm run verify:rights-evidence
       - run: npm run verify:genesis
       - run: npm run verify:keys
       - run: npm run verify:key-pins
