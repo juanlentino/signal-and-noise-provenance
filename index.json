@@ -617,6 +617,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 967571
+    },
+    {
+      "note_uid": "713d0acf-cb2b-4f6d-9b1e-9410b6ef300a",
+      "slug": "nobody-is-paid-to-check",
+      "title": "Nobody is paid to check",
+      "published_at": "2026-09-20T15:38:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "e6bb8725567a18a144b4c86cd4f44ed89dbda25543c9c31431ec6bafe2312993",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
