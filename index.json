@@ -687,8 +687,8 @@
       "url": "https://juanlentino.com/license.xml",
       "version": 3,
       "content_hash": "e7f7cf77e06748e6a2b675ba8423fa821fb3eef5ebf5d3324a66d568f4d20119",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 967762
     },
     {
       "slug": "robots-txt",
@@ -703,8 +703,8 @@
       "url": "https://juanlentino.com/tdm-policy/",
       "version": 9,
       "content_hash": "24c2ba599add41fa6410279af82601426d959c889965ee72c0805ca29238b474",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 967762
     },
     {
       "slug": "tdmrep-json",
