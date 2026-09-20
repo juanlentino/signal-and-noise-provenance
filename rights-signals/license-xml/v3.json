@@ -1,0 +1,13 @@
+{
+  "slug": "license-xml",
+  "url": "https://juanlentino.com/license.xml",
+  "content_hash": "e7f7cf77e06748e6a2b675ba8423fa821fb3eef5ebf5d3324a66d568f4d20119",
+  "signature": "EkrkMIYSNmPrq9ZtcGdVnmkZqgOSnX98RKfSd1ouFSwXKzdisZQlbba2T+dYG+QfENZqP6RBfo2L9cXM/CI4Dg==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "bob.btc.calendar.opentimestamps.org"
+    ]
+  }
+}

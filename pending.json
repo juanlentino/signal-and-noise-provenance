@@ -27,6 +27,13 @@
       "path": "rights-evidence/0f9d8fcc-d83b-5f41-ae47-2e4643f9f800/v1",
       "kind": "rights-evidence",
       "queued_at": "2026-09-19T23:55:58.542Z"
+    },
+    {
+      "note_uid": "license-xml",
+      "version": 3,
+      "path": "rights-signals/license-xml/v3",
+      "kind": "rights-signal",
+      "queued_at": "2026-09-20T00:01:13.990Z"
     }
   ]
 }
