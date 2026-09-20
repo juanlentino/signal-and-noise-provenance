@@ -15,6 +15,20 @@ rights-signal check pass the record's block through; the CLI verifier's
 on-chain step follows. Four tests against the real forked proof in this
 ledger; single-attestation proofs read as before.
 
+## 2026-09-19: the evidence is verified, not just kept
+
+`rights-evidence/` (plugin 17.0.0, worker 1.21.0: one record per crawler
+family per month, the reservation plus who fetched it plus what was crawled)
+would have sat in the ledger unchecked, the way `rights-signals/` did until
+2026-08-04. `verify-rights-evidence.mjs` now runs in CI after the
+rights-signal check: hash, signature, OTS digest and confirmed block through
+`verifyRecord()`, then the claim through `rights-evidence-checks.mjs` (kind,
+site, month, the UUIDv5 the contents derive, v1 only, a reservation with
+hashes, counts that are counts, no month filed twice). Six offline tests pin
+the rules, two of them against the ids the plugin's own derivation produces.
+An absent directory passes: the first record lands on the first pass after a
+month closes.
+
 ## 2026-09-18 — the ledger gets a DOI of its own
 
 Zenodo's GitHub integration is on for this repository. It mints a DOI per

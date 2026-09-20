@@ -12,6 +12,7 @@
     "verify:keys": "node verify-key-history.mjs",
     "verify:key-pins": "node verify-key-pins.mjs",
     "verify:rights-signals": "node verify-rights-signals.mjs",
+    "verify:rights-evidence": "node verify-rights-evidence.mjs",
     "verify:retractions": "node verify-retractions.mjs"
   },
   "devDependencies": {
