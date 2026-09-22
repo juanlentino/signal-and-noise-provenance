@@ -631,6 +631,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 967855
+    },
+    {
+      "note_uid": "a4334d89-2155-44c1-9952-f774c36dd7d0",
+      "slug": "the-free-version-already-shipped",
+      "title": "The free version already shipped",
+      "published_at": "2026-09-22T16:15:27Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "fdd8fc083f4e88df26bd732dd2f6ac6e91a8efd37ba0d16a01360fa566cc48ec",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
