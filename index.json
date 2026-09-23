@@ -653,10 +653,10 @@
       "kind": "page",
       "slug": "about",
       "title": "About",
-      "version": 2,
-      "content_hash": "cbbeeeeb9a508a5542ed07ac5f219958115d573e7922b73822fa41e7191ec20c",
-      "ots_status": "confirmed",
-      "bitcoin_block": 963242
+      "version": 3,
+      "content_hash": "2b6d1a4ad3a53ea5b9b7e84855d665291dbef7827b2e5ddeb52e1e0421fbcc44",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "note_uid": "5acfdf1d-5894-4353-bdd4-a2425ef21ef4",
