@@ -653,8 +653,8 @@
       "kind": "page",
       "slug": "about",
       "title": "About",
-      "version": 3,
-      "content_hash": "2b6d1a4ad3a53ea5b9b7e84855d665291dbef7827b2e5ddeb52e1e0421fbcc44",
+      "version": 4,
+      "content_hash": "8bdf780280ec23e4db48a70b92b50f44abb9f8e84484a90ebf4213d6d9e3a787",
       "ots_status": "pending",
       "bitcoin_block": null
     },
