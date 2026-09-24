@@ -176,13 +176,13 @@
       "title": "Signing the inputs at the source",
       "published_at": "2026-05-30T13:14:00Z",
       "anchor": "genesis",
-      "version": 2,
-      "content_hash": "873719b4c4eaae6388d1f331fbd153275cd1125810329ed8ffd16809f56fda59",
+      "version": 3,
+      "content_hash": "8407e6e51fe1b156e6045b7ba3b8fc55c0a8563b3c46c2a6c31bbd14993309f7",
       "leaf_hash": "94561986122ffbd421577644227f2e2c99692569da8d5a2db9c65f02f1989fa8",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 962946
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "45d2204d-7d65-4d63-94f8-2caa25acdd82",
@@ -302,13 +302,13 @@
       "title": "Why platforms wait on provenance",
       "published_at": "2026-07-14T14:04:00Z",
       "anchor": "per-note",
-      "version": 2,
-      "content_hash": "19d65c4c24cb56f4aad5a50ee0275bcc5dd782d92a866feeab31c0ef62e53945",
+      "version": 3,
+      "content_hash": "1b5ad25370132cb9d5b4c6e668c397eba35358af1a51c71677f478ffb0017d5b",
       "bitcoin_block": 961947,
       "ots_status": "confirmed",
       "anchored_version": 2,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 961947
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "dcb5a07a-aea4-4721-b30e-9da11b00c100",
@@ -330,13 +330,13 @@
       "title": "Provenance as a CFO problem",
       "published_at": "2026-07-21T14:53:00Z",
       "anchor": "per-note",
-      "version": 3,
-      "content_hash": "408e2d752c9952f1de72225f9b58070ff564263a9af7728b416f8f9badaf8c33",
+      "version": 4,
+      "content_hash": "4977489245d2c4f1976cb2a3ab2528aa0457c1d2a8bab99a09a9a53fd8fc6338",
       "bitcoin_block": 965106,
       "ots_status": "confirmed",
       "anchored_version": 3,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 965106
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "0ab100ea-492a-41cd-9b1e-b9d3790c2903",
