@@ -428,13 +428,13 @@
       "title": "The label comes last",
       "published_at": "2026-08-11T13:53:00Z",
       "anchor": "per-note",
-      "version": 2,
-      "content_hash": "44588b024f2955800913037b606a34e10c826f50df6fff791bdae2ec2566f980",
+      "version": 3,
+      "content_hash": "df5f2c7fa5de663083249ceb719508cb23e22d63ed3f1beb431d88a4416e7771",
       "bitcoin_block": 965106,
       "ots_status": "confirmed",
       "anchored_version": 2,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 965106
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "9ff04b24-d270-4f7d-a155-729b2842717a",
@@ -654,10 +654,11 @@
       "anchor": "per-note",
       "version": 1,
       "content_hash": "955dd2e1e6e21515a4e72f5446c38ff5c324590993876d15402a57a027320297",
-      "ots_status": "pending",
+      "bitcoin_block": 968407,
+      "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 968407
     }
   ],
   "pages": [
