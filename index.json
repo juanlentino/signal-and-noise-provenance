@@ -246,13 +246,13 @@
       "title": "Open standards or no standards",
       "published_at": "2026-06-30T13:57:00Z",
       "anchor": "genesis",
-      "version": 3,
-      "content_hash": "ace5f3dc0b58538c006ffb56738176149366765e586df28a1c9ffae319e5dc39",
+      "version": 4,
+      "content_hash": "e5393d2de9d7963f67804ecdfd8e2c8100039a5bb25c45693190eb6a616ac866",
       "leaf_hash": "de3635fcc30bb568b330d3203ab6041fa725d55fc2dead8f23137e56fcde74c7",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 961947
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "b1d2f576-ef1d-4ac0-b30a-4ce93b11bc90",
