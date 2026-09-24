@@ -134,13 +134,13 @@
       "title": "Detection scales the wrong way",
       "published_at": "2026-05-21T13:32:00Z",
       "anchor": "genesis",
-      "version": 4,
-      "content_hash": "e4febe79c095d2e2b8b6d5c062ef8e3eefd3ea28a70fb45ebc7ebbc2a7f2208d",
+      "version": 5,
+      "content_hash": "0c3d3c696044362e1f8a2b493a0e24a52e1c7081630655b393dcd920bf4dc2a0",
       "leaf_hash": "28318c35f93317ec926128087a02b2b33584ddc3d586613d36474077ac509f39",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 965390
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "23c62072-a277-4d09-80fc-5cca54d598d3",
