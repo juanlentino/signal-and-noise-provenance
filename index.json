@@ -645,6 +645,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 968170
+    },
+    {
+      "note_uid": "cf3084e2-a556-416f-8dc2-aca097a0d9e8",
+      "slug": "the-guarantee-ends-at-the-codec",
+      "title": "The guarantee ends at the codec",
+      "published_at": "2026-09-24T14:33:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "955dd2e1e6e21515a4e72f5446c38ff5c324590993876d15402a57a027320297",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
