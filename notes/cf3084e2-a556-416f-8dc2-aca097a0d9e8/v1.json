@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v2",
+    "author": "Juan Lentino",
+    "content": "Ask what happens to a signed record once the file it describes goes through distribution and the usual answer is a shrug about metadata being stripped. That is true, and it is not the interesting part. Strip every tag and a record can still travel alongside the file. The harder question is what survives when the audio itself is no longer the same audio.\n\nWhat actually survives\n\nLossless transformations keep every sample. WAV to FLAC and back, a container rewrapped, tags rewritten: the sample data on the far side is bit-identical to the sample data that went in. A hash taken over samples rather than over file bytes crosses all of it unchanged. That covers most of what happens to a file inside a studio and a fair share of what happens during delivery.\n\nLossy encoding is a different kind of operation. A codec discards information deliberately, because discarding it is the entire point. The samples that come out are not the samples that went in, so a hash over them does not match and cannot be made to match. No better algorithm recovers what was thrown away. This is information theory rather than a missing feature, and nobody is going to close it.\n\nWhat can cross, and what it costs\n\nSomething can cross. A watermark survives a codec because it is built to be recoverable after distortion, and that property is also its price. Recovery under distortion is a decision made against a threshold, so the answer arrives with a number attached, and a number stays a number no matter how good it gets.\n\nThe capacity is small as well. A payload robust enough to survive a 128 kbps encode identifies rather than proves. Identification means looking the identifier up, a lookup means a registry, and a registry means an operator, a trust list, and an institution that has to still exist and still be honest in twenty years. Riding inside the audio does not avoid the institution. It requires one.\n\nSo a pointer can cross and a chain cannot. The honest version of the claim is narrower than the one usually made, and stronger for it: no binary, self-contained, offline-verifiable record survives lossy encoding. Anyone saying otherwise is doing detection under a different name, or leaning on a registry and not mentioning it.\n\nThe far side is not a cryptography problem\n\nNone of this means the record stops mattering after the encode. It means the mechanism changes. A platform that receives a verified master, transcodes it, and signs the output as derived from the record it received keeps the chain running across the boundary. The cryptography for that is trivial and has existed for decades.\n\nWhat is missing is a reason for the platform to do it. The work is real, the cost lands on one party, and the benefit lands on everyone else, which is the same shape as every other place in this pipeline where the checking has no owner. The pipeline that arrives hostile to metadata is hostile for reasons that have nothing to do with codecs.\n\nWhich leaves the boundary where it is, and leaves one honest thing to do about it. A system that names the point where its guarantee stops is making a claim you can check. A system that implies continuity all the way to a listener's earbuds is making a different kind of claim entirely.",
+    "note_uid": "cf3084e2-a556-416f-8dc2-aca097a0d9e8",
+    "parent": null,
+    "published_at": "2026-09-24T14:33:00Z",
+    "title": "The guarantee ends at the codec",
+    "version": 1
+  },
+  "content_hash": "955dd2e1e6e21515a4e72f5446c38ff5c324590993876d15402a57a027320297",
+  "signature": "cP+Ese+fZ71NsXmIlNsNtzIu5ILfBIKAs5AGeg+ty26YhCepnEz1eruufBck3ai5sy9+iN7g5FfXWoJXIPm4Dg==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
