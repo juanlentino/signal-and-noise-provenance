@@ -139,8 +139,8 @@
       "leaf_hash": "28318c35f93317ec926128087a02b2b33584ddc3d586613d36474077ac509f39",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 968433
     },
     {
       "note_uid": "23c62072-a277-4d09-80fc-5cca54d598d3",
@@ -181,8 +181,8 @@
       "leaf_hash": "94561986122ffbd421577644227f2e2c99692569da8d5a2db9c65f02f1989fa8",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 968433
     },
     {
       "note_uid": "45d2204d-7d65-4d63-94f8-2caa25acdd82",
@@ -251,8 +251,8 @@
       "leaf_hash": "de3635fcc30bb568b330d3203ab6041fa725d55fc2dead8f23137e56fcde74c7",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 968433
     },
     {
       "note_uid": "b1d2f576-ef1d-4ac0-b30a-4ce93b11bc90",
@@ -304,11 +304,11 @@
       "anchor": "per-note",
       "version": 3,
       "content_hash": "1b5ad25370132cb9d5b4c6e668c397eba35358af1a51c71677f478ffb0017d5b",
-      "bitcoin_block": 961947,
+      "bitcoin_block": 968433,
       "ots_status": "confirmed",
-      "anchored_version": 2,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 3,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 968433
     },
     {
       "note_uid": "dcb5a07a-aea4-4721-b30e-9da11b00c100",
@@ -332,11 +332,11 @@
       "anchor": "per-note",
       "version": 4,
       "content_hash": "4977489245d2c4f1976cb2a3ab2528aa0457c1d2a8bab99a09a9a53fd8fc6338",
-      "bitcoin_block": 965106,
+      "bitcoin_block": 968433,
       "ots_status": "confirmed",
-      "anchored_version": 3,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 4,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 968433
     },
     {
       "note_uid": "0ab100ea-492a-41cd-9b1e-b9d3790c2903",
@@ -430,11 +430,11 @@
       "anchor": "per-note",
       "version": 3,
       "content_hash": "df5f2c7fa5de663083249ceb719508cb23e22d63ed3f1beb431d88a4416e7771",
-      "bitcoin_block": 965106,
+      "bitcoin_block": 968433,
       "ots_status": "confirmed",
-      "anchored_version": 2,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 3,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 968433
     },
     {
       "note_uid": "9ff04b24-d270-4f7d-a155-729b2842717a",
