@@ -713,8 +713,8 @@
       "title": "On Provenance",
       "version": 5,
       "content_hash": "344bef223f861b48f5a4d2c547d6851e042aee2618c6416a20483f65d6054dec",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 968784
     },
     {
       "note_uid": "a51872f0-7b1c-4d25-89f4-3331791ca68c",
