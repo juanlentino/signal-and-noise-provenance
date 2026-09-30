@@ -673,6 +673,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 968706
+    },
+    {
+      "note_uid": "024d8307-1ab3-4fa3-9be5-6ae5634bf124",
+      "slug": "revocation-unsigns-nothing",
+      "title": "Revocation unsigns nothing",
+      "published_at": "2026-09-30T14:52:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "079f800c0f1e5685dc6743b12eb1c887adcfca237da43ff2fb1626923b93acc5",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
