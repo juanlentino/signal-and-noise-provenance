@@ -9,10 +9,11 @@ training, retrieval and unlabelled blocks. `rights-evidence-checks.mjs` knew
 only schema 1, so September's records would have failed on a missing
 `as_of`. `evidenceDivergences()` now dispatches on the field: no `schema` is
 schema 1 and runs the old rules unchanged (the four August records pass as
-before), `2` runs the new ones (window, versions distinct and ascending,
-each in force during the window, purposes kept in their own block, a named
-taxonomy), anything else fails. The version rule is untouched: a schema-2
-month is minted once too. Seventeen offline tests, each rule mutation-checked.
+before), `2` runs the new ones (a window that is the record's month,
+versions distinct and ascending, each in force during the window by the
+plugin's own rule, purposes kept in their own block, a named taxonomy),
+anything else fails. The version rule is untouched: a schema-2
+month is minted once too. Eighteen offline tests, each rule mutation-checked.
 
 ## 2026-09-19: a forked proof names several blocks
 

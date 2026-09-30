@@ -137,6 +137,18 @@ describe("evidenceDivergences, schema 2", () => {
     expect(await details(v2({ reservation: { ...v2().reservation, window: { start: "2026-08-31T23:59:59Z", end: "2026-08-01T00:00:00Z" } } }))).toContain("window is not a {start, end} span");
     expect(await details(v2({ reservation: { ...v2().reservation, window: undefined } }))).toContain("window is not a {start, end} span");
   });
+  it("refuses a window that is not the record's month", async () => {
+    const win = (start, end) => v2({ reservation: { ...v2().reservation, window: { start, end } } });
+    expect(await details(win("2026-07-01T00:00:00Z", "2026-07-31T23:59:59Z"))).toContain("is not the month 2026-08");
+    expect(await details(win("2026-08-02T00:00:00Z", "2026-08-31T23:59:59Z"))).toContain("is not the month 2026-08");
+    expect(await details(win("2026-08-01T00:00:00Z", "2026-08-30T23:59:59Z"))).toContain("is not the month 2026-08");
+    expect(await details(win("2026-08-01T00:00:00Z", "2026-09-01T00:00:00Z"))).toContain("is not the month 2026-08");
+    // Compared as times: the same instants under another offset agree.
+    expect(await kinds(win("2026-08-01T02:00:00+02:00", "2026-08-31T23:59:59+00:00"))).toEqual([]);
+    // February, and a leap year, end where the calendar says.
+    expect(await details(v2({ month: "2026-02", reservation: { ...v2().reservation, window: { start: "2026-02-01T00:00:00Z", end: "2026-02-28T23:59:59Z" } } }))).not.toContain("is not the month");
+    expect(await details(v2({ month: "2028-02", reservation: { ...v2().reservation, window: { start: "2028-02-01T00:00:00Z", end: "2028-02-28T23:59:59Z" } } }))).toContain("is not the month 2028-02");
+  });
   it("refuses versions that are not positive, repeated, or out of order", async () => {
     expect(await details(withSignal([sig({ version: 0 })]))).toContain("not a positive integer");
     expect(await details(withSignal([sig({ version: 2 }), sig({ version: 2 })]))).toContain("out of order");
@@ -151,11 +163,14 @@ describe("evidenceDivergences, schema 2", () => {
   it("refuses a version that ends before it starts", async () => {
     expect(await details(withSignal([sig({ valid_from: "2026-08-10T00:00:00Z", valid_to: "2026-08-09T00:00:00Z" })]))).toContain("ends (2026-08-09T00:00:00Z) before it starts");
   });
-  it("refuses a version not in force during the window, and accepts one that touches its edges", async () => {
+  it("refuses a version not in force during the window, and accepts one that overlaps its edges", async () => {
     expect(await details(withSignal([sig({ valid_from: "2026-09-01T00:00:01Z" })]))).toContain("was not in force during");
     expect(await details(withSignal([sig({ valid_from: "2026-06-01T00:00:00Z", valid_to: "2026-07-31T23:59:59Z" })]))).toContain("was not in force during");
     expect(await kinds(withSignal([sig({ valid_from: "2026-08-31T23:59:59Z" })]))).toEqual([]);
-    expect(await kinds(withSignal([sig({ valid_from: "2026-06-01T00:00:00Z", valid_to: "2026-08-01T00:00:00Z" })]))).toEqual([]);
+    // valid_to is the NEXT version's anchor: ending exactly at the window's
+    // first instant means it never held inside it (the plugin's rule).
+    expect(await details(withSignal([sig({ valid_from: "2026-06-01T00:00:00Z", valid_to: "2026-08-01T00:00:00Z" })]))).toContain("was not in force during");
+    expect(await kinds(withSignal([sig({ valid_from: "2026-06-01T00:00:00Z", valid_to: "2026-08-01T00:00:01Z" })]))).toEqual([]);
     // Offsets compare as times, not as strings: 01:00+02:00 on the 1st is
     // 23:00Z on the 31st, inside the window, though it sorts after its end.
     expect(await kinds(withSignal([sig({ valid_from: "2026-09-01T01:00:00+02:00" })]))).toEqual([]);

@@ -220,8 +220,12 @@ both.
   are positive integers, distinct and ascending; a SHA-256 `content_hash`
   and an integer `block`; `valid_to` null or not before `valid_from`; and
   each version in force during the window, meaning `valid_from` is not after
-  `window.end` and `valid_to` (when set) is not before `window.start`. Times
-  are compared as times, so `+00:00` and `Z` offsets agree.
+  `window.end` and `valid_to` (when set) is after `window.start`: a version
+  whose successor was anchored at the window's first instant never held
+  inside it. The window itself must be the record's month, from its first
+  instant (`YYYY-MM-01T00:00:00Z`) to its last second
+  (`YYYY-MM-<last>T23:59:59Z`). Times are compared as times, so `+00:00` and
+  `Z` offsets agree.
 - **Three read blocks.** `rights_reads`, `retrieval_reads` and
   `unlabelled_reads` each carry `{reads, by_purpose, by_path, first, last,
   complete}`: a count, purpose to count, purpose then path to count, two

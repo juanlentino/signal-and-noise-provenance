@@ -123,14 +123,22 @@ function schemaTwo(p, out) {
   // point of the month, each with its anchor block and the span it held for.
   // A version is in force from its anchor (valid_from) until the next
   // version's anchor (valid_to, null while it is still current), so one that
-  // starts after the window ends or stops before it starts is not evidence of
-  // anything this month reserved.
+  // starts after the window ends, or stops at or before the instant it starts
+  // (the plugin's own rule), is not evidence of anything this month reserved.
   const r = p.reservation;
   if (!isObject(r)) { out.push(["reservation", "payload.reservation is missing"]); }
   else {
     const w = r.window;
     const windowOk = isObject(w) && isTime(w.start) && isTime(w.end) && Date.parse(w.start) <= Date.parse(w.end);
     if (!windowOk) out.push(["reservation", `payload.reservation.window is not a {start, end} span: ${JSON.stringify(w ?? null)}`]);
+    // The window is the record's month, first instant to last second: a
+    // window over another span would claim a reservation for other days.
+    const m = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(String(p.month ?? ""));
+    if (windowOk && m) {
+      const start = Date.UTC(+m[1], +m[2] - 1, 1);
+      const end = Date.UTC(+m[1], +m[2], 1) - 1000;
+      if (Date.parse(w.start) !== start || Date.parse(w.end) !== end) out.push(["reservation", `payload.reservation.window ${w.start} to ${w.end} is not the month ${p.month} (${new Date(start).toISOString()} to ${new Date(end).toISOString()})`]);
+    }
     const signals = r.signals;
     if (!isObject(signals) || Object.keys(signals).length === 0) out.push(["reservation", "payload.reservation.signals is empty: a record without the reservation is half an evidence"]);
     else for (const [slug, list] of Object.entries(signals)) {
@@ -146,7 +154,7 @@ function schemaTwo(p, out) {
         if (!isTime(v.valid_from)) { out.push(["reservation", `${at} has no valid_from time`]); continue; }
         if (v.valid_to !== null && !isTime(v.valid_to)) { out.push(["reservation", `${at} has a valid_to that is neither a time nor null`]); continue; }
         if (v.valid_to !== null && Date.parse(v.valid_to) < Date.parse(v.valid_from)) out.push(["reservation", `${at} ends (${v.valid_to}) before it starts (${v.valid_from})`]);
-        if (windowOk && (Date.parse(v.valid_from) > Date.parse(w.end) || (v.valid_to !== null && Date.parse(v.valid_to) < Date.parse(w.start)))) out.push(["reservation", `${at} was not in force during ${w.start} to ${w.end}`]);
+        if (windowOk && (Date.parse(v.valid_from) > Date.parse(w.end) || (v.valid_to !== null && Date.parse(v.valid_to) <= Date.parse(w.start)))) out.push(["reservation", `${at} was not in force during ${w.start} to ${w.end}`]);
       }
     }
   }
