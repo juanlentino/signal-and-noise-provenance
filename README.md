@@ -72,6 +72,13 @@ note's DOI for the note, the ledger's for the chain it sits in.
   `<site>/rights-evidence/<family>/<month>`, so the path is derivable from the
   claim and `verify-rights-evidence.mjs` checks that it was. Minted once per
   month; a correction is a retraction, never a v2.
+  Two shapes are on the ledger. Schema 1 (no `schema` field, the August 2026
+  records) lists the reservation as of composition. Schema 2 (`schema: 2`,
+  from September 2026) lists every version in force at any point of the
+  month, splits the rights-file reads into `rights_reads` (training),
+  `retrieval_reads` (search, user and other purposes) and `unlabelled_reads`
+  (no recorded purpose), keys `crawling.by_surface` by purpose, and names the
+  sensor's taxonomy. [VERIFY.md](VERIFY.md#rights-evidence) has the rules.
 - `index.json` + `verify-coverage.mjs` — one coverage row per public Note and
   live-site gap detection.
 - `keys/key-history.json` + `verify-key-history.mjs` — key lifecycle and

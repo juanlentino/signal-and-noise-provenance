@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-09-30: the evidence learns schema 2
+
+The plugin now composes rights-evidence records with `schema: 2` (PR #1810):
+the reservation as every version in force during the month, each with its
+anchor block and the span it held for, and the rights-file reads split into
+training, retrieval and unlabelled blocks. `rights-evidence-checks.mjs` knew
+only schema 1, so September's records would have failed on a missing
+`as_of`. `evidenceDivergences()` now dispatches on the field: no `schema` is
+schema 1 and runs the old rules unchanged (the four August records pass as
+before), `2` runs the new ones (window, versions distinct and ascending,
+each in force during the window, purposes kept in their own block, a named
+taxonomy), anything else fails. The version rule is untouched: a schema-2
+month is minted once too. Seventeen offline tests, each rule mutation-checked.
+
 ## 2026-09-19: a forked proof names several blocks
 
 sn-provenance 1.20.0 sends every digest to every calendar and forks the
