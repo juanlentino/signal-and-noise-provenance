@@ -54,6 +54,17 @@ export async function evidenceDivergences(record, ctx) {
     if (expected !== ctx.uid) out.push(["id", `filed under ${ctx.uid}; the site, family and month derive ${expected}`]);
   }
   if (ctx.version !== 1) out.push(["version", `v${ctx.version}: a month's record is minted once; a correction is a retraction, never a v2`]);
+  // A record without `schema` is schema 1 (plugin 17.0.0 to 19.9.0, the four
+  // August records): its rules stay exactly as they were. Schema 2 (plugin
+  // PR #1810) changes what the reservation and the reads claim, so it gets
+  // rules of its own; any other value is a shape nobody composes.
+  if (!("schema" in p)) schemaOne(p, out);
+  else if (p.schema === 2) schemaTwo(p, out);
+  else out.push(["schema", `payload.schema is ${JSON.stringify(p.schema)}; only 2 (or no field, schema 1) is known`]);
+  return out;
+}
+
+function schemaOne(p, out) {
   for (const [block, keys] of [["crawling", ["reads", "train", "by_day", "by_surface", "complete"]], ["rights_reads", ["reads", "by_path", "first", "last", "complete"]], ["reservation", ["as_of", "signals"]]]) {
     const b = p[block];
     if (!b || typeof b !== "object" || Array.isArray(b)) { out.push([block, `payload.${block} is missing`]); continue; }
@@ -66,5 +77,90 @@ export async function evidenceDivergences(record, ctx) {
   }
   for (const k of ["reads", "train"]) if (!Number.isInteger(p.crawling?.[k]) || p.crawling[k] < 0) out.push(["crawling", `payload.crawling.${k} is not a count`]);
   if (Number.isInteger(p.crawling?.reads) && Number.isInteger(p.crawling?.train) && p.crawling.train > p.crawling.reads) out.push(["crawling", `train (${p.crawling.train}) exceeds reads (${p.crawling.reads})`]);
-  return out;
+}
+
+const isObject = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
+const isCount = (v) => Number.isInteger(v) && v >= 0;
+const isTime = (v) => typeof v === "string" && !Number.isNaN(Date.parse(v));
+
+// Which purposes each read block may carry. rights_reads is the training
+// claim, so `train` only; unlabelled_reads holds the rows with no recorded
+// purpose, so `unlabelled` only; retrieval_reads is everything else, never
+// training, never unlabelled and never our own ops/dev probes (the plugin
+// drops those before counting).
+const READ_BLOCKS = [
+  ["rights_reads", (k) => k === "train", "only train"],
+  ["retrieval_reads", (k) => !["train", "unlabelled", "ops", "dev"].includes(k), "neither train, unlabelled, ops nor dev"],
+  ["unlabelled_reads", (k) => k === "unlabelled", "only unlabelled"],
+];
+
+function schemaTwo(p, out) {
+  const c = p.crawling;
+  if (!isObject(c)) out.push(["crawling", "payload.crawling is missing"]);
+  else {
+    for (const k of ["reads", "train", "by_day", "by_surface", "complete"]) if (!(k in c)) out.push(["crawling", `payload.crawling.${k} is missing`]);
+    for (const k of ["reads", "train"]) if (!isCount(c[k])) out.push(["crawling", `payload.crawling.${k} is not a count`]);
+    if (isCount(c.reads) && isCount(c.train) && c.train > c.reads) out.push(["crawling", `train (${c.train}) exceeds reads (${c.reads})`]);
+    // Schema 2 keys by_surface by purpose first: a flat {surface: count} is
+    // schema 1's shape and would hide which purpose did the crawling.
+    if ("by_surface" in c && (!isObject(c.by_surface) || !Object.values(c.by_surface).every(isObject))) out.push(["crawling", "payload.crawling.by_surface is not keyed by purpose, then surface"]);
+  }
+
+  for (const [block, allowed, rule] of READ_BLOCKS) {
+    const b = p[block];
+    if (!isObject(b)) { out.push([block, `payload.${block} is missing`]); continue; }
+    for (const k of ["reads", "by_purpose", "by_path", "first", "last", "complete"]) if (!(k in b)) out.push([block, `payload.${block}.${k} is missing`]);
+    if ("reads" in b && !isCount(b.reads)) out.push([block, `payload.${block}.reads is not a count`]);
+    if ("by_purpose" in b && (!isObject(b.by_purpose) || !Object.values(b.by_purpose).every(isCount))) out.push([block, `payload.${block}.by_purpose is not purpose to count`]);
+    if ("by_path" in b && (!isObject(b.by_path) || !Object.values(b.by_path).every((paths) => isObject(paths) && Object.values(paths).every(isCount)))) out.push([block, `payload.${block}.by_path is not purpose, then path, to count`]);
+    for (const k of ["first", "last"]) if (k in b && typeof b[k] !== "string") out.push([block, `payload.${block}.${k} is not a string`]);
+    if ("complete" in b && typeof b.complete !== "boolean") out.push([block, `payload.${block}.complete is not a boolean`]);
+    const stray = isObject(b.by_purpose) ? Object.keys(b.by_purpose).filter((k) => !allowed(k)) : [];
+    if (stray.length) out.push([block, `payload.${block}.by_purpose carries ${stray.join(", ")}; it may carry ${rule}`]);
+  }
+
+  // The reservation IN FORCE: every version of every signal that held at any
+  // point of the month, each with its anchor block and the span it held for.
+  // A version is in force from its anchor (valid_from) until the next
+  // version's anchor (valid_to, null while it is still current), so one that
+  // starts after the window ends, or stops at or before the instant it starts
+  // (the plugin's own rule), is not evidence of anything this month reserved.
+  const r = p.reservation;
+  if (!isObject(r)) { out.push(["reservation", "payload.reservation is missing"]); }
+  else {
+    const w = r.window;
+    const windowOk = isObject(w) && isTime(w.start) && isTime(w.end) && Date.parse(w.start) <= Date.parse(w.end);
+    if (!windowOk) out.push(["reservation", `payload.reservation.window is not a {start, end} span: ${JSON.stringify(w ?? null)}`]);
+    // The window is the record's month, first instant to last second: a
+    // window over another span would claim a reservation for other days.
+    const m = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(String(p.month ?? ""));
+    if (windowOk && m) {
+      const start = Date.UTC(+m[1], +m[2] - 1, 1);
+      const end = Date.UTC(+m[1], +m[2], 1) - 1000;
+      if (Date.parse(w.start) !== start || Date.parse(w.end) !== end) out.push(["reservation", `payload.reservation.window ${w.start} to ${w.end} is not the month ${p.month} (${new Date(start).toISOString()} to ${new Date(end).toISOString()})`]);
+    }
+    const signals = r.signals;
+    if (!isObject(signals) || Object.keys(signals).length === 0) out.push(["reservation", "payload.reservation.signals is empty: a record without the reservation is half an evidence"]);
+    else for (const [slug, list] of Object.entries(signals)) {
+      if (!Array.isArray(list) || list.length === 0) { out.push(["reservation", `signal ${slug} lists no version in force`]); continue; }
+      let prev = 0;
+      for (const v of list) {
+        const at = `signal ${slug} v${v?.version}`;
+        if (!Number.isInteger(v?.version) || v.version < 1) { out.push(["reservation", `signal ${slug} has a version that is not a positive integer: ${JSON.stringify(v)}`]); continue; }
+        if (v.version <= prev) out.push(["reservation", `${at} is out of order: versions must be distinct and ascending`]);
+        prev = Math.max(prev, v.version);
+        if (!/^[0-9a-f]{64}$/.test(String(v.content_hash ?? ""))) out.push(["reservation", `${at} has no sha256 content_hash`]);
+        if (!Number.isInteger(v.block)) out.push(["reservation", `${at} names no anchor block`]);
+        if (!isTime(v.valid_from)) { out.push(["reservation", `${at} has no valid_from time`]); continue; }
+        if (v.valid_to !== null && !isTime(v.valid_to)) { out.push(["reservation", `${at} has a valid_to that is neither a time nor null`]); continue; }
+        if (v.valid_to !== null && Date.parse(v.valid_to) < Date.parse(v.valid_from)) out.push(["reservation", `${at} ends (${v.valid_to}) before it starts (${v.valid_from})`]);
+        if (windowOk && (Date.parse(v.valid_from) > Date.parse(w.end) || (v.valid_to !== null && Date.parse(v.valid_to) <= Date.parse(w.start)))) out.push(["reservation", `${at} was not in force during ${w.start} to ${w.end}`]);
+      }
+    }
+  }
+
+  // Schema 2 names the taxonomy it counted under: purposes are the
+  // taxonomy's verdicts, so a count without it cannot be re-read.
+  if (!isObject(p.sensor) || !("version" in p.sensor)) out.push(["sensor", "payload.sensor.version is missing"]);
+  if (typeof p.sensor?.taxonomy !== "string" || p.sensor.taxonomy === "") out.push(["sensor", "payload.sensor.taxonomy is not a non-empty string"]);
 }

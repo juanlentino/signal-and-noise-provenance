@@ -200,3 +200,43 @@ plugin's own derivation produces, so the two sides cannot drift apart
 unnoticed. Offline, like the rights-signal check: a month's counts are a claim
 about the past that nothing served today can confirm.
 
+### Schema 2
+
+A record carrying `schema: 2` (plugin PR #1810, from the September 2026
+records on) is checked against a shape of its own; a record with no `schema`
+field is schema 1 and keeps every rule above, unchanged. Any other `schema`
+value fails. The id, site, month, kind and v1-only rules are the same for
+both.
+
+- **The reservation in force.** `reservation` is
+  `{window: {start, end}, signals: {<slug>: [...]}}`, with no `as_of`. Each
+  entry is `{version, content_hash, block, valid_from, valid_to}`. A version
+  is in force from its anchor (`valid_from`, the time of the Bitcoin block
+  the ledger names for it) until the next anchored version's anchor
+  (`valid_to`, or `null` while it is still current): the anchor is the
+  earliest moment the ledger can prove those bytes existed. The record lists
+  every version in force at any point of the window, so the verifier
+  requires: at least one slug, each with at least one version; versions that
+  are positive integers, distinct and ascending; a SHA-256 `content_hash`
+  and an integer `block`; `valid_to` null or not before `valid_from`; and
+  each version in force during the window, meaning `valid_from` is not after
+  `window.end` and `valid_to` (when set) is after `window.start`: a version
+  whose successor was anchored at the window's first instant never held
+  inside it. The window itself must be the record's month, from its first
+  instant (`YYYY-MM-01T00:00:00Z`) to its last second
+  (`YYYY-MM-<last>T23:59:59Z`). Times are compared as times, so `+00:00` and
+  `Z` offsets agree.
+- **Three read blocks.** `rights_reads`, `retrieval_reads` and
+  `unlabelled_reads` each carry `{reads, by_purpose, by_path, first, last,
+  complete}`: a count, purpose to count, purpose then path to count, two
+  strings (empty when there were no reads) and a boolean. `rights_reads` is
+  the training claim and may carry only `train`; `unlabelled_reads` holds
+  the rows with no recorded purpose and may carry only `unlabelled`;
+  `retrieval_reads` is every other purpose and may carry none of `train`,
+  `unlabelled`, `ops` or `dev` (the site's own probes are not evidence).
+- **Crawling.** As schema 1 (counts that are counts, `train` not above
+  `reads`), with `by_surface` keyed by purpose, then surface.
+- **Sensor.** `sensor.version` is present and `sensor.taxonomy` is a
+  non-empty string: purposes are the taxonomy's verdicts, so a count that
+  cannot say which taxonomy it counted under cannot be re-read.
+
