@@ -109,8 +109,10 @@ describe("evidenceDivergences, schema 2", () => {
   });
   it("refuses read blocks whose fields have the wrong type", async () => {
     expect(await details(v2({ unlabelled_reads: reads("unlabelled", { reads: -1 }) }))).toContain("unlabelled_reads.reads is not a count");
-    expect(await details(v2({ rights_reads: reads("train", { by_purpose: [] }) }))).toContain("rights_reads.by_purpose is not an object");
-    expect(await details(v2({ rights_reads: reads("train", { by_path: { "/license.xml": 2 } }) }))).toContain("rights_reads.by_path is not keyed by purpose, then path");
+    expect(await details(v2({ rights_reads: reads("train", { by_purpose: [] }) }))).toContain("rights_reads.by_purpose is not purpose to count");
+    expect(await details(v2({ rights_reads: reads("train", { by_purpose: { train: "2" } }) }))).toContain("rights_reads.by_purpose is not purpose to count");
+    expect(await details(v2({ rights_reads: reads("train", { by_path: { "/license.xml": 2 } }) }))).toContain("rights_reads.by_path is not purpose, then path, to count");
+    expect(await details(v2({ rights_reads: reads("train", { by_path: { train: { "/license.xml": -1 } } }) }))).toContain("rights_reads.by_path is not purpose, then path, to count");
     expect(await details(v2({ rights_reads: reads("train", { first: null }) }))).toContain("rights_reads.first is not a string");
     expect(await details(v2({ rights_reads: reads("train", { complete: "yes" }) }))).toContain("rights_reads.complete is not a boolean");
   });

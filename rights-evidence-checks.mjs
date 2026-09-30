@@ -111,8 +111,8 @@ function schemaTwo(p, out) {
     if (!isObject(b)) { out.push([block, `payload.${block} is missing`]); continue; }
     for (const k of ["reads", "by_purpose", "by_path", "first", "last", "complete"]) if (!(k in b)) out.push([block, `payload.${block}.${k} is missing`]);
     if ("reads" in b && !isCount(b.reads)) out.push([block, `payload.${block}.reads is not a count`]);
-    if ("by_purpose" in b && !isObject(b.by_purpose)) out.push([block, `payload.${block}.by_purpose is not an object`]);
-    if ("by_path" in b && (!isObject(b.by_path) || !Object.values(b.by_path).every(isObject))) out.push([block, `payload.${block}.by_path is not keyed by purpose, then path`]);
+    if ("by_purpose" in b && (!isObject(b.by_purpose) || !Object.values(b.by_purpose).every(isCount))) out.push([block, `payload.${block}.by_purpose is not purpose to count`]);
+    if ("by_path" in b && (!isObject(b.by_path) || !Object.values(b.by_path).every((paths) => isObject(paths) && Object.values(paths).every(isCount)))) out.push([block, `payload.${block}.by_path is not purpose, then path, to count`]);
     for (const k of ["first", "last"]) if (k in b && typeof b[k] !== "string") out.push([block, `payload.${block}.${k} is not a string`]);
     if ("complete" in b && typeof b.complete !== "boolean") out.push([block, `payload.${block}.complete is not a boolean`]);
     const stray = isObject(b.by_purpose) ? Object.keys(b.by_purpose).filter((k) => !allowed(k)) : [];
