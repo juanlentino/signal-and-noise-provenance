@@ -1,0 +1,23 @@
+{
+  "payload": {
+    "claimed": "The reservation in force for August 2026 was license-xml v2, robots-txt v5, tdm-policy v8, tdmrep-json v1 and webmcp-bridge v5, and anthropic read none of the rights files in August (rights_reads.reads 0, marked incomplete).",
+    "kind": "retraction",
+    "note_uid": "e52701af-38fd-5775-ac84-ba94e87ee6b3",
+    "retracted_at": "2026-10-01T04:32:16+00:00",
+    "retracted_path": "rights-evidence/e52701af-38fd-5775-ac84-ba94e87ee6b3/v1.json",
+    "root_cause": "The reservation was read from the ledger index, which carries only each rights signal's current version, not the versions in force during the month. The rights-file reads came from a sensor stream capped at 500 rows that the site's own monitoring probes had filled, pushing August out of the window.",
+    "version": 1,
+    "what_changed": "From September 2026 records use schema 2: the reservation lists every version in force during the month with its anchor block and span, rights-file reads are split by purpose, and the sensor stream is read per family with the site's own traffic excluded. The versions in force in August and the re-read rights-file reads are listed in ERRATA.md in this repository.",
+    "what_was_wrong": "The reservation named the versions current when the record was composed on 2026-09-19, not those in force during August: tdm-policy v8 and webmcp-bridge v5 were anchored in September, and earlier versions in force in August were not named. The rights-file reads were reported as none from an incomplete stream; re-read, there is one training read on 2026-08-11 that is unconfirmed."
+  },
+  "signed_payload_b64": "eyJjbGFpbWVkIjoiVGhlIHJlc2VydmF0aW9uIGluIGZvcmNlIGZvciBBdWd1c3QgMjAyNiB3YXMgbGljZW5zZS14bWwgdjIsIHJvYm90cy10eHQgdjUsIHRkbS1wb2xpY3kgdjgsIHRkbXJlcC1qc29uIHYxIGFuZCB3ZWJtY3AtYnJpZGdlIHY1LCBhbmQgYW50aHJvcGljIHJlYWQgbm9uZSBvZiB0aGUgcmlnaHRzIGZpbGVzIGluIEF1Z3VzdCAocmlnaHRzX3JlYWRzLnJlYWRzIDAsIG1hcmtlZCBpbmNvbXBsZXRlKS4iLCJraW5kIjoicmV0cmFjdGlvbiIsIm5vdGVfdWlkIjoiZTUyNzAxYWYtMzhmZC01Nzc1LWFjODQtYmE5NGU4N2VlNmIzIiwicmV0cmFjdGVkX2F0IjoiMjAyNi0xMC0wMVQwNDozMjoxNiswMDowMCIsInJldHJhY3RlZF9wYXRoIjoicmlnaHRzLWV2aWRlbmNlL2U1MjcwMWFmLTM4ZmQtNTc3NS1hYzg0LWJhOTRlODdlZTZiMy92MS5qc29uIiwicm9vdF9jYXVzZSI6IlRoZSByZXNlcnZhdGlvbiB3YXMgcmVhZCBmcm9tIHRoZSBsZWRnZXIgaW5kZXgsIHdoaWNoIGNhcnJpZXMgb25seSBlYWNoIHJpZ2h0cyBzaWduYWwncyBjdXJyZW50IHZlcnNpb24sIG5vdCB0aGUgdmVyc2lvbnMgaW4gZm9yY2UgZHVyaW5nIHRoZSBtb250aC4gVGhlIHJpZ2h0cy1maWxlIHJlYWRzIGNhbWUgZnJvbSBhIHNlbnNvciBzdHJlYW0gY2FwcGVkIGF0IDUwMCByb3dzIHRoYXQgdGhlIHNpdGUncyBvd24gbW9uaXRvcmluZyBwcm9iZXMgaGFkIGZpbGxlZCwgcHVzaGluZyBBdWd1c3Qgb3V0IG9mIHRoZSB3aW5kb3cuIiwidmVyc2lvbiI6MSwid2hhdF9jaGFuZ2VkIjoiRnJvbSBTZXB0ZW1iZXIgMjAyNiByZWNvcmRzIHVzZSBzY2hlbWEgMjogdGhlIHJlc2VydmF0aW9uIGxpc3RzIGV2ZXJ5IHZlcnNpb24gaW4gZm9yY2UgZHVyaW5nIHRoZSBtb250aCB3aXRoIGl0cyBhbmNob3IgYmxvY2sgYW5kIHNwYW4sIHJpZ2h0cy1maWxlIHJlYWRzIGFyZSBzcGxpdCBieSBwdXJwb3NlLCBhbmQgdGhlIHNlbnNvciBzdHJlYW0gaXMgcmVhZCBwZXIgZmFtaWx5IHdpdGggdGhlIHNpdGUncyBvd24gdHJhZmZpYyBleGNsdWRlZC4gVGhlIHZlcnNpb25zIGluIGZvcmNlIGluIEF1Z3VzdCBhbmQgdGhlIHJlLXJlYWQgcmlnaHRzLWZpbGUgcmVhZHMgYXJlIGxpc3RlZCBpbiBFUlJBVEEubWQgaW4gdGhpcyByZXBvc2l0b3J5LiIsIndoYXRfd2FzX3dyb25nIjoiVGhlIHJlc2VydmF0aW9uIG5hbWVkIHRoZSB2ZXJzaW9ucyBjdXJyZW50IHdoZW4gdGhlIHJlY29yZCB3YXMgY29tcG9zZWQgb24gMjAyNi0wOS0xOSwgbm90IHRob3NlIGluIGZvcmNlIGR1cmluZyBBdWd1c3Q6IHRkbS1wb2xpY3kgdjggYW5kIHdlYm1jcC1icmlkZ2UgdjUgd2VyZSBhbmNob3JlZCBpbiBTZXB0ZW1iZXIsIGFuZCBlYXJsaWVyIHZlcnNpb25zIGluIGZvcmNlIGluIEF1Z3VzdCB3ZXJlIG5vdCBuYW1lZC4gVGhlIHJpZ2h0cy1maWxlIHJlYWRzIHdlcmUgcmVwb3J0ZWQgYXMgbm9uZSBmcm9tIGFuIGluY29tcGxldGUgc3RyZWFtOyByZS1yZWFkLCB0aGVyZSBpcyBvbmUgdHJhaW5pbmcgcmVhZCBvbiAyMDI2LTA4LTExIHRoYXQgaXMgdW5jb25maXJtZWQuIn0=",
+  "content_hash": "0482bb4a3dac9265b37067669dfc909eddc7ff7435ce3d8954ea2394842fcc2b",
+  "signature": "DVQ/v6libsdF6on8dBjtNDZXPMajOvLcITQA7rlC95HGoFG6HiZ/dHkbMIpGNQ6DxmzpE9S98rGzb1mqg4EMAQ==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
