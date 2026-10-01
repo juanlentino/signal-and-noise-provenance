@@ -6,6 +6,13 @@
       "path": "notes/afb6674f-befc-45af-a7a0-5bb4bc477b04/v2",
       "kind": "note",
       "queued_at": "2026-10-01T04:25:12.270Z"
+    },
+    {
+      "note_uid": "0f9d8fcc-d83b-5f41-ae47-2e4643f9f800",
+      "version": 1,
+      "path": "retractions/0f9d8fcc-d83b-5f41-ae47-2e4643f9f800/v1",
+      "kind": "retraction",
+      "queued_at": "2026-10-01T04:29:58.725Z"
     }
   ]
 }

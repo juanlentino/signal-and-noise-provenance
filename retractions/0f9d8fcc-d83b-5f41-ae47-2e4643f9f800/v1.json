@@ -1,0 +1,23 @@
+{
+  "payload": {
+    "claimed": "The reservation in force for August 2026 was license-xml v2, robots-txt v5, tdm-policy v8, tdmrep-json v1 and webmcp-bridge v5, and openai read none of the rights files in August (rights_reads.reads 0, marked incomplete).",
+    "kind": "retraction",
+    "note_uid": "0f9d8fcc-d83b-5f41-ae47-2e4643f9f800",
+    "retracted_at": "2026-10-01T04:29:52+00:00",
+    "retracted_path": "rights-evidence/0f9d8fcc-d83b-5f41-ae47-2e4643f9f800/v1.json",
+    "root_cause": "The reservation was read from the ledger index, which carries only each rights signal's current version, not the versions in force during the month. The rights-file reads came from a sensor stream capped at 500 rows that the site's own monitoring probes had filled, pushing August out of the window.",
+    "version": 1,
+    "what_changed": "From September 2026 records use schema 2: the reservation lists every version in force during the month with its anchor block and span, rights-file reads are split by purpose, and the sensor stream is read per family with the site's own traffic excluded. The versions in force in August and the re-read rights-file reads are listed in ERRATA.md in this repository.",
+    "what_was_wrong": "Two errors. The reservation named the versions current when the record was composed on 2026-09-19, not those in force during August: tdm-policy v8 and webmcp-bridge v5 were anchored in September, and earlier versions in force in August were not named. The rights-file reads were reported as none; re-read, openai fetched the rights files 6 times from 2026-08-11 (4 search, 1 user, 1 training read that is unconfirmed)."
+  },
+  "signed_payload_b64": "eyJjbGFpbWVkIjoiVGhlIHJlc2VydmF0aW9uIGluIGZvcmNlIGZvciBBdWd1c3QgMjAyNiB3YXMgbGljZW5zZS14bWwgdjIsIHJvYm90cy10eHQgdjUsIHRkbS1wb2xpY3kgdjgsIHRkbXJlcC1qc29uIHYxIGFuZCB3ZWJtY3AtYnJpZGdlIHY1LCBhbmQgb3BlbmFpIHJlYWQgbm9uZSBvZiB0aGUgcmlnaHRzIGZpbGVzIGluIEF1Z3VzdCAocmlnaHRzX3JlYWRzLnJlYWRzIDAsIG1hcmtlZCBpbmNvbXBsZXRlKS4iLCJraW5kIjoicmV0cmFjdGlvbiIsIm5vdGVfdWlkIjoiMGY5ZDhmY2MtZDgzYi01ZjQxLWFlNDctMmU0NjQzZjlmODAwIiwicmV0cmFjdGVkX2F0IjoiMjAyNi0xMC0wMVQwNDoyOTo1MiswMDowMCIsInJldHJhY3RlZF9wYXRoIjoicmlnaHRzLWV2aWRlbmNlLzBmOWQ4ZmNjLWQ4M2ItNWY0MS1hZTQ3LTJlNDY0M2Y5ZjgwMC92MS5qc29uIiwicm9vdF9jYXVzZSI6IlRoZSByZXNlcnZhdGlvbiB3YXMgcmVhZCBmcm9tIHRoZSBsZWRnZXIgaW5kZXgsIHdoaWNoIGNhcnJpZXMgb25seSBlYWNoIHJpZ2h0cyBzaWduYWwncyBjdXJyZW50IHZlcnNpb24sIG5vdCB0aGUgdmVyc2lvbnMgaW4gZm9yY2UgZHVyaW5nIHRoZSBtb250aC4gVGhlIHJpZ2h0cy1maWxlIHJlYWRzIGNhbWUgZnJvbSBhIHNlbnNvciBzdHJlYW0gY2FwcGVkIGF0IDUwMCByb3dzIHRoYXQgdGhlIHNpdGUncyBvd24gbW9uaXRvcmluZyBwcm9iZXMgaGFkIGZpbGxlZCwgcHVzaGluZyBBdWd1c3Qgb3V0IG9mIHRoZSB3aW5kb3cuIiwidmVyc2lvbiI6MSwid2hhdF9jaGFuZ2VkIjoiRnJvbSBTZXB0ZW1iZXIgMjAyNiByZWNvcmRzIHVzZSBzY2hlbWEgMjogdGhlIHJlc2VydmF0aW9uIGxpc3RzIGV2ZXJ5IHZlcnNpb24gaW4gZm9yY2UgZHVyaW5nIHRoZSBtb250aCB3aXRoIGl0cyBhbmNob3IgYmxvY2sgYW5kIHNwYW4sIHJpZ2h0cy1maWxlIHJlYWRzIGFyZSBzcGxpdCBieSBwdXJwb3NlLCBhbmQgdGhlIHNlbnNvciBzdHJlYW0gaXMgcmVhZCBwZXIgZmFtaWx5IHdpdGggdGhlIHNpdGUncyBvd24gdHJhZmZpYyBleGNsdWRlZC4gVGhlIHZlcnNpb25zIGluIGZvcmNlIGluIEF1Z3VzdCBhbmQgdGhlIHJlLXJlYWQgcmlnaHRzLWZpbGUgcmVhZHMgYXJlIGxpc3RlZCBpbiBFUlJBVEEubWQgaW4gdGhpcyByZXBvc2l0b3J5LiIsIndoYXRfd2FzX3dyb25nIjoiVHdvIGVycm9ycy4gVGhlIHJlc2VydmF0aW9uIG5hbWVkIHRoZSB2ZXJzaW9ucyBjdXJyZW50IHdoZW4gdGhlIHJlY29yZCB3YXMgY29tcG9zZWQgb24gMjAyNi0wOS0xOSwgbm90IHRob3NlIGluIGZvcmNlIGR1cmluZyBBdWd1c3Q6IHRkbS1wb2xpY3kgdjggYW5kIHdlYm1jcC1icmlkZ2UgdjUgd2VyZSBhbmNob3JlZCBpbiBTZXB0ZW1iZXIsIGFuZCBlYXJsaWVyIHZlcnNpb25zIGluIGZvcmNlIGluIEF1Z3VzdCB3ZXJlIG5vdCBuYW1lZC4gVGhlIHJpZ2h0cy1maWxlIHJlYWRzIHdlcmUgcmVwb3J0ZWQgYXMgbm9uZTsgcmUtcmVhZCwgb3BlbmFpIGZldGNoZWQgdGhlIHJpZ2h0cyBmaWxlcyA2IHRpbWVzIGZyb20gMjAyNi0wOC0xMSAoNCBzZWFyY2gsIDEgdXNlciwgMSB0cmFpbmluZyByZWFkIHRoYXQgaXMgdW5jb25maXJtZWQpLiJ9",
+  "content_hash": "0eae6685ee30e0d228cbb8fc399727f399414407fc66cbed94a410b2fea5d896",
+  "signature": "gQ/SClXUE/S5UlPuntwEHe6n9RPqANbyH3qRWEVgGdoViJcNrTDry8RyWy/6PX1EGkpEv9IHNpcpyB3QV/r/Bg==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
