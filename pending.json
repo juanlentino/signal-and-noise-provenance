@@ -13,6 +13,13 @@
       "path": "retractions/0f9d8fcc-d83b-5f41-ae47-2e4643f9f800/v1",
       "kind": "retraction",
       "queued_at": "2026-10-01T04:29:58.725Z"
+    },
+    {
+      "note_uid": "c2321fd1-5c4d-5db2-9762-869e557968c8",
+      "version": 1,
+      "path": "retractions/c2321fd1-5c4d-5db2-9762-869e557968c8/v1",
+      "kind": "retraction",
+      "queued_at": "2026-10-01T04:32:07.448Z"
     }
   ]
 }

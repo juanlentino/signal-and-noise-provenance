@@ -1,0 +1,23 @@
+{
+  "payload": {
+    "claimed": "The reservation in force for August 2026 was license-xml v2, robots-txt v5, tdm-policy v8, tdmrep-json v1 and webmcp-bridge v5.",
+    "kind": "retraction",
+    "note_uid": "c2321fd1-5c4d-5db2-9762-869e557968c8",
+    "retracted_at": "2026-10-01T04:32:05+00:00",
+    "retracted_path": "rights-evidence/c2321fd1-5c4d-5db2-9762-869e557968c8/v1.json",
+    "root_cause": "The reservation was read from the ledger index, which carries only each rights signal's current version, not the versions in force during the month. The rights-file reads came from a sensor stream capped at 500 rows that the site's own monitoring probes had filled, pushing August out of the window.",
+    "version": 1,
+    "what_changed": "From September 2026 records use schema 2: the reservation lists every version in force during the month with its anchor block and span, rights-file reads are split by purpose, and the sensor stream is read per family with the site's own traffic excluded. The versions in force in August and the re-read rights-file reads are listed in ERRATA.md in this repository.",
+    "what_was_wrong": "The reservation named the versions current when the record was composed on 2026-09-19, not those in force during August: tdm-policy v8 and webmcp-bridge v5 were anchored in September, and earlier versions in force in August were not named. The record's report of no rights-file reads holds when re-read from 2026-08-11."
+  },
+  "signed_payload_b64": "eyJjbGFpbWVkIjoiVGhlIHJlc2VydmF0aW9uIGluIGZvcmNlIGZvciBBdWd1c3QgMjAyNiB3YXMgbGljZW5zZS14bWwgdjIsIHJvYm90cy10eHQgdjUsIHRkbS1wb2xpY3kgdjgsIHRkbXJlcC1qc29uIHYxIGFuZCB3ZWJtY3AtYnJpZGdlIHY1LiIsImtpbmQiOiJyZXRyYWN0aW9uIiwibm90ZV91aWQiOiJjMjMyMWZkMS01YzRkLTVkYjItOTc2Mi04NjllNTU3OTY4YzgiLCJyZXRyYWN0ZWRfYXQiOiIyMDI2LTEwLTAxVDA0OjMyOjA1KzAwOjAwIiwicmV0cmFjdGVkX3BhdGgiOiJyaWdodHMtZXZpZGVuY2UvYzIzMjFmZDEtNWM0ZC01ZGIyLTk3NjItODY5ZTU1Nzk2OGM4L3YxLmpzb24iLCJyb290X2NhdXNlIjoiVGhlIHJlc2VydmF0aW9uIHdhcyByZWFkIGZyb20gdGhlIGxlZGdlciBpbmRleCwgd2hpY2ggY2FycmllcyBvbmx5IGVhY2ggcmlnaHRzIHNpZ25hbCdzIGN1cnJlbnQgdmVyc2lvbiwgbm90IHRoZSB2ZXJzaW9ucyBpbiBmb3JjZSBkdXJpbmcgdGhlIG1vbnRoLiBUaGUgcmlnaHRzLWZpbGUgcmVhZHMgY2FtZSBmcm9tIGEgc2Vuc29yIHN0cmVhbSBjYXBwZWQgYXQgNTAwIHJvd3MgdGhhdCB0aGUgc2l0ZSdzIG93biBtb25pdG9yaW5nIHByb2JlcyBoYWQgZmlsbGVkLCBwdXNoaW5nIEF1Z3VzdCBvdXQgb2YgdGhlIHdpbmRvdy4iLCJ2ZXJzaW9uIjoxLCJ3aGF0X2NoYW5nZWQiOiJGcm9tIFNlcHRlbWJlciAyMDI2IHJlY29yZHMgdXNlIHNjaGVtYSAyOiB0aGUgcmVzZXJ2YXRpb24gbGlzdHMgZXZlcnkgdmVyc2lvbiBpbiBmb3JjZSBkdXJpbmcgdGhlIG1vbnRoIHdpdGggaXRzIGFuY2hvciBibG9jayBhbmQgc3BhbiwgcmlnaHRzLWZpbGUgcmVhZHMgYXJlIHNwbGl0IGJ5IHB1cnBvc2UsIGFuZCB0aGUgc2Vuc29yIHN0cmVhbSBpcyByZWFkIHBlciBmYW1pbHkgd2l0aCB0aGUgc2l0ZSdzIG93biB0cmFmZmljIGV4Y2x1ZGVkLiBUaGUgdmVyc2lvbnMgaW4gZm9yY2UgaW4gQXVndXN0IGFuZCB0aGUgcmUtcmVhZCByaWdodHMtZmlsZSByZWFkcyBhcmUgbGlzdGVkIGluIEVSUkFUQS5tZCBpbiB0aGlzIHJlcG9zaXRvcnkuIiwid2hhdF93YXNfd3JvbmciOiJUaGUgcmVzZXJ2YXRpb24gbmFtZWQgdGhlIHZlcnNpb25zIGN1cnJlbnQgd2hlbiB0aGUgcmVjb3JkIHdhcyBjb21wb3NlZCBvbiAyMDI2LTA5LTE5LCBub3QgdGhvc2UgaW4gZm9yY2UgZHVyaW5nIEF1Z3VzdDogdGRtLXBvbGljeSB2OCBhbmQgd2VibWNwLWJyaWRnZSB2NSB3ZXJlIGFuY2hvcmVkIGluIFNlcHRlbWJlciwgYW5kIGVhcmxpZXIgdmVyc2lvbnMgaW4gZm9yY2UgaW4gQXVndXN0IHdlcmUgbm90IG5hbWVkLiBUaGUgcmVjb3JkJ3MgcmVwb3J0IG9mIG5vIHJpZ2h0cy1maWxlIHJlYWRzIGhvbGRzIHdoZW4gcmUtcmVhZCBmcm9tIDIwMjYtMDgtMTEuIn0=",
+  "content_hash": "5c3aca027aeb6eeb5abe8dc25a509ef11709a0c1f02d5f7af359d0390e5af15f",
+  "signature": "rIhyGbDcj84OPFC1ARUS0hPkPndz9Jq9FjaDC1km/p2ZoiF2Py8mTQUIfdoJMkRqRb8/oozDPK4oT0V+91MjBA==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
