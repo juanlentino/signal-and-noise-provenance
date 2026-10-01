@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-01: the cron-liveness check reads three times
+
+`scripts/check-cron-liveness.mjs` reads each watched workflow's scheduled-run
+list three times and keeps the newest stamp. GitHub served a stale list on
+2026-10-01 (newest `verify.yml` run 24 days old while it had fired that morning)
+and redded PR #36. One stale answer can no longer do that; a stopped cron still
+fails.
+
 ## 2026-10-01: a note on identity in the August erratum
 
 `ERRATA.md` adds that August's crawling counts are by claimed user agent and
