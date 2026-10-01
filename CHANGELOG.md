@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-10-01: schema 2 says who it counted
+
+Schema 2 is amended, not bumped: no schema-2 record has been posted yet.
+Every count in a rights-evidence record is by claimed user agent, and most
+of a month cannot be verified, so a schema-2 record must now carry
+`identity`: the basis (`claimed user agent`), the verification source
+(`cloudflare verified bot category`) and the time it began, the reads and
+training counts each split into verified, unverified and unverifiable, and a
+line on how the rights files were identified. `evidenceDivergences()` checks
+that each split is three counts summing to the crawling count it splits,
+that no training component exceeds its reads component, that nothing is
+verified or unverified when verification began after the month, and that
+nothing is unverifiable when it began at or before the month's first
+instant. A schema-2 record without `identity` fails. Schema 1 is untouched
+and the four August records pass as before. Thirteen new tests; each rule
+mutation-checked.
+
 ## 2026-09-30: the August rights-evidence erratum
 
 `ERRATA.md` records two errors in the four August 2026 rights-evidence

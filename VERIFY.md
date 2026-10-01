@@ -239,4 +239,19 @@ both.
 - **Sensor.** `sensor.version` is present and `sensor.taxonomy` is a
   non-empty string: purposes are the taxonomy's verdicts, so a count that
   cannot say which taxonomy it counted under cannot be re-read.
+- **Identity.** Every count is by claimed user agent, and most of a month
+  predates the verified-bot signal, so a schema-2 record carries
+  `identity: {basis, verification: {source, since}, crawling: {reads, train},
+  rights_files}`. `basis` is exactly `claimed user agent`;
+  `verification.source` is exactly `cloudflare verified bot category` and
+  `verification.since` is a time. `crawling.reads` and `crawling.train` are
+  each `{verified, unverified, unverifiable}`, three non-negative integers
+  that sum to `payload.crawling.reads` and `payload.crawling.train`
+  respectively, with no `train` component above the matching `reads`
+  component. Against the reservation window: if `since` is after
+  `window.end`, nothing in the month could be verified, so `verified` and
+  `unverified` are both 0; if `since` is at or before `window.start`,
+  `unverifiable` is 0. `rights_files` is a non-empty string saying how the
+  rights-file reads were identified. A schema-2 record without `identity`
+  fails; a schema-1 record is never asked for one.
 

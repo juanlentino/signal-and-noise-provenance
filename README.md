@@ -78,8 +78,10 @@ note's DOI for the note, the ledger's for the chain it sits in.
   from September 2026) lists every version in force at any point of the
   month, splits the rights-file reads into `rights_reads` (training),
   `retrieval_reads` (search, user and other purposes) and `unlabelled_reads`
-  (no recorded purpose), keys `crawling.by_surface` by purpose, and names the
-  sensor's taxonomy. [VERIFY.md](VERIFY.md#rights-evidence) has the rules.
+  (no recorded purpose), keys `crawling.by_surface` by purpose, names the
+  sensor's taxonomy, and carries an `identity` block: the counts are by
+  claimed user agent, split into verified, unverified and unverifiable against
+  Cloudflare's verified-bot category from the date that signal began. [VERIFY.md](VERIFY.md#rights-evidence) has the rules.
 - `index.json` + `verify-coverage.mjs` — one coverage row per public Note and
   live-site gap detection.
 - `keys/key-history.json` + `verify-key-history.mjs` — key lifecycle and

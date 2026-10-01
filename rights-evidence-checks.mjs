@@ -163,4 +163,52 @@ function schemaTwo(p, out) {
   // taxonomy's verdicts, so a count without it cannot be re-read.
   if (!isObject(p.sensor) || !("version" in p.sensor)) out.push(["sensor", "payload.sensor.version is missing"]);
   if (typeof p.sensor?.taxonomy !== "string" || p.sensor.taxonomy === "") out.push(["sensor", "payload.sensor.taxonomy is not a non-empty string"]);
+
+  identity(p, out);
+}
+
+// Schema 2's counts are by CLAIMED user agent, and most of a month predates
+// the verified-bot signal, so the record says how much of each count could be
+// verified. A verified/unverified/unverifiable triple per count, summing to
+// the crawling count it splits; nothing is verified before `since`.
+const IDENTITY_BASIS = "claimed user agent";
+const IDENTITY_SOURCE = "cloudflare verified bot category";
+const TRIPLE = ["verified", "unverified", "unverifiable"];
+
+function identity(p, out) {
+  const id = p.identity;
+  if (!isObject(id)) { out.push(["identity", "payload.identity is missing"]); return; }
+  if (id.basis !== IDENTITY_BASIS) out.push(["identity", `payload.identity.basis is ${JSON.stringify(id.basis ?? null)}, not "${IDENTITY_BASIS}"`]);
+  const v = id.verification;
+  if (!isObject(v) || v.source !== IDENTITY_SOURCE) out.push(["identity", `payload.identity.verification.source is ${JSON.stringify(v?.source ?? null)}, not "${IDENTITY_SOURCE}"`]);
+  const sinceOk = isTime(v?.since);
+  if (!sinceOk) out.push(["identity", `payload.identity.verification.since is not a time: ${JSON.stringify(v?.since ?? null)}`]);
+  if (typeof id.rights_files !== "string" || id.rights_files === "") out.push(["identity", "payload.identity.rights_files is not a non-empty string"]);
+
+  const c = isObject(id.crawling) ? id.crawling : null;
+  if (!c) { out.push(["identity", "payload.identity.crawling is missing"]); return; }
+  const triples = {};
+  for (const k of ["reads", "train"]) {
+    const t = c[k];
+    const bad = !isObject(t) ? TRIPLE : TRIPLE.filter((n) => !isCount(t[n]));
+    if (bad.length) { out.push(["identity", `payload.identity.crawling.${k}.${bad.join(", ")} is not a count`]); continue; }
+    triples[k] = t;
+    const sum = t.verified + t.unverified + t.unverifiable;
+    if (isCount(p.crawling?.[k]) && sum !== p.crawling[k]) out.push(["identity", `payload.identity.crawling.${k} sums to ${sum}, not payload.crawling.${k} (${p.crawling[k]})`]);
+  }
+  if (triples.reads && triples.train) {
+    for (const n of TRIPLE) if (triples.train[n] > triples.reads[n]) out.push(["identity", `payload.identity.crawling.train.${n} (${triples.train[n]}) exceeds reads.${n} (${triples.reads[n]})`]);
+  }
+
+  // Against the month: a signal that starts after the window verified nothing
+  // in it; one in place from the window's first instant left nothing
+  // unverifiable. In between, any split is possible.
+  const w = p.reservation?.window;
+  if (!sinceOk || !isObject(w) || !isTime(w.start) || !isTime(w.end)) return;
+  const since = Date.parse(v.since);
+  for (const k of Object.keys(triples)) {
+    const t = triples[k];
+    if (since > Date.parse(w.end) && (t.verified !== 0 || t.unverified !== 0)) out.push(["identity", `payload.identity.crawling.${k} claims verified or unverified reads, but verification began ${v.since}, after the window ends`]);
+    if (since <= Date.parse(w.start) && t.unverifiable !== 0) out.push(["identity", `payload.identity.crawling.${k} claims ${t.unverifiable} unverifiable, but verification began ${v.since}, at or before the window starts`]);
+  }
 }
