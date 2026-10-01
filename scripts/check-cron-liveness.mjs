@@ -182,7 +182,16 @@ async function main() {
       failures++;
       continue;
     }
-    const runs = await api(`repos/${repo}/actions/workflows/${workflow}/runs?event=schedule&per_page=10`, token);
+    // Read the run list THREE times and merge: GitHub has served a stale list
+    // (newest run 24 days old while the cron had fired that morning,
+    // 2026-10-01). The newest stamp across reads decides, so one stale answer
+    // cannot red the check; a cron that has really stopped still fails.
+    const reads = [];
+    for (let i = 0; i < 3; i++) {
+      reads.push(await api(`repos/${repo}/actions/workflows/${workflow}/runs?event=schedule&per_page=10`, token));
+    }
+    const answered = reads.filter((r) => r !== null);
+    const runs = answered.length ? { workflow_runs: answered.flatMap((r) => r.workflow_runs ?? []) } : null;
     if (meta === null && runs === null) {
       // The API itself is unreachable — a tooling failure, not a dead cron.
       // Counted separately so the exit code can say which.
