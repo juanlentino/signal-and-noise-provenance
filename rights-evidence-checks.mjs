@@ -22,7 +22,9 @@ const hexOf = (bytes) => Array.from(bytes, (b) => b.toString(16).padStart(2, "0"
  * record about something else.
  */
 export async function evidenceUuid(site, family, month) {
-  const ns = Uint8Array.from(Buffer.from(RFC4122_URL_NS.replace(/-/g, ""), "hex"));
+  // Hex decoded by hand: the provenance worker runs this on Cloudflare
+  // Workers, which has no Node globals without nodejs_compat.
+  const ns = Uint8Array.from(RFC4122_URL_NS.replace(/-/g, "").match(/../g), (h) => parseInt(h, 16));
   const name = new TextEncoder().encode(`${String(site).replace(/\/+$/, "")}/rights-evidence/${family}/${month}`);
   const digest = new Uint8Array(await crypto.subtle.digest("SHA-1", new Uint8Array([...ns, ...name])));
   const b = digest.slice(0, 16);

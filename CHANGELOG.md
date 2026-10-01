@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-01: the rights-evidence checker runs on Workers
+
+`rights-evidence-checks.mjs` decodes its namespace hex by hand instead of with
+`Buffer`, which Cloudflare Workers lacks without `nodejs_compat`, so the
+provenance worker can run `evidenceDivergences()` before it signs and refuse a
+record this ledger would reject. `package.json` exports the file
+(`./rights-evidence-checks.mjs`, listed in `files`), and
+`verify/rights-evidence-checks-portable.test.mjs` pins that the module imports
+nothing, names no Node global, and still derives ids and passes a record with
+`Buffer` undefined. No rule changed; the four August records verify as before.
+
 ## 2026-10-01: the cron-liveness check reads three times
 
 `scripts/check-cron-liveness.mjs` reads each watched workflow's scheduled-run

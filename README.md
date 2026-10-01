@@ -82,6 +82,10 @@ note's DOI for the note, the ledger's for the chain it sits in.
   sensor's taxonomy, and carries an `identity` block: the counts are by
   claimed user agent, split into verified, unverified and unverifiable against
   Cloudflare's verified-bot category from the date that signal began. [VERIFY.md](VERIFY.md#rights-evidence) has the rules.
+  The rules live in `rights-evidence-checks.mjs`, exported from `package.json`
+  as `./rights-evidence-checks.mjs`: no imports and no Node globals, so the
+  provenance worker runs the same `evidenceDivergences()` before it signs and
+  refuses a record this ledger would reject.
 - `index.json` + `verify-coverage.mjs` — one coverage row per public Note and
   live-site gap detection.
 - `keys/key-history.json` + `verify-key-history.mjs` — key lifecycle and
