@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-30: the August rights-evidence erratum
+
+`ERRATA.md` records two errors in the four August 2026 rights-evidence
+records: the reservation named versions that were not in force in August, and
+the rights-file reads were reported as none because the site's own probes had
+filled the sensor's capped stream. It gives the versions in force and the reads
+re-read with that traffic excluded, with their limits. The records themselves
+are untouched.
+
 ## 2026-09-30: the evidence learns schema 2
 
 The plugin now composes rights-evidence records with `schema: 2` (PR #1810):

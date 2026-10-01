@@ -71,7 +71,8 @@ note's DOI for the note, the ledger's for the chain it sits in.
   `canonical(payload)`); the `<uuid>` is the UUIDv5 of
   `<site>/rights-evidence/<family>/<month>`, so the path is derivable from the
   claim and `verify-rights-evidence.mjs` checks that it was. Minted once per
-  month; a correction is a retraction, never a v2.
+  month; a correction is a retraction, never a v2. Corrections are listed in
+  [ERRATA.md](ERRATA.md).
   Two shapes are on the ledger. Schema 1 (no `schema` field, the August 2026
   records) lists the reservation as of composition. Schema 2 (`schema: 2`,
   from September 2026) lists every version in force at any point of the
