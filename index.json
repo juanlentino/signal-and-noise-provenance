@@ -64,13 +64,13 @@
       "title": "Where AI actually saves time in record production",
       "published_at": "2026-05-07T17:59:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "11b4bb4b432804571f4e2a400d255944f20fa8f804be15cd08b70d22e56157d2",
+      "version": 2,
+      "content_hash": "46a81a33355349627a30153ef32433ede472647d48a64e32d9143b641aea0fa1",
       "leaf_hash": "322a84a5e35c5d69048489d1ba092451087ef9f1d18e8d9199a05ddfa546439e",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "4a32127e-5571-4b85-a1f5-84714682d30e",
