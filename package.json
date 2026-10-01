@@ -2,6 +2,12 @@
   "name": "signal-and-noise-provenance",
   "private": true,
   "type": "module",
+  "exports": {
+    "./rights-evidence-checks.mjs": "./rights-evidence-checks.mjs"
+  },
+  "files": [
+    "rights-evidence-checks.mjs"
+  ],
   "scripts": {
     "test": "vitest run",
     "verify": "node verify.mjs",
