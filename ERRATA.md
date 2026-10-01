@@ -72,6 +72,19 @@ them as unconfirmed. The schema-1 records also did not separate a training
 crawler reading the terms from a search or user agent fetching them; schema 2
 (from September 2026) does.
 
+### A note on identity
+
+The crawling counts in all four records are by claimed user agent: a request
+was attributed to a family because its user agent named that family's crawler.
+None of August's traffic can be checked against that claim. The site's sensor
+began recording Cloudflare's verified-bot category at 2026-09-27T15:49:59Z and
+the requesting network on 2026-09-29, both after August ended. Where both were
+recorded, most requests naming a training crawler came from networks other
+than the named company's and were not verified. August's counts should be read
+as requests that claimed to be these crawlers, not as activity of the companies
+named. From September 2026, records carry an `identity` block that states this
+basis and splits each count into verified, unverified and unverifiable.
+
 ### What changed
 
 From September 2026 the site composes schema-2 records: the reservation lists
