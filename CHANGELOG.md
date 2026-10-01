@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-01: a note on identity in the August erratum
+
+`ERRATA.md` adds that August's crawling counts are by claimed user agent and
+cannot be verified: the sensor began recording Cloudflare's verified-bot
+category on 2026-09-27 and the requesting network on 2026-09-29. Docs only.
+
 ## 2026-10-01: schema 2 says who it counted
 
 Schema 2 is amended, not bumped: no schema-2 record has been posted yet.
