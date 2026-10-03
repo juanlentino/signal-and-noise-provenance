@@ -260,13 +260,13 @@
       "title": "The court found the floor",
       "published_at": "2026-07-03T19:06:12Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "8c314e7ac33dea01da316db2a9512cd15918d917f07027f09a794bd55349a337",
+      "version": 2,
+      "content_hash": "111469e97351c00681a11f251deef5092921b8e0fed977eb96253f04585e6c63",
       "leaf_hash": "07028fd5811af7416ab24cee470bbe62440658d3bdedf1ad1993e0ef8ea9cc5e",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "8d448df2-db53-4c45-932f-06e3d69716c2",
