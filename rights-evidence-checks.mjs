@@ -25,7 +25,11 @@ export async function evidenceUuid(site, family, month) {
   // Hex decoded by hand: the provenance worker runs this on Cloudflare
   // Workers, which has no Node globals without nodejs_compat.
   const ns = Uint8Array.from(RFC4122_URL_NS.replace(/-/g, "").match(/../g), (h) => parseInt(h, 16));
-  const name = new TextEncoder().encode(`${String(site).replace(/\/+$/, "")}/rights-evidence/${family}/${month}`);
+  // Trailing slashes trimmed by a loop, not /\/+$/: that regex backtracks
+  // quadratically on a long run of slashes that does not end the string.
+  let base = String(site);
+  while (base.endsWith("/")) base = base.slice(0, -1);
+  const name = new TextEncoder().encode(`${base}/rights-evidence/${family}/${month}`);
   const digest = new Uint8Array(await crypto.subtle.digest("SHA-1", new Uint8Array([...ns, ...name])));
   const b = digest.slice(0, 16);
   b[6] = (b[6] & 0x0f) | 0x50;
