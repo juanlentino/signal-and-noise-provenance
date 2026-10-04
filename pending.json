@@ -1,3 +1,11 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "note_uid": "522ffa6e-a886-5544-b047-a1c639716cd7",
+      "version": 1,
+      "path": "rights-evidence/522ffa6e-a886-5544-b047-a1c639716cd7/v1",
+      "kind": "rights-evidence",
+      "queued_at": "2026-10-04T21:45:26.989Z"
+    }
+  ]
 }
