@@ -1,0 +1,272 @@
+{
+  "payload": {
+    "composed_at": "2026-10-01T21:45:24+00:00",
+    "crawling": {
+      "by_day": {
+        "2026-09-07": {
+          "reads": 8,
+          "train": 8
+        },
+        "2026-09-09": {
+          "reads": 12,
+          "train": 12
+        },
+        "2026-09-11": {
+          "reads": 5,
+          "train": 5
+        },
+        "2026-09-12": {
+          "reads": 1,
+          "train": 1
+        },
+        "2026-09-13": {
+          "reads": 41,
+          "train": 41
+        },
+        "2026-09-14": {
+          "reads": 3,
+          "train": 3
+        },
+        "2026-09-15": {
+          "reads": 13,
+          "train": 13
+        },
+        "2026-09-20": {
+          "reads": 34,
+          "train": 34
+        },
+        "2026-09-21": {
+          "reads": 4,
+          "train": 4
+        },
+        "2026-09-22": {
+          "reads": 87,
+          "train": 87
+        },
+        "2026-09-23": {
+          "reads": 58,
+          "train": 58
+        },
+        "2026-09-24": {
+          "reads": 8,
+          "train": 8
+        },
+        "2026-09-25": {
+          "reads": 34,
+          "train": 34
+        },
+        "2026-09-26": {
+          "reads": 7,
+          "train": 7
+        },
+        "2026-09-27": {
+          "reads": 13,
+          "train": 13
+        },
+        "2026-09-28": {
+          "reads": 8,
+          "train": 8
+        },
+        "2026-09-29": {
+          "reads": 10,
+          "train": 10
+        }
+      },
+      "by_surface": {
+        "train": {
+          "html": 344,
+          "well-known": 1,
+          "wp-json": 1
+        }
+      },
+      "complete": true,
+      "reads": 346,
+      "train": 346
+    },
+    "family": "bytedance",
+    "identity": {
+      "basis": "claimed user agent",
+      "crawling": {
+        "reads": {
+          "unverifiable": 328,
+          "unverified": 18,
+          "verified": 0
+        },
+        "train": {
+          "unverifiable": 328,
+          "unverified": 18,
+          "verified": 0
+        }
+      },
+      "rights_files": "claimed user agent; the rights stream records no verification",
+      "verification": {
+        "since": "2026-09-27T15:49:59Z",
+        "source": "cloudflare verified bot category"
+      }
+    },
+    "kind": "rights-evidence",
+    "month": "2026-09",
+    "reservation": {
+      "signals": {
+        "license-xml": [
+          {
+            "block": 961766,
+            "content_hash": "a645697a9b30edf738270a6351e2765b29048a69f882e81473e3f056c0a0f417",
+            "valid_from": "2026-08-09T19:35:33Z",
+            "valid_to": "2026-09-20T00:09:20Z",
+            "version": 2
+          },
+          {
+            "block": 967762,
+            "content_hash": "e7f7cf77e06748e6a2b675ba8423fa821fb3eef5ebf5d3324a66d568f4d20119",
+            "valid_from": "2026-09-20T00:09:20Z",
+            "valid_to": null,
+            "version": 3
+          }
+        ],
+        "robots-txt": [
+          {
+            "block": 963662,
+            "content_hash": "7d2c712340f63795c008d419dad03d0fe6e6ae93807d5189ae3ed23fa2e868a4",
+            "valid_from": "2026-08-23T02:24:19Z",
+            "valid_to": null,
+            "version": 5
+          }
+        ],
+        "tdm-policy": [
+          {
+            "block": 964508,
+            "content_hash": "6d3fa5478dcbe1149ee05b34351c9920f5e4ee9487df6caae322000f1d934bca",
+            "valid_from": "2026-08-29T01:31:33Z",
+            "valid_to": "2026-09-12T07:01:26Z",
+            "version": 4
+          },
+          {
+            "block": 966636,
+            "content_hash": "3b2fd663babe2be012dfedaeb7e9739847b160dd3f5d42df69e74d32b1b1437e",
+            "valid_from": "2026-09-12T07:01:26Z",
+            "valid_to": "2026-09-17T23:22:28Z",
+            "version": 5
+          },
+          {
+            "block": 967477,
+            "content_hash": "1875f0dc17204df91788bbc2028b4f5a950ff62260acbfd6cb7e06b96ef0c9c3",
+            "valid_from": "2026-09-17T23:22:28Z",
+            "valid_to": "2026-09-17T23:22:28Z",
+            "version": 6
+          },
+          {
+            "block": 967477,
+            "content_hash": "b698d200a729f6382b96dc9c7f47da8129810def1bae61546c8d6ee32dff1f51",
+            "valid_from": "2026-09-17T23:22:28Z",
+            "valid_to": "2026-09-18T02:51:39Z",
+            "version": 7
+          },
+          {
+            "block": 967489,
+            "content_hash": "11922330cf89bcd42f0a227dc232a3c2f65a966d034dee5e3620b5f4e1ef8206",
+            "valid_from": "2026-09-18T02:51:39Z",
+            "valid_to": "2026-09-20T00:09:20Z",
+            "version": 8
+          },
+          {
+            "block": 967762,
+            "content_hash": "24c2ba599add41fa6410279af82601426d959c889965ee72c0805ca29238b474",
+            "valid_from": "2026-09-20T00:09:20Z",
+            "valid_to": null,
+            "version": 9
+          }
+        ],
+        "tdmrep-json": [
+          {
+            "block": 959348,
+            "content_hash": "421f88383938eeaf8882474c747d1f3cfcd7e51c5d89711fd3df98fc0071ec80",
+            "valid_from": "2026-07-24T02:34:12Z",
+            "valid_to": null,
+            "version": 1
+          }
+        ],
+        "webmcp-bridge": [
+          {
+            "block": 964512,
+            "content_hash": "b355cb956d87914169f220ad0e57d9d7260314ef942352aa4894afa60fa7563a",
+            "valid_from": "2026-08-29T02:12:39Z",
+            "valid_to": "2026-09-12T07:01:26Z",
+            "version": 1
+          },
+          {
+            "block": 966636,
+            "content_hash": "ab2192a4748bdca5bc509d3d9498574b81e6113926db6616a53839f8a4950cc6",
+            "valid_from": "2026-09-12T07:01:26Z",
+            "valid_to": "2026-09-17T23:22:28Z",
+            "version": 2
+          },
+          {
+            "block": 967477,
+            "content_hash": "04e18e6c42ef2811eb726de50e977ba41445720b58807cc94e8908a5d01f903b",
+            "valid_from": "2026-09-17T23:22:28Z",
+            "valid_to": "2026-09-17T23:22:28Z",
+            "version": 3
+          },
+          {
+            "block": 967477,
+            "content_hash": "0feb617385e983aa323da5e5ebd3586efcd3718b502982968a3b2d50b935c9e3",
+            "valid_from": "2026-09-17T23:22:28Z",
+            "valid_to": "2026-09-18T02:51:39Z",
+            "version": 4
+          },
+          {
+            "block": 967489,
+            "content_hash": "aebb3b6755a16f045d742e4744ce2621988af9eb27be9bb3039cc75de8984fd3",
+            "valid_from": "2026-09-18T02:51:39Z",
+            "valid_to": null,
+            "version": 5
+          }
+        ]
+      },
+      "window": {
+        "end": "2026-09-30T23:59:59Z",
+        "start": "2026-09-01T00:00:00Z"
+      }
+    },
+    "retrieval_reads": {
+      "by_path": {},
+      "by_purpose": {},
+      "complete": true,
+      "first": "",
+      "last": "",
+      "reads": 0
+    },
+    "rights_reads": {
+      "by_path": {},
+      "by_purpose": {},
+      "complete": true,
+      "first": "",
+      "last": "",
+      "reads": 0
+    },
+    "schema": 2,
+    "sensor": {
+      "taxonomy": "1.3.1",
+      "version": "1.29.0"
+    },
+    "site": "https://juanlentino.com",
+    "unlabelled_reads": {
+      "by_path": {},
+      "by_purpose": {},
+      "complete": true,
+      "first": "",
+      "last": "",
+      "reads": 0
+    }
+  },
+  "content_hash": "57cc3bd4253dd256dc3171f20f66905d2af12f4a546487eaef2f74f27c9c5b50",
+  "signature": "vRGhBKTrwm1d/YMeL2MaE2UqStfUTB3iRmvCPL6c/ZsbQWVIqWKQoF/RvkyanXT+2Pc97HiRrMWbziQrCEyqDw==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
