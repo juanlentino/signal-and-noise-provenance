@@ -9,7 +9,7 @@
 //
 //   node countersign.mjs key-prepare --id <key-id> --ssh-pub <path to .pub>
 //   node countersign.mjs key-finish --id <key-id>
-//   node countersign.mjs prepare [--all]
+//   node countersign.mjs prepare
 //   node countersign.mjs finish <batch-id>
 
 import { execFileSync } from "node:child_process";
@@ -57,7 +57,9 @@ async function keyPrepare() {
   const pubPath = arg("--ssh-pub");
   if (!KEY_ID.test(String(id)) || !pubPath) fail("usage: key-prepare --id sn-author-ed25519-YYYY-MM --ssh-pub <path to the .pub>");
   const history = readHistory(root);
-  if (history.keys.some((k) => k.id === id)) fail(`${id} is already in the key history`);
+  // One author key is all the ledger supports: rotating or retiring it needs
+  // pinned retired keys with closed windows, which is not built.
+  if (history.keys.some((k) => k.role === "author")) fail("refused: the key history already has an author key, and rotation is not built");
   const raw = ed25519FromSshPublicKey(readFileSync(pubPath, "utf8"));
   const publisher = history.keys.find((k) => k.id === history.current);
   const payload = {
@@ -100,7 +102,7 @@ async function prepare() {
   if (keys.length !== 1) fail(`expected exactly one active author key, found ${keys.length}`);
   const attested = new Set(batchIds(root).flatMap((b) => readBatch(root, b).payload.records.map((r) => r.content_hash)));
   const { passing } = await ledgerLookup(root);
-  const records = process.argv.includes("--all") ? passing : passing.filter((r) => !attested.has(r.content_hash));
+  const records = passing.filter((r) => !attested.has(r.content_hash));
   if (records.length === 0) fail("nothing new to countersign");
   const today = new Date().toISOString().slice(0, 10);
   let n = 1;
@@ -113,7 +115,9 @@ async function prepare() {
   const local = existsSync(join(work, "signing-key.json")) ? JSON.parse(readFileSync(join(work, "signing-key.json"), "utf8")) : null;
   const pub = local?.id === keys[0].id ? local.pub : "<path to your author key .pub>";
   const loaded = (() => { try { return execFileSync("ssh-add", ["-L"], { encoding: "utf8" }).includes(keys[0].ssh_public_key.split(/\s+/)[1]); } catch { return false; } })();
-  const load = loaded ? "" : `  ssh-add --apple-use-keychain ${pub.replace(/\.pub$/, "")}\n`;
+  // --apple-use-keychain is Apple's extension to ssh-add; elsewhere it fails.
+  const keychain = process.platform === "darwin" ? "--apple-use-keychain " : "";
+  const load = loaded ? "" : `  ssh-add ${keychain}${pub.replace(/\.pub$/, "")}\n`;
   console.log(`Batch ${id}: ${records.length} record(s). Sign it, then run finish:\n\n${load}  ${signCommand(pub, msg)}\n  node countersign.mjs finish ${id}`);
 }
 

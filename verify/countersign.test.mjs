@@ -125,12 +125,10 @@ describe("the whole flow, on a copy of the ledger", () => {
     expect(run("verify-countersignatures.mjs")).toMatch(/1 countersignature batch\(es\) hold, \d+ record\(s\) attested/);
     const pending = JSON.parse(readFileSync(join(root, "pending.json"), "utf8")).entries.map((e) => e.kind);
     expect(pending).toEqual(expect.arrayContaining(["key-fingerprint", "countersignature"]));
-    // Countersigning the same records again is refused by the verifier.
-    const again = run("countersign.mjs", "prepare", "--all").match(/Batch (\S+):/)[1];
-    execFileSync("ssh-keygen", ["-Y", "sign", "-f", author.priv, "-n", SSHSIG_NAMESPACE, `.countersign/${again}.msg`], { cwd: root, stdio: "ignore" });
-    run("countersign.mjs", "finish", again);
-    expect(() => run("verify-countersignatures.mjs")).toThrow(/already attested/);
-    rmSync(join(root, "countersignatures", `${again}.json`));
+    // Nothing is countersigned twice: prepare offers only unattested records.
+    expect(() => run("countersign.mjs", "prepare")).toThrow(/nothing new to countersign/);
+    // A second author key is refused before anything is staged.
+    expect(() => run("countersign.mjs", "key-prepare", "--id", "sn-author-ed25519-2026-11", "--ssh-pub", `${author.priv}.pub`)).toThrow(/rotation is not built/);
     // The author key can never become the current key.
     const historyPath = join(root, "keys", "key-history.json");
     const history = JSON.parse(readFileSync(historyPath, "utf8"));

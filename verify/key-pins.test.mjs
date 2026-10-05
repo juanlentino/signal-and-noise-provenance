@@ -11,7 +11,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { keyPinDivergences, KEY_MIRROR_SCHEMA } from "../key-pins.mjs";
+import { authorPinDivergences, keyPinDivergences, pinTxt, KEY_MIRROR_SCHEMA } from "../key-pins.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const history = JSON.parse(readFileSync(join(root, "keys/key-history.json"), "utf8"));
@@ -104,5 +104,20 @@ describe("an author key in the mirror", () => {
   it("fails when the mirror drops the role or the key", () => {
     expect(keyPinDivergences(withAuthor({ role: undefined }), author).map(([f]) => f)).toEqual(["role"]);
     expect(keyPinDivergences(served(), author).map(([f]) => f)).toEqual([`keys[id=${author.id}]`]);
+  });
+  it("holds when the pins and the history agree, in either state", () => {
+    expect(authorPinDivergences(withAuthor(), [pinTxt(author)], [author])).toEqual([]);
+    expect(authorPinDivergences(served(), [], [])).toEqual([]);
+  });
+  it("fails when the history drops a key the pins still advertise", () => {
+    expect(authorPinDivergences(withAuthor(), [pinTxt(author)], [])).toEqual([
+      `the mirror carries author key ${author.id}, which the key history does not hold`,
+      `DNS pins an author key the key history does not hold: ${pinTxt(author)}`,
+    ]);
+    expect(authorPinDivergences(served(), [pinTxt(author)], [])).toHaveLength(1);
+  });
+  it("fails when a pin is missing for a key the history holds", () => {
+    expect(authorPinDivergences(withAuthor(), [], [author])).toEqual([`DNS author-key pin missing for ${author.id}`]);
+    expect(authorPinDivergences(served(), [pinTxt(author)], [author])[0]).toMatch(/the mirror's .* keys\[id=/);
   });
 });

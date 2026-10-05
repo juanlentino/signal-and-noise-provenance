@@ -59,3 +59,29 @@ export function keyPinDivergences(document, current) {
     ] : []),
   ].filter(([, actual, expected]) => actual !== expected);
 }
+
+/** The DNS TXT value that pins a key, in the publisher record's format. */
+export const pinTxt = (key) => `v=sn-prov1; id=${key.id}; alg=${key.algorithm}; key=${key.public_key_base64}; sha256=${key.sha256_fingerprint}`;
+
+/**
+ * The author keys pinned outside GitHub must be exactly the ones the history
+ * holds, in both directions. Checked from the pins' side too: a repository
+ * that deleted its author key and every batch would otherwise pass while the
+ * DNS record and the mirror still advertise the key.
+ *
+ * @param {object|null} document The parsed mirror document.
+ * @param {string[]} dnsAnswers TXT values at _provenance-author (empty when none).
+ * @param {object[]} authors Active author keys from keys/key-history.json.
+ * @returns {string[]} One line per divergence.
+ */
+export function authorPinDivergences(document, dnsAnswers, authors) {
+  const ids = new Set(authors.map((k) => k.id));
+  const mirrored = (document?.keys ?? []).filter((k) => k.role === "author").map((k) => k.id);
+  const expectedTxt = new Set(authors.map(pinTxt));
+  return [
+    ...mirrored.filter((id) => !ids.has(id)).map((id) => `the mirror carries author key ${id}, which the key history does not hold`),
+    ...dnsAnswers.filter((a) => !expectedTxt.has(a)).map((a) => `DNS pins an author key the key history does not hold: ${a}`),
+    ...authors.filter((k) => !dnsAnswers.includes(pinTxt(k))).map((k) => `DNS author-key pin missing for ${k.id}`),
+    ...authors.flatMap((k) => keyPinDivergences(document, k).map(([f, a, e]) => `the mirror's ${k.id} ${f}: got ${JSON.stringify(a)}, expected ${JSON.stringify(e)}`)),
+  ];
+}
