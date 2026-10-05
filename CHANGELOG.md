@@ -1,5 +1,45 @@
 # Changelog
 
+## 2026-10-05: weigh the key
+
+`weigh.mjs` computes the key's weight under a policy the verifier states,
+equation (1) of *Provenance Without Institutions* (Lentino, SSRN 7456638,
+Section 6), from the records already in this repository. It is the first step
+on identity, the gap the plugin's gap analysis parked until the third paper was
+public. The paper splits that gap into custody and anchoring and answers
+anchoring with this computation; custody stays open, and the key is still the
+Worker-held one.
+
+A record contributes only if it passes the offline checks `verify-records.mjs`
+runs, and the clock is the earliest block its `.ots` proof attests, never
+`published_at`. Offline that is the block the proof names; matching it to the
+chain is `verify.mjs`'s network step, which this tool does not make. Decay is exact: `retain ^ floor((at − h) / epoch_blocks)` in
+BigInt fractions, so the weight is the same reduced fraction in any language.
+The attestation term is computed in full and fed nothing, because no
+recognition attestation exists here. Under `policy/example.json` W therefore
+equals the persistence sum, which is the paper's floor property on a key with
+no recognized attester. The policy is required, unknown fields and decay forms
+are refused, and D is a table checked against the paper's four properties.
+Retractions name withdrawn subjects and never count as events.
+`rights-signals/` is not read: those records sign raw bytes that
+`verifyRecord()` cannot check.
+
+Pinned in `verify/weigh-compose.test.mjs` (the cap, the multiplier, the floor,
+the decay grid, every policy refusal) and `verify/weigh-ledger.test.mjs`
+(an --at too far past an event to compute exactly; copies of this repository with a bad signature, a pending anchor, an unknown
+key, a mutated `published_at`, a failed or missing middle version, a damaged
+copy of a record filed twice (its content_hash damaged too), a note's records
+copied under another id, a retraction moved into pages/, a forked proof's named
+block edited, a malformed genesis note entry, a key
+rotation, an incomplete genesis set, a rights-evidence record copied under a
+second id and a retraction its own rules reject; genesis heights and the
+genesis root rule; withdrawn subjects of every class, exclusions and omitted
+classes, each only from its own height; member order inside a policy; no
+network; byte-identical output). Each rule was broken once and its test went
+red. CI runs `weigh` twice and compares the bytes. Nothing under `notes/`,
+`pages/`, `keys/`, `genesis/`, `rights-signals/`, `rights-evidence/` or
+`retractions/` changed.
+
 ## 2026-10-01: the rights-evidence checker runs on Workers
 
 `rights-evidence-checks.mjs` decodes its namespace hex by hand instead of with
