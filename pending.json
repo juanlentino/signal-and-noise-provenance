@@ -5,7 +5,8 @@
       "version": 1,
       "path": "keys/anchors/sn-author-ed25519-2026-10",
       "kind": "key-fingerprint",
-      "queued_at": "2026-10-05T16:22:19.044Z"
+      "queued_at": "2026-10-05T17:00:34.724Z",
+      "first_queued_at": "2026-10-05T16:22:19.044Z"
     }
   ]
 }
