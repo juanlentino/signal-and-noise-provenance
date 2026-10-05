@@ -7,6 +7,13 @@
       "kind": "key-fingerprint",
       "queued_at": "2026-10-05T17:00:34.724Z",
       "first_queued_at": "2026-10-05T16:22:19.044Z"
+    },
+    {
+      "note_uid": "2026-10-05-1",
+      "version": 1,
+      "path": "countersignatures/2026-10-05-1",
+      "kind": "countersignature",
+      "queued_at": "2026-10-05T17:09:32.651Z"
     }
   ]
 }
