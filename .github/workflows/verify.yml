@@ -113,6 +113,7 @@ jobs:
       - run: npm run verify:key-pins
       - run: npm run verify:retractions
       - run: npm run verify:coverage
+      - run: npm run verify:countersignatures
       # weigh.mjs claims the same commit and the same policy give the same
       # bytes. Two runs and a cmp make that a guard instead of a sentence.
       - name: Weigh the key twice and compare

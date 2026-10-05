@@ -1,17 +1,46 @@
 #!/usr/bin/env node
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { canonicalize } from "./normalize/canonical-json.mjs";
 import { verifyRecord } from "./verify.mjs";
+import { authorKeyDivergences } from "./countersign-checks.mjs";
+import { bitcoinAttestation, stampedDigest, toHex } from "./verify/ots.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const history = JSON.parse(readFileSync(join(root, "keys/key-history.json"), "utf8"));
 const byId = new Map(history.keys.map((key) => [key.id, key]));
 if (!byId.has(history.trust_root) || !byId.has(history.current)) throw new Error("history root/current is not declared");
 
-for (const key of history.keys) {
+// An author key (role "author") is the author's own SSH key. It never
+// becomes current: the publisher key keeps signing at publish, and the author
+// key countersigns. Its fingerprint record is SSH-signed, so it is checked by
+// countersign-checks.mjs instead of verifyRecord's raw Ed25519 path.
+const publisher = byId.get(history.current);
+let authorKeys = 0;
+for (const key of history.keys.filter((k) => k.role === "author")) {
+  if (key.id === history.current || key.id === history.trust_root) throw new Error(`an author key cannot be current or the trust root: ${key.id}`);
+  const published = readFileSync(join(root, `keys/${key.id}.pub`), "utf8").trim();
+  if (published !== key.public_key_base64) throw new Error(`published key mismatch: ${key.id}`);
+  const anchorPath = key.introduction?.bitcoin_anchor;
+  if (anchorPath !== `keys/anchors/${key.id}.json`) throw new Error(`missing author-key fingerprint record: ${key.id}`);
+  const anchor = JSON.parse(readFileSync(join(root, anchorPath), "utf8"));
+  const problems = await authorKeyDivergences(key, anchor, publisher);
+  if (problems.length) throw new Error(`author key ${key.id}: ${problems.map(([k, d]) => `${k}: ${d}`).join("; ")}`);
+  const otsPath = join(root, anchorPath.replace(/\.json$/, ".ots"));
+  if (existsSync(otsPath)) {
+    const ots = new Uint8Array(readFileSync(otsPath));
+    if (toHex(stampedDigest(ots)) !== anchor.content_hash) throw new Error(`author-key anchor proof commits to another digest: ${key.id}`);
+    const btc = await bitcoinAttestation(ots, anchor.ots?.bitcoin_block ?? null);
+    if (anchor.ots?.status === "confirmed" && (!btc || btc.height !== anchor.ots.bitcoin_block)) throw new Error(`confirmed author-key anchor has no matching Bitcoin attestation: ${key.id}`);
+  } else if (anchor.ots?.status === "confirmed") {
+    throw new Error(`author-key anchor says confirmed but has no proof: ${key.id}`);
+  }
+  authorKeys += 1;
+}
+
+for (const key of history.keys.filter((k) => k.role !== "author")) {
   const published = readFileSync(join(root, `keys/${key.id}.pub`), "utf8").trim();
   if (published !== key.public_key_base64) throw new Error(`published key mismatch: ${key.id}`);
   const fingerprint = createHash("sha256").update(Buffer.from(published, "base64")).digest("hex");
@@ -45,4 +74,4 @@ for (const transition of history.transitions) {
   if (!ok) throw new Error(`invalid key transition: ${prior.id} -> ${next.id}`);
 }
 
-console.log(`${history.keys.length} key generation(s), ${history.transitions.length} signed transition(s); current ${history.current}`);
+console.log(`${history.keys.length - authorKeys} key generation(s), ${history.transitions.length} signed transition(s); current ${history.current}; ${authorKeys} author key(s)`);

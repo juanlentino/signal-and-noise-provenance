@@ -20,7 +20,9 @@
     "verify:rights-signals": "node verify-rights-signals.mjs",
     "verify:rights-evidence": "node verify-rights-evidence.mjs",
     "verify:retractions": "node verify-retractions.mjs",
-    "weigh": "node weigh.mjs"
+    "weigh": "node weigh.mjs",
+    "verify:countersignatures": "node verify-countersignatures.mjs",
+    "countersign": "node countersign.mjs"
   },
   "devDependencies": {
     "vitest": "^5.0.0"

@@ -72,6 +72,9 @@ export async function ledgerEvents(root) {
   // A root whose derivations fail is rejected, and its height sets no clock.
   const heights = genesis.record && !genesis.result.reason && !genesis.reason ? [genesis.result.height] : [];
   const events = [];
+  // Note and page records that pass every check under the key being weighed,
+  // by the path of the copy that passed: what a countersignature may attest.
+  const passing = [];
 
   /**
    * List a record that does not count; return its height when it does. An
@@ -111,7 +114,10 @@ export async function ledgerEvents(root) {
       if (!reason && broken) reason = "its commit chain runs through an earlier record that did not pass";
       if (reason) broken = true;
       const height = tally(path, record, reason, result.height);
-      if (height !== null) counted.push({ version, height });
+      if (height !== null) {
+        counted.push({ version, height });
+        passing.push({ path, content_hash: record.content_hash });
+      }
       previous = record;
     }
     events.push(...subjectEvents(uid, genesis.proven.has(uid) ? genesisHeight : null, counted));
@@ -159,6 +165,7 @@ export async function ledgerEvents(root) {
   return {
     key: { id: keyId, sha256_fingerprint: keys.get(keyId).sha256_fingerprint },
     events,
+    passing,
     excluded,
     highest: heights.reduce((a, b) => (b > a ? b : a), 0n),
     // Each with the height its retraction was anchored at, so a report at an

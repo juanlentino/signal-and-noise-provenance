@@ -337,3 +337,42 @@ its record is anchored at or before `--at`. A retraction is
 never an event of its own. Every retraction in the ledger today targets a
 rights-evidence record, which the example policy does not count, so no note is
 withdrawn.
+
+## What a countersignature attests, and what it does not
+
+```bash
+node verify-countersignatures.mjs
+```
+
+The Worker signs every note and page when it is published. The author also
+holds a key of their own, an Ed25519 SSH key listed in `keys/key-history.json`
+with role `author`, and uses it to countersign records in batches. A batch is
+`countersignatures/<date>-<n>.json`: a payload listing records by path and
+content hash under a fixed statement, the SSH signature over that payload in
+this ledger's namespace (`sn-provenance@juanlentino.com`, so it cannot be
+replayed as any other kind of SSH signature), and an OpenTimestamps proof the
+Worker's hourly sweep adds.
+
+The checker requires that the signature verifies under an active author key,
+that the content hash recomputes, that every listed record is a note or page
+record that passes the offline checks with the same content hash, that no
+record is attested twice, and that the proof, once present, commits to the
+batch and attests the block it names. A batch still awaiting its anchor is
+reported, not failed.
+
+The author key is bound three ways: its own fingerprint record, signed by it,
+names the publisher key's fingerprint; it sits in the key history with role
+`author` and can never be the current key; and it is to be pinned outside
+GitHub beside the publisher key (DNS and the site's key document).
+
+What a countersignature does not show:
+
+- When anything was written. The anchor dates the countersignature, not the
+  note, and adds no earlier witness than the Worker's.
+- Two independent parties. The publisher key and the author key are held for
+  one author; together they show the mechanism, not a second person.
+- A change in custody. The Worker still signs at publish (see "What the
+  signature attests" above). Moving that signature to an author-held key would
+  need an author-side signing step at publish, which is a separate decision.
+- Anything about the weight. `weigh.mjs` weighs the publisher key and does not
+  read countersignatures.

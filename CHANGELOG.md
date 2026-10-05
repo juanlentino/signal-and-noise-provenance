@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-10-05: the author countersigns with a key of their own
+
+The Worker signs every note and page at publish. `countersign.mjs` lets the
+author add a second signature with an Ed25519 SSH key the author holds: a batch
+under `countersignatures/` lists records by path and content hash under a fixed
+statement, and `ssh-keygen -Y sign` signs it in this ledger's namespace
+(`sn-provenance@juanlentino.com`). The script writes the bytes to sign and the
+command, then checks the returned signature before writing; the private key
+never reaches it. The Worker's sweep anchors each batch through `pending.json`.
+
+The author key enters `keys/key-history.json` with role `author`, beside the
+publisher key, which stays current. Its own signed fingerprint record names the
+publisher key's fingerprint, and `verify-key-history.mjs` refuses an author key
+that is current or the trust root. `verify-countersignatures.mjs` (a CI step)
+checks every batch offline: the signature, the content hash, every listed record
+passing the offline checks with the same hash, no record attested twice, and the
+proof once it lands. `sshsig.mjs` verifies OpenSSH signatures (ssh-ed25519 only).
+
+Pinned in `verify/countersign.test.mjs` with real `ssh-keygen` keys: a good
+signature, a changed message, another key, another namespace, an ECDSA key, each
+batch and author-key rule by name, and the whole flow on a copy of the ledger.
+Every rule was broken once and its test went red. No author key or batch exists
+yet; `weigh.mjs` is unchanged and does not read countersignatures.
+
 ## 2026-10-05: weigh the key
 
 `weigh.mjs` computes the key's weight under a policy the verifier states,
