@@ -12,6 +12,7 @@ import { join } from "node:path";
 import { canonicalize } from "../normalize/canonical-json.mjs";
 import { auditPath, leafHash, rootFromLeafHashes, verifyAuditPath } from "../normalize/merkle-v1.mjs";
 import { verifyRecord } from "../verify.mjs";
+import { bitcoinAttestations } from "../verify/ots.mjs";
 
 export const GENESIS = "genesis/2026-07-09";
 export const readJson = (root, path) => JSON.parse(readFileSync(join(root, path), "utf8"));
@@ -38,7 +39,10 @@ async function checkOrThrow(root, keys, path, record) {
   if (!r.hashOk || !r.sigOk || !r.otsHashOk) return { reason: `fails offline checks (hash=${r.hashOk}, signature=${r.sigOk}, otsDigest=${r.otsHashOk})` };
   if (record.ots?.status !== "confirmed") return { reason: `anchor is ${JSON.stringify(record.ots?.status ?? null)}, not confirmed` };
   if (!r.btc || r.btc.height !== record.ots.bitcoin_block) return { reason: "proof does not attest the Bitcoin block the record names" };
-  return { height: BigInt(r.btc.height) };
+  // A forked proof attests several blocks, and which one the record names
+  // sits outside the signed payload. The clock is the earliest the proof
+  // attests: the strongest "existed by" claim, and one no edit can move.
+  return { height: BigInt((await bitcoinAttestations(ots))[0].height) };
 }
 
 /**
@@ -69,8 +73,15 @@ export async function pickCopy(root, keys, copies) {
  * that breaks this cannot be built without the key, and a rule nobody can
  * exercise end to end is tested directly instead.
  */
+/** The root's note list, or [] when any entry is not a { note_uid, leaf_hash } pair. */
+function genesisNotes(record) {
+  const notes = record?.payload?.notes;
+  const sound = Array.isArray(notes) && notes.every((n) => n !== null && typeof n === "object" && typeof n.note_uid === "string" && typeof n.leaf_hash === "string");
+  return sound ? notes : [];
+}
+
 export function genesisRootHolds(record) {
-  const notes = Array.isArray(record?.payload?.notes) ? record.payload.notes : [];
+  const notes = genesisNotes(record);
   return record.payload.kind === "genesis" && notes.length > 0
     && rootFromLeafHashes(notes.map((note) => note.leaf_hash)) === record.payload.root
     && record.payload.root === record.content_hash;
@@ -84,7 +95,7 @@ export async function checkGenesis(root, keys) {
   // The leaves the root names stay the parents its notes' v1 records must
   // carry even when the root itself fails, as verify-records.mjs reads them;
   // a failed root only withholds the genesis events.
-  const notes = Array.isArray(record.payload?.notes) ? record.payload.notes : [];
+  const notes = genesisNotes(record);
   const chainLeaves = new Map(notes.map((note) => [note.note_uid, note.leaf_hash]));
   if (result.reason) return { ...none, record, result, chainLeaves };
   const hashes = notes.map((note) => note.leaf_hash);

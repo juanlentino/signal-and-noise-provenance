@@ -43,17 +43,21 @@ export function subjectEvents(uid, genesisHeight, counted) {
   return events;
 }
 
-/** Every record under these directories for one id, copies grouped by content_hash. */
+/**
+ * Every record under these directories for one id, grouped by version. The
+ * group is keyed by the filename, not by the record's own content_hash: that
+ * field is unchecked until a copy passes, so a damaged copy cannot split from
+ * the sound one and take its place in the sequence.
+ */
 function copiesOf(root, dirs, uid) {
-  const byHash = new Map();
+  const byVersion = new Map();
   for (const dir of dirs) {
     for (const version of recordVersions(join(root, dir), uid)) {
       const path = `${dir}/${uid}/v${version}.json`;
-      const record = readJson(root, path);
-      byHash.set(record.content_hash, [...(byHash.get(record.content_hash) ?? []), { path, record, version }]);
+      byVersion.set(version, [...(byVersion.get(version) ?? []), { path, record: readJson(root, path), version }]);
     }
   }
-  return [...byHash.values()].sort((a, b) => a[0].version - b[0].version || (a[0].path < b[0].path ? -1 : 1));
+  return [...byVersion.entries()].sort(([a], [b]) => a - b).map(([, copies]) => copies);
 }
 
 export async function ledgerEvents(root) {
@@ -96,6 +100,9 @@ export async function ledgerEvents(root) {
       let reason = result.reason;
       // The signed payload names its subject; a path cannot rename it, so a
       // record copied under another id is not a second history.
+      // A note or page payload carries no kind; a signed retraction, rights
+      // record or genesis root moved into notes/ or pages/ is not a work.
+      if (!reason && (record.payload.kind !== undefined || typeof record.payload.content !== "string")) reason = `a ${JSON.stringify(record.payload.kind ?? "malformed")} record is not a note or page`;
       if (!reason && record.payload.note_uid !== uid) reason = `payload names subject ${record.payload.note_uid}, filed under ${uid}`;
       if (!reason && version !== index + 1) reason = "record versions are not contiguous from v1";
       if (!reason && (record.payload.version !== version || (record.payload.parent ?? null) !== parent)) reason = "not on an unbroken commit chain";

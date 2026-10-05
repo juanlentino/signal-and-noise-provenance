@@ -274,8 +274,9 @@ is refused as well.
 A record contributes only if it passes the offline checks `verify-records.mjs`
 runs: the content hash recomputes, the signature holds under a key in the
 history, the `.ots` proof commits to that hash, and the anchor is confirmed at
-the block the record names. For notes and pages the signed payload must name
-the subject it is filed under, the versions must run contiguously from v1 and the commit chain must hold up to that record. A
+the block the record names. For notes and pages the signed payload must be a
+note or page (no `kind`; a retraction or rights record moved there is not a
+work) and must name the subject it is filed under, the versions must run contiguously from v1 and the commit chain must hold up to that record. A
 record that fails, or whose proof cannot be read, is listed under `excluded`
 with its reason, and later versions of the same subject go with it. A sound
 record signed under an earlier key in the history keeps its chain whole and is
@@ -287,8 +288,10 @@ anchor commits to, and the whole derivation set to reproduce it, as
 also pass the claim rules their own verifiers apply (`rights-evidence-checks.mjs`,
 `retraction-checks.mjs`).
 
-The clock is the confirmed Bitcoin block height: the block each record's
-`.ots` proof attests. Run offline, that is the block the proof names. Matching
+The clock is the confirmed Bitcoin block height: the earliest block each
+record's `.ots` proof attests. A forked proof attests more than one, and the
+block a record names sits outside its signed payload, so the earliest is the
+one no edit can move; the named block must still be one the proof attests. Run offline, that is the block the proof names. Matching
 it against the real chain's merkle root is the network step
 (`node verify.mjs <note_uid>`), which `weigh.mjs` never makes, so run that
 first if the heights matter to you. `published_at` is self-reported and the

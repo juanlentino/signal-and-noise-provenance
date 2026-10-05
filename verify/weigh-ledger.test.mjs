@@ -178,6 +178,31 @@ describe("weigh, over the ledger", () => {
     edit(root, "genesis/2026-07-09-leaves.json", (leaves) => leaves.pop());
     expect((await ledgerEvents(root)).highest).toBe(0n);
   });
+  it("a copy with a damaged content_hash does not take the sound copy's place", async () => {
+    const root = copy();
+    edit(root, "notes/01cea10c-9ad3-4f8b-9d74-d0e7e90dbd1d/v2.json", (r) => { r.content_hash = "00".repeat(32); });
+    expect(ids(await ledgerEvents(root))).toEqual(ids(real));
+  });
+  it("a genesis root with a malformed note entry is excluded, not thrown", async () => {
+    const root = copy();
+    edit(root, "genesis/2026-07-09-root.json", (r) => { r.payload.notes[0] = null; });
+    const ledger = await ledgerEvents(root);
+    expect(ledger.excluded[0]).toEqual(expect.objectContaining({ path: "genesis/2026-07-09-root.json" }));
+  });
+  it("the clock is the earliest block a forked proof attests, whatever the record names", async () => {
+    const root = copy();
+    const path = "notes/024d8307-1ab3-4fa3-9be5-6ae5634bf124/v1.json";
+    edit(root, path, (r) => { r.ots.bitcoin_block = 969317; });
+    expect(ids(await ledgerEvents(root))).toEqual(ids(real));
+  });
+  it("a signed retraction moved into pages/ is not a work", async () => {
+    const root = copy();
+    const [w] = real.withdrawn;
+    cpSync(join(root, "retractions", w.uid), join(root, "pages", w.uid), { recursive: true });
+    const ledger = await ledgerEvents(root);
+    expect(ids(ledger)).toEqual(ids(real));
+    expect(ledger.excluded[0].reason).toContain("is not a note or page");
+  });
   it("a bad signature contributes nothing", async () => {
     const root = copy();
     edit(root, targetPath, (r) => { r.signature = `${r.signature[1]}${r.signature[0]}${r.signature.slice(2)}`; });

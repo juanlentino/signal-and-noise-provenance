@@ -11,7 +11,7 @@ anchoring with this computation; custody stays open, and the key is still the
 Worker-held one.
 
 A record contributes only if it passes the offline checks `verify-records.mjs`
-runs, and the clock is the block its `.ots` proof attests, never
+runs, and the clock is the earliest block its `.ots` proof attests, never
 `published_at`. Offline that is the block the proof names; matching it to the
 chain is `verify.mjs`'s network step, which this tool does not make. Decay is exact: `retain ^ floor((at − h) / epoch_blocks)` in
 BigInt fractions, so the weight is the same reduced fraction in any language.
@@ -28,7 +28,9 @@ Pinned in `verify/weigh-compose.test.mjs` (the cap, the multiplier, the floor,
 the decay grid, every policy refusal) and `verify/weigh-ledger.test.mjs`
 (an --at too far past an event to compute exactly; copies of this repository with a bad signature, a pending anchor, an unknown
 key, a mutated `published_at`, a failed or missing middle version, a damaged
-copy of a record filed twice, a note's records copied under another id, a key
+copy of a record filed twice (its content_hash damaged too), a note's records
+copied under another id, a retraction moved into pages/, a forked proof's named
+block edited, a malformed genesis note entry, a key
 rotation, an incomplete genesis set, a rights-evidence record copied under a
 second id and a retraction its own rules reject; genesis heights and the
 genesis root rule; withdrawn subjects of every class, exclusions and omitted
