@@ -71,6 +71,11 @@ describe("the composition", () => {
       }
     }
   });
+  it("refuses an --at too far past an event to compute exactly", () => {
+    const p = loadPolicy(raw({ decay: { form: "epoch-retain", epoch_blocks: 1, retain: { work: "9/10" } } }));
+    expect(() => eventContribution({ class: "work", height: 0n }, p, 10001n)).toThrow(/too large to compute/);
+    expect(() => eventContribution({ class: "work", height: 0n }, p, 10000n)).not.toThrow();
+  });
   it("an event anchored after --at contributes nothing", () => {
     expect(show(eventContribution({ class: "work", height: 2000n }, loadPolicy(raw()), 1999n))).toBe("0");
   });

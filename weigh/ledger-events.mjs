@@ -122,10 +122,12 @@ export async function ledgerEvents(root) {
       let reason = result.reason;
       if (!reason) {
         const problems = await evidenceDivergences(record, { uid, version, host: SITE_HOST });
-        const month = `${record.payload.month}:${record.payload.family}`;
         if (problems.length) reason = `fails the rights-evidence rules (${problems.map(([k]) => k).join(", ")})`;
-        else if (months.has(month)) reason = `repeats ${month}, already filed under ${months.get(month)}`;
-        else months.set(month, uid);
+        else {
+          const month = `${record.payload.month}:${record.payload.family}`;
+          if (months.has(month)) reason = `repeats ${month}, already filed under ${months.get(month)}`;
+          else months.set(month, uid);
+        }
       }
       const height = tally(path, record, reason, result.height);
       if (height !== null) events.push({ class: "rights-evidence", uid, version, height });

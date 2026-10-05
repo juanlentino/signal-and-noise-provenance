@@ -9,6 +9,11 @@
 
 import { add, mul, pow, rat, sum, ZERO } from "./rational.mjs";
 
+// An exact fraction raised to n epochs has about n times the digits of its
+// parts. 10,000 epochs is about 800 years at the example's 4320-block epoch;
+// past it the run refuses rather than exhausting memory.
+export const MAX_EPOCHS = 10000n;
+
 /**
  * One persistence event's contribution at height `at`:
  * retain ^ floor((at - height) / epoch_blocks). An event anchored after `at`
@@ -17,7 +22,9 @@ import { add, mul, pow, rat, sum, ZERO } from "./rational.mjs";
 export function eventContribution(event, policy, at) {
   const retain = policy.retain.get(event.class);
   if (retain === undefined || event.height > at) return ZERO;
-  return pow(retain, (at - event.height) / policy.epochBlocks);
+  const epochs = (at - event.height) / policy.epochBlocks;
+  if (epochs > MAX_EPOCHS) throw new Error(`--at is ${epochs} epochs past an event; above ${MAX_EPOCHS} the exact fraction is too large to compute`);
+  return pow(retain, epochs);
 }
 
 /** P_j per persistence type the policy names. Takes no argument in V. */
