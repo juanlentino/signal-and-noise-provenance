@@ -279,8 +279,12 @@ up to that record. A record that fails is listed under `excluded` with its
 reason, and later versions of the same subject go with it. A record filed in
 two directories (the About page, see `misfiled-records.json`) counts once.
 
-The clock is the confirmed Bitcoin block height. `published_at` is
-self-reported and the code never reads it; changing it breaks the record's
+The clock is the confirmed Bitcoin block height: the block each record's
+`.ots` proof attests. Run offline, that is the block the proof names. Matching
+it against the real chain's merkle root is the network step
+(`node verify.mjs <note_uid>`), which `weigh.mjs` never makes, so run that
+first if the heights matter to you. `published_at` is self-reported and the
+code never reads it; changing it breaks the record's
 hash, so the record drops out instead of moving. The 21 genesis notes enter at
 block 957359, or at their own v1 anchor where that came first (two did, at
 957333 and 957350). `--at` is a block height. Without it the run uses the

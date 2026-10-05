@@ -10,8 +10,10 @@
 // and contributes nothing.
 //
 // The clock is the confirmed block height. published_at, commit times and the
-// wall clock are self-reported; the height is witnessed. Nothing below reads
-// published_at.
+// wall clock are self-reported; the height is the block the .ots proof
+// attests. Offline, that is the block the proof names: matching it to the real
+// chain's merkle root is the network step (`node verify.mjs <note_uid>`), which
+// this tool never makes. Nothing below reads published_at.
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -119,11 +121,15 @@ export async function ledgerEvents(root) {
   }
 
   const retracted = new Set();
+  const seen = new Set();
   for (const dir of ["rights-evidence", "retractions"]) {
     for (const uid of listDirs(root, dir)) {
       for (const version of recordVersions(join(root, dir), uid)) {
         const path = `${dir}/${uid}/v${version}.json`;
         const record = readJson(root, path);
+        // One signed record copied under a second id is still one record.
+        if (seen.has(record.content_hash)) continue;
+        seen.add(record.content_hash);
         const height = counted(path, record, await check(root, keys, path, record));
         if (height === null) continue;
         if (dir === "retractions") retracted.add(record.payload.note_uid);

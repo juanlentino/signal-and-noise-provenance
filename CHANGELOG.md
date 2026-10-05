@@ -11,8 +11,9 @@ anchoring with this computation; custody stays open, and the key is still the
 Worker-held one.
 
 A record contributes only if it passes the offline checks `verify-records.mjs`
-runs, and the clock is its confirmed Bitcoin block height, never
-`published_at`. Decay is exact: `retain ^ floor((at − h) / epoch_blocks)` in
+runs, and the clock is the block its `.ots` proof attests, never
+`published_at`. Offline that is the block the proof names; matching it to the
+chain is `verify.mjs`'s network step, which this tool does not make. Decay is exact: `retain ^ floor((at − h) / epoch_blocks)` in
 BigInt fractions, so the weight is the same reduced fraction in any language.
 The attestation term is computed in full and fed nothing, because no
 recognition attestation exists here. Under `policy/example.json` W therefore

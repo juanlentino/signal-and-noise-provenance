@@ -63,6 +63,13 @@ describe("weigh, over the ledger", () => {
   it("a record filed in two directories counts once", () => {
     expect(real.events.filter((e) => e.uid === "01cea10c-9ad3-4f8b-9d74-d0e7e90dbd1d" && e.version === 2)).toHaveLength(1);
   });
+  it("a rights-evidence record copied under a second id counts once", async () => {
+    const root = copy();
+    const [first] = real.events.filter((e) => e.class === "rights-evidence");
+    cpSync(join(root, "rights-evidence", first.uid), join(root, "rights-evidence", "00000000-0000-5000-8000-000000000000"), { recursive: true });
+    const heights = (ledger) => ledger.events.filter((e) => e.class === "rights-evidence").map((e) => `${e.height}`).sort();
+    expect(heights(await ledgerEvents(root))).toEqual(heights(real));
+  });
   it("a bad signature contributes nothing", async () => {
     const root = copy();
     edit(root, targetPath, (r) => { r.signature = `${r.signature[1]}${r.signature[0]}${r.signature.slice(2)}`; });
