@@ -27,8 +27,10 @@ Retractions name withdrawn subjects and never count as events.
 Pinned in `verify/weigh-compose.test.mjs` (the cap, the multiplier, the floor,
 the decay grid, every policy refusal) and `verify/weigh-ledger.test.mjs`
 (copies of this repository with a bad signature, a pending anchor, an unknown
-key, a mutated `published_at` and a failed middle version; genesis heights; no
-network; byte-identical output). Each rule was broken once and its test went
+key, a mutated `published_at`, a failed or missing middle version, a damaged
+copy of a record filed twice, a key rotation, an incomplete genesis set and a
+rights-evidence record copied under a second id; genesis heights; withdrawn
+subjects of every class; no network; byte-identical output). Each rule was broken once and its test went
 red. CI runs `weigh` twice and compares the bytes. Nothing under `notes/`,
 `pages/`, `keys/`, `genesis/`, `rights-signals/`, `rights-evidence/` or
 `retractions/` changed.
