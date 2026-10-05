@@ -739,10 +739,10 @@
       "kind": "page",
       "slug": "provenance",
       "title": "On Provenance",
-      "version": 5,
-      "content_hash": "344bef223f861b48f5a4d2c547d6851e042aee2618c6416a20483f65d6054dec",
-      "ots_status": "confirmed",
-      "bitcoin_block": 968784
+      "version": 6,
+      "content_hash": "b1f0b2da42cbf1611511867ff8286429002cded7b4268733717beea01e0e0f66",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "note_uid": "a51872f0-7b1c-4d25-89f4-3331791ca68c",
