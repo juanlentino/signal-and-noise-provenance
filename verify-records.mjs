@@ -78,6 +78,10 @@ for (const uid of pageUids) {
     if (!result.hashOk || !result.sigOk || !result.otsHashOk) {
       throw new Error(`offline record verification failed for page ${uid} v${version} (hash=${result.hashOk}, signature=${result.sigOk}, otsDigest=${result.otsHashOk})`);
     }
+    // A page payload carries no kind and names its own directory: a signed
+    // retraction, rights record or genesis root copied here is not a page.
+    if (record.payload.kind !== undefined || typeof record.payload.content !== "string") throw new Error(`page ${uid} v${version} is a ${JSON.stringify(record.payload.kind ?? "malformed")} record, not a page`);
+    if (record.payload.note_uid !== uid) throw new Error(`page record names subject ${record.payload.note_uid}, filed under ${uid}`);
     if (record.payload.version !== version) throw new Error(`record filename disagrees with its payload for page ${uid}: v${version}.json declares version ${record.payload.version}`);
     const parent = expectedParent({ version, genesisLeaf: genesisLeaf.get(uid) ?? null, previousContentHash: previous?.content_hash ?? null });
     if ((record.payload.parent ?? null) !== parent) {

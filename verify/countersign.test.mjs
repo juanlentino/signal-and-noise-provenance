@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -112,7 +112,7 @@ describe("the whole flow, on a copy of the ledger", () => {
   it("introduces a key, countersigns every passing record, and the verifiers agree", () => {
     const root = mkdtempSync(join(tmpdir(), "countersign-ledger-"));
     for (const d of ["keys", "genesis", "notes", "pages", "rights-evidence", "retractions", "normalize", "verify", "weigh"]) cpSync(join(repo, d), join(root, d), { recursive: true });
-    for (const f of ["countersign.mjs", "countersign-checks.mjs", "countersign-ledger.mjs", "sshsig.mjs", "verify-countersignatures.mjs", "verify-key-history.mjs", "verify.mjs", "fetch-site.mjs", "ledger-records.mjs", "retraction-checks.mjs", "rights-evidence-checks.mjs", "retired-subjects.json", "pending.json", "package.json", "anchor-grace.mjs", "verify-records.mjs", "index.json"]) cpSync(join(repo, f), join(root, f));
+    for (const f of ["countersign.mjs", "countersign-checks.mjs", "countersign-ledger.mjs", "sshsig.mjs", "verify-countersignatures.mjs", "verify-key-history.mjs", "verify.mjs", "fetch-site.mjs", "ledger-records.mjs", "retraction-checks.mjs", "rights-evidence-checks.mjs", "retired-subjects.json", "pending.json", "package.json", "anchor-grace.mjs", "verify-records.mjs", "index.json", "verify-genesis.mjs"]) cpSync(join(repo, f), join(root, f));
     const run = (...args) => execFileSync(process.execPath, args, { cwd: root }).toString();
     run("countersign.mjs", "key-prepare", "--id", "sn-author-ed25519-2026-10", "--ssh-pub", `${author.priv}.pub`);
     execFileSync("ssh-keygen", ["-Y", "sign", "-f", author.priv, "-n", SSHSIG_NAMESPACE, ".countersign/key-sn-author-ed25519-2026-10.msg"], { cwd: root, stdio: "ignore" });
@@ -167,6 +167,20 @@ describe("the whole flow, on a copy of the ledger", () => {
     rmSync(join(unindexed, "v2.json"));
     expect(() => run("verify-records.mjs")).toThrow(/not contiguous from v1/);
     rmSync(unindexed, { recursive: true });
+    // A signed record of another kind copied into pages/ is not a page.
+    const copied = join(root, "pages/0f000000-0000-4000-8000-000000000002");
+    mkdirSync(copied, { recursive: true });
+    cpSync(join(root, "genesis/2026-07-09-root.json"), join(copied, "v1.json"));
+    cpSync(join(root, "genesis/2026-07-09-root.ots"), join(copied, "v1.ots"));
+    expect(() => run("verify-records.mjs")).toThrow(/"genesis" record, not a page/);
+    rmSync(copied, { recursive: true });
+    // The genesis root must be signed by a publisher key too.
+    const rootPath = join(root, "genesis/2026-07-09-root.json");
+    const rootOriginal = readFileSync(rootPath, "utf8");
+    expect(run("verify-genesis.mjs")).toContain("root signed by");
+    writeFileSync(rootPath, JSON.stringify({ ...JSON.parse(rootOriginal), pubkey_id: "sn-author-ed25519-2026-10" }));
+    expect(() => run("verify-genesis.mjs")).toThrow(/only countersigns/);
+    writeFileSync(rootPath, rootOriginal);
     // A confirmed page must be anchored at the block it names.
     writeFileSync(page, JSON.stringify({ ...JSON.parse(pageOriginal), ots: { ...JSON.parse(pageOriginal).ots, bitcoin_block: JSON.parse(pageOriginal).ots.bitcoin_block + 1 } }));
     expect(() => run("verify-records.mjs")).toThrow(/confirmed OTS block mismatch for page/);

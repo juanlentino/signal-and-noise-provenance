@@ -76,9 +76,14 @@ export const pinTxt = (key) => `v=sn-prov1; id=${key.id}; alg=${key.algorithm}; 
  */
 export function authorPinDivergences(document, dnsAnswers, authors) {
   const ids = new Set(authors.map((k) => k.id));
+  // One entry per id: keyPinDivergences reads the first match, so a second
+  // entry under the same id would go unchecked.
+  const all = (document?.keys ?? []).map((k) => k.id);
+  const duplicated = [...new Set(all.filter((id, i) => all.indexOf(id) !== i))];
   const mirrored = (document?.keys ?? []).filter((k) => k.role === "author").map((k) => k.id);
   const expectedTxt = new Set(authors.map(pinTxt));
   return [
+    ...duplicated.map((id) => `the mirror lists key ${id} more than once`),
     ...mirrored.filter((id) => !ids.has(id)).map((id) => `the mirror carries author key ${id}, which the key history does not hold`),
     ...dnsAnswers.filter((a) => !expectedTxt.has(a)).map((a) => `DNS pins an author key the key history does not hold: ${a}`),
     ...authors.filter((k) => !dnsAnswers.includes(pinTxt(k))).map((k) => `DNS author-key pin missing for ${k.id}`),

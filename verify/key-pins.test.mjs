@@ -116,6 +116,11 @@ describe("an author key in the mirror", () => {
     ]);
     expect(authorPinDivergences(served(), [pinTxt(author)], [])).toHaveLength(1);
   });
+  it("fails when the mirror lists an author key twice, whatever the order", () => {
+    const twice = withAuthor();
+    const swapped = { ...twice.keys.at(-1), public_key_base64: "BBBB" };
+    expect(authorPinDivergences({ ...twice, keys: [...twice.keys, swapped] }, [pinTxt(author)], [author])).toContain(`the mirror lists key ${author.id} more than once`);
+  });
   it("fails when a pin is missing for a key the history holds", () => {
     expect(authorPinDivergences(withAuthor(), [], [author])).toEqual([`DNS author-key pin missing for ${author.id}`]);
     expect(authorPinDivergences(served(), [pinTxt(author)], [author])[0]).toMatch(/the mirror's .* keys\[id=/);
