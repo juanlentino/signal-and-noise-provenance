@@ -14,6 +14,13 @@
       "path": "countersignatures/2026-10-05-1",
       "kind": "countersignature",
       "queued_at": "2026-10-05T17:09:32.651Z"
+    },
+    {
+      "note_uid": "9d49e140-10a2-4c62-943e-e98270fe09d2",
+      "version": 6,
+      "path": "pages/9d49e140-10a2-4c62-943e-e98270fe09d2/v6",
+      "kind": "page",
+      "queued_at": "2026-10-05T17:30:16.398Z"
     }
   ]
 }
