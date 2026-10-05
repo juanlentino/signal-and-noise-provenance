@@ -255,3 +255,66 @@ both.
   rights-file reads were identified. A schema-2 record without `identity`
   fails; a schema-1 record is never asked for one.
 
+
+## Weigh the key
+
+```bash
+node weigh.mjs --policy policy/example.json
+node weigh.mjs --policy policy/example.json --at 967020 --explain
+```
+
+`weigh.mjs` computes equation (1) of *Provenance Without Institutions*
+(Lentino, SSRN 7456638, Section 6) for the current key in
+`keys/key-history.json`, from the records in this repository and a policy file
+the verifier supplies. It runs offline and writes nothing. There is no default
+policy: without `--policy` it refuses, and a policy with an unknown field, an
+unknown decay form or a D table that breaks one of the paper's four properties
+is refused as well.
+
+A record contributes only if it passes the offline checks `verify-records.mjs`
+runs: the content hash recomputes, the signature holds under a key in the
+history, the `.ots` proof commits to that hash, and the anchor is confirmed at
+the block the record names. For notes and pages the commit chain must also hold
+up to that record. A record that fails is listed under `excluded` with its
+reason, and later versions of the same subject go with it. A record filed in
+two directories (the About page, see `misfiled-records.json`) counts once.
+
+The clock is the confirmed Bitcoin block height. `published_at` is
+self-reported and the code never reads it; changing it breaks the record's
+hash, so the record drops out instead of moving. The 21 genesis notes enter at
+block 957359, or at their own v1 anchor where that came first (two did, at
+957333 and 957350). `--at` is a block height. Without it the run uses the
+highest confirmed height among the records the tool checks. `rights-signals/`
+is not read, because those records sign raw file bytes that `verifyRecord()`
+cannot check, so a newer rights-signal anchor does not move the default.
+
+Each persistence type the policy names gets its event count and its Pⱼ, an
+exact fraction with a rounded decimal beside it for reading. An event anchored
+at height h adds `retain ^ floor((at − h) / epoch_blocks)`. The attestation
+term lists every type the policy names, each at zero here, with the reason;
+C, D(C) and W follow. Two runs on the same commit with the same policy give
+the same bytes, and CI checks that.
+
+What a result does not show:
+
+- The weight belongs to a key. This key is held by the publishing Worker (see
+  "What the signature attests" above), and custody is as open here as it is in
+  the paper's Section 10.
+- One key and one author. Nothing about weighting several contributors to one
+  work is demonstrated.
+- No recognition attestation exists in this record. The ORCID identifier, the
+  WebFinger subject and the `did:web` document are the author's own statements
+  and are not counted, and the institutional track has nothing to read. W is
+  therefore the persistence sum: the paper's floor property, on a key with no
+  recognized attester.
+- `policy/example.json` is an illustration. The paper leaves all seven inputs
+  to the verifier; the example's 4320-block epoch and its retain fractions were
+  chosen for this repository and claim nothing beyond it.
+- A weight is not proof of identity or of human authorship. Zero means nothing
+  has accumulated in the record, and the tool sets no threshold.
+
+A note's original signed events still count after a retraction names it or
+after it leaves the posts corpus (`retired-subjects.json`), and the output
+lists such subjects by id. A retraction is never an event of its own. Every
+retraction in the ledger today targets a rights-evidence record, so no note is
+withdrawn.

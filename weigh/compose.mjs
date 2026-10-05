@@ -34,7 +34,8 @@ export function persistence(events, policy, at) {
 
 /** The attestation term: counts per type, the uniform cap, C and D(C). */
 export function attestationTerm(attestations, policy) {
-  const counts = new Map();
+  // Every type the policy names is reported, a zero included.
+  const counts = new Map([...policy.coefficients.keys()].map((type) => [type, 0n]));
   const categories = new Set();
   for (const { type, issuer } of attestations) {
     if (!policy.recognized.has(issuer)) continue;

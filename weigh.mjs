@@ -80,7 +80,7 @@ export function explain(r) {
   for (const x of r.record.excluded) lines.push(`Not counted: ${x.path}, ${x.reason}.`);
   if (r.record.withdrawn.length) lines.push(`Withdrawn subjects whose original signed events still count: ${r.record.withdrawn.join(", ")}.`);
   if (r.record.retired.length) lines.push(`Retired subjects whose original signed events still count: ${r.record.retired.join(", ")}.`);
-  lines.push("No threshold applies. What a weight is good for is the verifier's decision.");
+  lines.push("What a weight is good for is the verifier's decision.");
   return `${lines.join("\n")}\n`;
 }
 

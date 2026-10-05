@@ -25,8 +25,8 @@ const SUBJECT_DIRS = ["notes", "pages"];
 // rights-signals/ is not read: those records hash and sign the captured file's
 // raw bytes, not a canonical payload, so verifyRecord() cannot check them
 // (verify-rights-signals.mjs says why). A class this adapter cannot check is a
-// class it does not offer.
-const OTHER_DIRS = { "rights-evidence": "rights-evidence", retractions: "retraction" };
+// class it does not offer. Retractions are read only to name withdrawn
+// subjects: a retraction is never an event of its own (owner decision D3).
 const readJson = (root, path) => JSON.parse(readFileSync(join(root, path), "utf8"));
 const listDirs = (root, dir) => (existsSync(join(root, dir)) ? readdirSync(join(root, dir)).filter((name) => !name.includes(".")).sort() : []);
 
@@ -44,6 +44,7 @@ async function check(root, keys, path, record) {
 
 /** Genesis root and its leaves: each leaf proven by its audit path. */
 async function checkGenesis(root, keys) {
+  if (!existsSync(join(root, `${GENESIS}-root.json`))) return { record: null, result: { reason: null }, leaves: new Map() };
   const record = readJson(root, `${GENESIS}-root.json`);
   const result = await check(root, keys, `${GENESIS}-root.json`, record);
   const leaves = new Map();
@@ -76,7 +77,7 @@ export async function ledgerEvents(root) {
   const keys = new Map(history.keys.map((key) => [key.id, key]));
   const keyId = history.current;
   const genesis = await checkGenesis(root, keys);
-  const genesisOk = !genesis.result.reason && genesis.record.pubkey_id === keyId;
+  const genesisOk = genesis.record !== null && !genesis.result.reason && genesis.record.pubkey_id === keyId;
   const genesisHeight = genesisOk ? genesis.result.height : null;
   const excluded = genesis.result.reason ? [{ path: `${GENESIS}-root.json`, reason: genesis.result.reason }] : [];
   const heights = genesisOk ? [genesisHeight] : [];
@@ -100,12 +101,17 @@ export async function ledgerEvents(root) {
     }
     const checked = [];
     let previous = null;
+    let broken = false;
     for (const { path, record, version } of [...byHash.values()].sort((a, b) => a.version - b.version || a.path.localeCompare(b.path))) {
       const result = await check(root, keys, path, record);
       const parent = expectedParent({ version, genesisLeaf: genesis.leaves.get(uid) ?? null, previousContentHash: previous?.content_hash ?? null });
       if (!result.reason && (record.payload.version !== version || (record.payload.parent ?? null) !== parent)) result.reason = "not on an unbroken commit chain";
+      // verify-records.mjs halts at the first failure, so nothing after one
+      // has passed the check this adapter reuses.
+      if (!result.reason && broken) result.reason = "its commit chain runs through an earlier record that did not pass";
       const height = counted(path, record, result);
       if (height !== null) checked.push({ version, height });
+      else broken = true;
       previous = record;
     }
     const fromGenesis = genesisOk && genesis.leaves.has(uid) ? genesisHeight : null;
@@ -113,15 +119,15 @@ export async function ledgerEvents(root) {
   }
 
   const retracted = new Set();
-  for (const [dir, cls] of Object.entries(OTHER_DIRS)) {
+  for (const dir of ["rights-evidence", "retractions"]) {
     for (const uid of listDirs(root, dir)) {
       for (const version of recordVersions(join(root, dir), uid)) {
         const path = `${dir}/${uid}/v${version}.json`;
         const record = readJson(root, path);
         const height = counted(path, record, await check(root, keys, path, record));
         if (height === null) continue;
-        events.push({ class: cls, uid, version, height });
-        if (cls === "retraction") retracted.add(record.payload.note_uid);
+        if (dir === "retractions") retracted.add(record.payload.note_uid);
+        else events.push({ class: "rights-evidence", uid, version, height });
       }
     }
   }

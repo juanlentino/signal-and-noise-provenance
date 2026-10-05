@@ -21,7 +21,7 @@ import { cmp, ONE, parseRational } from "./rational.mjs";
 export const SCHEMA = "sn-weigh-policy-v1";
 export const DECAY_FORMS = ["epoch-retain"];
 // The record classes the ledger adapter can produce (weigh/ledger-events.mjs).
-export const RECORD_CLASSES = ["work", "revision", "rights-evidence", "retraction"];
+export const RECORD_CLASSES = ["work", "revision", "rights-evidence"];
 const FIELDS = ["schema", "description", "recognition_set", "partition", "attestation_coefficients", "delta", "gamma", "d_table", "decay"];
 const DECAY_FIELDS = ["form", "epoch_blocks", "retain"];
 
@@ -50,11 +50,11 @@ export const policyHash = (raw) => createHash("sha256").update(canonicalize(raw)
 function loadD(table, gamma) {
   if (!Array.isArray(table) || table.length === 0) fail("d-form", "d_table must be a non-empty list of rationals indexed by C, a function of the category count alone");
   const d = table.map((v, i) => parseRational(v, `d_table[${i}]`));
+  if (cmp(d[0], gamma) !== 0) fail("d-floor", "D(1) must equal gamma");
   d.forEach((v, i) => {
     if (cmp(v, gamma) < 0 || cmp(v, ONE) > 0) fail("d-bounded", `D(${i + 1}) is outside [gamma, 1]`);
     if (i > 0 && cmp(v, d[i - 1]) < 0) fail("d-non-decreasing", `D(${i + 1}) is below D(${i})`);
   });
-  if (cmp(d[0], gamma) !== 0) fail("d-floor", "D(1) must equal gamma");
   return d;
 }
 
