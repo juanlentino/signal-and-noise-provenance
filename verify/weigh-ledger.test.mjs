@@ -67,13 +67,34 @@ describe("weigh, over the ledger", () => {
     const root = copy();
     const [first] = real.events.filter((e) => e.class === "rights-evidence");
     cpSync(join(root, "rights-evidence", first.uid), join(root, "rights-evidence", "00000000-0000-5000-8000-000000000000"), { recursive: true });
-    const heights = (ledger) => ledger.events.filter((e) => e.class === "rights-evidence").map((e) => `${e.height}`).sort();
-    expect(heights(await ledgerEvents(root))).toEqual(heights(real));
+    const ledger = await ledgerEvents(root);
+    expect(ids(ledger)).toEqual(ids(real));
+    expect(ledger.excluded[0].reason).toContain("rights-evidence rules (id)");
   });
   it("lists retracted subjects of every class as withdrawn", () => {
     const targets = readdirSync(join(repo, "retractions")).map((uid) => JSON.parse(readFileSync(join(repo, "retractions", uid, "v1.json"), "utf8")).payload.note_uid).sort();
     expect(targets.length).toBeGreaterThan(0);
-    expect(real.withdrawn).toEqual(targets);
+    expect(real.withdrawn.map((w) => w.uid)).toEqual(targets);
+  });
+  it("a withdrawal appears only once its retraction is in the record at --at", () => {
+    const first = real.withdrawn.reduce((a, w) => (w.height < a ? w.height : a), real.highest);
+    expect(report(real, policy, first - 1n, "test").record.withdrawn).toEqual([]);
+    expect(report(real, policy, real.highest, "test").record.withdrawn).toHaveLength(real.withdrawn.length);
+  });
+  it("a retraction its own rules reject withdraws nothing", async () => {
+    const root = copy();
+    const [w] = real.withdrawn;
+    rmSync(join(root, "rights-evidence", w.uid), { recursive: true });
+    const ledger = await ledgerEvents(root);
+    expect(ledger.withdrawn.map((x) => x.uid)).not.toContain(w.uid);
+    expect(ledger.excluded).toContainEqual({ path: `retractions/${w.uid}/v1.json`, reason: expect.stringContaining("retracted_path") });
+  });
+  it("a note's records copied under another id are not a second history", async () => {
+    const root = copy();
+    cpSync(join(root, "notes", target.uid), join(root, "pages", "00000000-0000-4000-8000-000000000000"), { recursive: true });
+    const ledger = await ledgerEvents(root);
+    expect(ids(ledger)).toEqual(ids(real));
+    expect(ledger.excluded[0].reason).toContain("payload names subject");
   });
   it("a damaged copy of a record filed twice does not hide the sound copy", async () => {
     const root = copy();

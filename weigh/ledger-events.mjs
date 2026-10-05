@@ -22,9 +22,12 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { expectedParent, recordVersions } from "../ledger-records.mjs";
+import { retractionDivergences } from "../retraction-checks.mjs";
+import { evidenceDivergences } from "../rights-evidence-checks.mjs";
 import { check, checkGenesis, GENESIS, listDirs, pickCopy, readJson } from "./record-checks.mjs";
 
 const SUBJECT_DIRS = ["notes", "pages"];
+const SITE_HOST = "juanlentino.com"; // as verify-rights-evidence.mjs pins it
 
 /**
  * Events for one note or page from its counted records. Pure, and it reads
@@ -85,6 +88,9 @@ export async function ledgerEvents(root) {
       const { path, record, version, result } = await pickCopy(root, keys, copies);
       const parent = expectedParent({ version, genesisLeaf: genesis.chainLeaves.get(uid) ?? null, previousContentHash: previous?.content_hash ?? null });
       let reason = result.reason;
+      // The signed payload names its subject; a path cannot rename it, so a
+      // record copied under another id is not a second history.
+      if (!reason && record.payload.note_uid !== uid) reason = `payload names subject ${record.payload.note_uid}, filed under ${uid}`;
       if (!reason && version !== index + 1) reason = "record versions are not contiguous from v1";
       if (!reason && (record.payload.version !== version || (record.payload.parent ?? null) !== parent)) reason = "not on an unbroken commit chain";
       // verify-records.mjs halts at the first failure, so nothing after one
@@ -98,33 +104,51 @@ export async function ledgerEvents(root) {
     events.push(...subjectEvents(uid, genesis.proven.has(uid) ? genesisHeight : null, counted));
   }
 
-  const retracted = new Set();
-  const evidence = listDirs(root, "rights-evidence");
-  for (const dir of ["rights-evidence", "retractions"]) {
-    // One signed record copied under a second id is still one record.
-    const groups = new Map();
-    for (const uid of listDirs(root, dir)) {
-      for (const [copy] of copiesOf(root, [dir], uid)) groups.set(copy.record.content_hash, [...(groups.get(copy.record.content_hash) ?? []), { ...copy, uid }]);
-    }
-    for (const copies of groups.values()) {
-      const { path, record, version, uid, result } = await pickCopy(root, keys, copies);
-      if (dir === "retractions") {
-        if (!result.reason) { retracted.add(record.payload.note_uid); heights.push(result.height); } else excluded.push({ path, reason: result.reason });
-        continue;
+  // Rights evidence and retractions also pass their own claim rules, the ones
+  // verify-rights-evidence.mjs and verify-retractions.mjs apply, so a record
+  // their verifiers reject neither counts nor withdraws anything.
+  const months = new Map();
+  for (const uid of listDirs(root, "rights-evidence")) {
+    for (const version of recordVersions(join(root, "rights-evidence"), uid)) {
+      const path = `rights-evidence/${uid}/v${version}.json`;
+      const record = readJson(root, path);
+      const result = await check(root, keys, path, record);
+      let reason = result.reason;
+      if (!reason) {
+        const problems = await evidenceDivergences(record, { uid, version, host: SITE_HOST });
+        const month = `${record.payload.month}:${record.payload.family}`;
+        if (problems.length) reason = `fails the rights-evidence rules (${problems.map(([k]) => k).join(", ")})`;
+        else if (months.has(month)) reason = `repeats ${month}, already filed under ${months.get(month)}`;
+        else months.set(month, uid);
       }
-      const height = tally(path, record, result.reason, result.height);
+      const height = tally(path, record, reason, result.height);
       if (height !== null) events.push({ class: "rights-evidence", uid, version, height });
+    }
+  }
+  const withdrawals = new Map();
+  for (const uid of listDirs(root, "retractions")) {
+    for (const version of recordVersions(join(root, "retractions"), uid)) {
+      const path = `retractions/${uid}/v${version}.json`;
+      const record = readJson(root, path);
+      const result = await check(root, keys, path, record);
+      const problems = result.reason ? [] : retractionDivergences(record, { uid, file: `v${version}.json`, exists: (rel) => existsSync(join(root, rel)), publishedKeyIds: [...keys.keys()] });
+      const reason = result.reason ?? (problems.length ? `fails the retraction rules (${problems.map(([k]) => k).join(", ")})` : null);
+      if (reason) { excluded.push({ path, reason }); continue; }
+      heights.push(result.height);
+      const target = record.payload.note_uid;
+      if (!withdrawals.has(target) || result.height < withdrawals.get(target)) withdrawals.set(target, result.height);
     }
   }
 
   const retired = existsSync(join(root, "retired-subjects.json")) ? readJson(root, "retired-subjects.json").retired.map((r) => r.note_uid) : [];
-  const ids = [...subjects, ...evidence].sort();
   return {
     key: { id: keyId, sha256_fingerprint: keys.get(keyId).sha256_fingerprint },
     events,
     excluded,
     highest: heights.reduce((a, b) => (b > a ? b : a), 0n),
-    withdrawn: ids.filter((uid) => retracted.has(uid)),
+    // Each with the height its retraction was anchored at, so a report at an
+    // earlier --at does not show a withdrawal the record did not yet hold.
+    withdrawn: [...withdrawals].map(([uid, height]) => ({ uid, height })).sort((a, b) => (a.uid < b.uid ? -1 : 1)),
     retired: subjects.filter((uid) => retired.includes(uid)),
   };
 }

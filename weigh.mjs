@@ -57,7 +57,7 @@ export function report(ledger, policy, at, atSource) {
       anchored_after_at: ledger.events.filter((e) => e.height > at).length,
       classes_this_policy_does_not_name: unnamed,
       excluded: ledger.excluded,
-      withdrawn: ledger.withdrawn,
+      withdrawn: ledger.withdrawn.filter((w) => w.height <= at).map((w) => w.uid),
       retired: ledger.retired,
     },
   };
