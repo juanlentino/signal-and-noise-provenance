@@ -167,6 +167,13 @@ describe("the whole flow, on a copy of the ledger", () => {
     rmSync(join(unindexed, "v2.json"));
     expect(() => run("verify-records.mjs")).toThrow(/not contiguous from v1/);
     rmSync(unindexed, { recursive: true });
+    // A note converted to a page: v1 stays under notes/, v2 is filed under
+    // pages/, and the chain runs across both.
+    const converted = join(root, "pages/045d4cec-bf8c-4fdc-8b5f-30145d3ed639");
+    mkdirSync(converted, { recursive: true });
+    for (const f of ["v2.json", "v2.ots"]) cpSync(join(root, "notes/045d4cec-bf8c-4fdc-8b5f-30145d3ed639", f), join(converted, f));
+    expect(run("verify-records.mjs")).toMatch(/page records across \d+ pages pass/);
+    rmSync(converted, { recursive: true });
     // A signed record of another kind copied into pages/ is not a page.
     const copied = join(root, "pages/0f000000-0000-4000-8000-000000000002");
     mkdirSync(copied, { recursive: true });

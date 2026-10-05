@@ -28,7 +28,9 @@ const KEY_ID = /^sn-author-ed25519-\d{4}-\d{2}$/;
 const json = (v) => `${JSON.stringify(v, null, 2)}\n`;
 const fail = (message) => { console.error(message); process.exit(1); };
 const arg = (name) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined; };
-const signCommand = (pub, msg) => `ssh-keygen -Y sign -f ${pub} -n ${SSHSIG_NAMESPACE} ${msg}`;
+// Printed for pasting into a shell, so a path with a space or a quote stays one argument.
+const sh = (v) => (/^[\w@%+=:,./~-]+$/.test(v) ? v : `'${v.replaceAll("'", "'\\''")}'`);
+const signCommand = (pub, msg) => `ssh-keygen -Y sign -f ${sh(pub)} -n ${SSHSIG_NAMESPACE} ${sh(msg)}`;
 
 function writePending(entry) {
   const path = join(root, "pending.json");
@@ -120,7 +122,7 @@ async function prepare() {
   const loaded = (() => { try { return execFileSync("ssh-add", ["-L"], { encoding: "utf8" }).includes(keys[0].ssh_public_key.split(/\s+/)[1]); } catch { return false; } })();
   // --apple-use-keychain is Apple's extension to ssh-add; elsewhere it fails.
   const keychain = process.platform === "darwin" ? "--apple-use-keychain " : "";
-  const load = loaded ? "" : `  ssh-add ${keychain}${pub.replace(/\.pub$/, "")}\n`;
+  const load = loaded ? "" : `  ssh-add ${keychain}${sh(pub.replace(/\.pub$/, ""))}\n`;
   console.log(`Batch ${id}: ${records.length} record(s). Sign it, then run finish:\n\n${load}  ${signCommand(pub, msg)}\n  node countersign.mjs finish ${id}`);
 }
 

@@ -66,11 +66,13 @@ const pagesRoot = join(root, "pages");
 const pageUids = existsSync(pagesRoot) ? readdirSync(pagesRoot, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name).sort() : [];
 let pagesChecked = 0;
 for (const uid of pageUids) {
-  const versions = recordVersions(pagesRoot, uid);
+  // A note converted to a page keeps its history: earlier versions stay under
+  // notes/, so the chain runs across both directories, the page copy first.
+  const versions = [...new Set([...recordVersions(notesRoot, uid), ...recordVersions(pagesRoot, uid)])].sort((a, b) => a - b);
   if (!contiguousFromV1(versions)) throw new Error(`page record versions are not contiguous from v1 for ${uid}: ${versions.map((v) => `v${v}`).join(",")}`);
   let previous = null;
   for (const version of versions) {
-    const base = join(pagesRoot, uid, `v${version}`);
+    const base = existsSync(join(pagesRoot, uid, `v${version}.json`)) ? join(pagesRoot, uid, `v${version}`) : join(notesRoot, uid, `v${version}`);
     const record = JSON.parse(readFileSync(`${base}.json`, "utf8"));
     assertPublisherKey(root, record.pubkey_id, `page ${uid} v${version}`);
     const pubB64 = readFileSync(join(root, "keys", `${record.pubkey_id}.pub`), "utf8");
