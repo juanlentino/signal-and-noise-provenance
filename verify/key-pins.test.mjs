@@ -94,3 +94,15 @@ describe("the committed mirror snapshot", () => {
     expect(keyPinDivergences(snapshot, current)).toEqual([]);
   });
 });
+
+describe("an author key in the mirror", () => {
+  const author = { id: "sn-author-ed25519-2026-10", algorithm: "Ed25519", role: "author", public_key_base64: "AAAA", sha256_fingerprint: "ff", status: "active", introduced_at: "2026-10-05" };
+  const withAuthor = (over = {}) => ({ ...served(), keys: [...served().keys, { id: author.id, algorithm: "Ed25519", role: "author", public_key_base64: "AAAA", sha256_fingerprint: "ff", status: "active", introduced_at: "2026-10-05", valid_from: "2026-10-05", valid_until: null, ...over }] });
+  it("passes when mirrored with its role", () => {
+    expect(keyPinDivergences(withAuthor(), author)).toEqual([]);
+  });
+  it("fails when the mirror drops the role or the key", () => {
+    expect(keyPinDivergences(withAuthor({ role: undefined }), author).map(([f]) => f)).toEqual(["role"]);
+    expect(keyPinDivergences(served(), author).map(([f]) => f)).toEqual([`keys[id=${author.id}]`]);
+  });
+});

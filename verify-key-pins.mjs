@@ -37,4 +37,19 @@ if (divergences.length) {
   throw new Error(`HTTPS key mirror does not match key history — ${detail}. Document had keys [${Object.keys(document ?? {}).join(",")}], ${raw.length} bytes.`);
 }
 
-console.log(`DNS and HTTPS key pins agree on ${current.id} (${current.sha256_fingerprint})`);
+// Every active author key is pinned the same way, under its own DNS name and
+// as a role:"author" entry in the same mirror document.
+const pinTxt = (key) => `v=sn-prov1; id=${key.id}; alg=${key.algorithm}; key=${key.public_key_base64}; sha256=${key.sha256_fingerprint}`;
+const authors = history.keys.filter((key) => key.role === "author" && key.status === "active");
+if (authors.length) {
+  const answers = (await resolveTxt("_provenance-author.juanlentino.com")).map((chunks) => chunks.join(""));
+  for (const key of authors) {
+    if (!answers.includes(pinTxt(key))) throw new Error(`DNS author-key pin missing for ${key.id}: ${JSON.stringify(answers)}`);
+    const authorDivergences = keyPinDivergences(document, key);
+    if (authorDivergences.length) {
+      throw new Error(`HTTPS key mirror does not carry author key ${key.id}: ${authorDivergences.map(([f, a, e]) => `${f}: got ${JSON.stringify(a)}, expected ${JSON.stringify(e)}`).join("; ")}`);
+    }
+  }
+}
+
+console.log(`DNS and HTTPS key pins agree on ${current.id} (${current.sha256_fingerprint})${authors.length ? ` and ${authors.length} author key(s)` : ""}`);

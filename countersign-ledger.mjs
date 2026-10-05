@@ -4,6 +4,7 @@
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { pendingVerdict } from "./anchor-grace.mjs";
 import { ledgerEvents } from "./weigh/ledger-events.mjs";
 
 export const BATCH_DIR = "countersignatures";
@@ -14,9 +15,15 @@ export function readHistory(root) {
   return readJson(root, "keys/key-history.json");
 }
 
-/** Author keys by id, active ones only. */
-export function authorKeys(history) {
-  return new Map(history.keys.filter((k) => k.role === "author" && k.status === "active").map((k) => [k.id, k]));
+/**
+ * Author keys by id. Verification reads every author key that is not
+ * revoked, so a batch signed before a routine rotation keeps verifying;
+ * `prepare` signs only with an active one.
+ */
+export function authorKeys(history, { activeOnly = false } = {}) {
+  return new Map(history.keys
+    .filter((k) => k.role === "author" && k.status !== "revoked" && (!activeOnly || k.status === "active"))
+    .map((k) => [k.id, k]));
 }
 
 /** Batch ids on disk, sorted. */
@@ -29,20 +36,27 @@ export const readBatch = (root, id) => readJson(root, `${BATCH_DIR}/${id}.json`)
 
 /**
  * The records a batch may attest: note and page records that pass every
- * offline check under the publisher key. A record filed byte-identically in
- * two directories (the About page) answers under either path.
+ * offline check under a publisher key, by the path of the copy that passed.
+ * Only that path answers: a file elsewhere carrying a copied content_hash is
+ * not a record that passed.
  */
 export async function ledgerLookup(root) {
   const { passing } = await ledgerEvents(root);
   const byPath = new Map(passing.map((r) => [r.path, r.content_hash]));
-  const hashes = new Set(passing.map((r) => r.content_hash));
-  const lookup = (path) => {
-    if (byPath.has(path)) return { content_hash: byPath.get(path) };
-    if (existsSync(join(root, path))) {
-      const hash = readJson(root, path).content_hash;
-      if (hashes.has(hash)) return { content_hash: hash };
-    }
-    return { reason: "not a ledger record that passes the offline checks" };
-  };
+  const lookup = (path) => (byPath.has(path) ? { content_hash: byPath.get(path) } : { reason: "not a ledger record that passes the offline checks" });
   return { passing, lookup };
+}
+
+/**
+ * A record that is not confirmed must be waiting in pending.json, and not for
+ * longer than the ledger's grace window (anchor-grace.mjs). The status field
+ * sits outside the signature, so this is what keeps a deleted proof or a
+ * stalled sweep from passing as "pending" forever.
+ */
+export function pendingProblem(root, record, path) {
+  if (record.ots?.status === "confirmed") return null;
+  const queued = readJson(root, "pending.json").entries.find((e) => e.path === path);
+  if (!queued) return "not confirmed and not queued for anchoring in pending.json";
+  const verdict = pendingVerdict({ ots_status: record.ots?.status, published_at: queued.queued_at });
+  return verdict.ok ? null : verdict.reason;
 }

@@ -89,7 +89,7 @@ async function keyFinish() {
 }
 
 async function prepare() {
-  const keys = [...authorKeys(readHistory(root)).values()];
+  const keys = [...authorKeys(readHistory(root), { activeOnly: true }).values()];
   if (keys.length !== 1) fail(`expected exactly one active author key, found ${keys.length}`);
   const attested = new Set(batchIds(root).flatMap((b) => readBatch(root, b).payload.records.map((r) => r.content_hash)));
   const { passing } = await ledgerLookup(root);

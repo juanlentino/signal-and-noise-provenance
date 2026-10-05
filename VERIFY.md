@@ -357,13 +357,18 @@ The checker requires that the signature verifies under an active author key,
 that the content hash recomputes, that every listed record is a note or page
 record that passes the offline checks with the same content hash, that no
 record is attested twice, and that the proof, once present, commits to the
-batch and attests the block it names. A batch still awaiting its anchor is
-reported, not failed.
+batch and attests the block it names. A batch still awaiting its anchor must be
+queued in `pending.json` and inside the ledger's grace window
+(`anchor-grace.mjs`); past it, or unqueued, the batch fails.
 
 The author key is bound three ways: its own fingerprint record, signed by it,
 names the publisher key's fingerprint; it sits in the key history with role
-`author` and can never be the current key; and it is to be pinned outside
-GitHub beside the publisher key (DNS and the site's key document).
+`author`, distinct from every publisher key, and can never be current, a trust
+root or part of a publisher transition; and `verify-key-pins.mjs` requires it
+pinned outside GitHub, as a TXT record at `_provenance-author.juanlentino.com`
+and a `role: "author"` entry in the site's key document. It only countersigns:
+every verifier refuses a note, page, retraction or rights record it signed, and
+any record signed by a key the history does not declare.
 
 What a countersignature does not show:
 

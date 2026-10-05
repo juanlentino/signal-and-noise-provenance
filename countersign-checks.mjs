@@ -70,10 +70,15 @@ export async function countersignatureDivergences(record, { id, authorKeys, look
 /**
  * Everything wrong with an author key's history entry and its self-signed
  * fingerprint record. The anchor also names the publisher key's fingerprint,
- * so the author key's signature binds the two.
+ * so the author key's signature binds the two. `publishers` are every
+ * publisher key in the history: an author key equal to any of them would put
+ * both signatures in one hand.
  */
-export async function authorKeyDivergences(key, anchor, publisher) {
+export async function authorKeyDivergences(key, anchor, publisher, publishers = [publisher]) {
   const out = [];
+  if (publishers.some((p) => p.public_key_base64 === key.public_key_base64 || p.sha256_fingerprint === key.sha256_fingerprint)) {
+    out.push(["distinct", "the author key is a publisher key"]);
+  }
   const raw = b64(key.public_key_base64);
   const fingerprint = createHash("sha256").update(raw).digest("hex");
   if (key.role !== "author") out.push(["role", "an author key carries role \"author\""]);

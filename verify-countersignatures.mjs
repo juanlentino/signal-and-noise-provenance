@@ -14,7 +14,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { countersignatureDivergences } from "./countersign-checks.mjs";
-import { authorKeys, batchIds, BATCH_DIR, ledgerLookup, readBatch, readHistory } from "./countersign-ledger.mjs";
+import { authorKeys, batchIds, BATCH_DIR, ledgerLookup, pendingProblem, readBatch, readHistory } from "./countersign-ledger.mjs";
 import { bitcoinAttestation, stampedDigest, toHex } from "./verify/ots.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -37,6 +37,8 @@ for (const id of batchIds(root)) {
   } else if (record.ots?.status === "confirmed") {
     throw new Error(`countersignature ${id}: says confirmed but has no proof`);
   }
+  const waiting = pendingProblem(root, record, `${BATCH_DIR}/${id}`);
+  if (waiting) throw new Error(`countersignature ${id}: ${waiting}`);
   if (record.ots?.status !== "confirmed") pending += 1;
   for (const r of record.payload.records) {
     if (seen.has(r.content_hash)) throw new Error(`countersignature ${id}: ${r.path} was already attested in ${seen.get(r.content_hash)}`);

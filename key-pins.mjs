@@ -39,6 +39,9 @@ export function keyPinDivergences(document, current) {
       ["algorithm", mirrored.algorithm, current.algorithm],
       ["public_key_base64", mirrored.public_key_base64, current.public_key_base64],
       ["sha256_fingerprint", mirrored.sha256_fingerprint, current.sha256_fingerprint],
+      // An author key is mirrored with its role, so the document cannot pass
+      // it off as a publisher key or the other way round.
+      ...(current.role === "author" ? [["role", mirrored.role, "author"]] : []),
       ["status", mirrored.status, current.status],
       ["introduced_at", mirrored.introduced_at, current.introduced_at],
       // The window v2 exists to carry. Checking the version string alone would

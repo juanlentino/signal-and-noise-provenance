@@ -96,6 +96,10 @@ describe("the author key", () => {
   it("accepts a self-signed fingerprint record that names the publisher key", async () => {
     expect(await rulesFor(keyFor(author), anchorFor(author))).toEqual([]);
   });
+  it("refuses an author key that is the publisher key", async () => {
+    const same = { ...keyFor(author), public_key_base64: publisher.public_key_base64, sha256_fingerprint: publisher.sha256_fingerprint };
+    expect(await rulesFor(same, anchorFor(author))).toContain("distinct");
+  });
   it("refuses another signer, a missing binding, a wrong role or fingerprint", async () => {
     expect(await rulesFor(keyFor(author), anchorFor(author, other))).toEqual(["anchor"]);
     expect(await rulesFor(keyFor(author), anchorFor(author, author, (p) => ({ ...p, attests_publisher: { pubkey_id: "x", sha256_fingerprint: "y" } })))).toEqual(["binding"]);
@@ -108,7 +112,7 @@ describe("the whole flow, on a copy of the ledger", () => {
   it("introduces a key, countersigns every passing record, and the verifiers agree", () => {
     const root = mkdtempSync(join(tmpdir(), "countersign-ledger-"));
     for (const d of ["keys", "genesis", "notes", "pages", "rights-evidence", "retractions", "normalize", "verify", "weigh"]) cpSync(join(repo, d), join(root, d), { recursive: true });
-    for (const f of ["countersign.mjs", "countersign-checks.mjs", "countersign-ledger.mjs", "sshsig.mjs", "verify-countersignatures.mjs", "verify-key-history.mjs", "verify.mjs", "fetch-site.mjs", "ledger-records.mjs", "retraction-checks.mjs", "rights-evidence-checks.mjs", "retired-subjects.json", "pending.json", "package.json"]) cpSync(join(repo, f), join(root, f));
+    for (const f of ["countersign.mjs", "countersign-checks.mjs", "countersign-ledger.mjs", "sshsig.mjs", "verify-countersignatures.mjs", "verify-key-history.mjs", "verify.mjs", "fetch-site.mjs", "ledger-records.mjs", "retraction-checks.mjs", "rights-evidence-checks.mjs", "retired-subjects.json", "pending.json", "package.json", "anchor-grace.mjs"]) cpSync(join(repo, f), join(root, f));
     const run = (...args) => execFileSync(process.execPath, args, { cwd: root }).toString();
     run("countersign.mjs", "key-prepare", "--id", "sn-author-ed25519-2026-10", "--ssh-pub", `${author.priv}.pub`);
     execFileSync("ssh-keygen", ["-Y", "sign", "-f", author.priv, "-n", SSHSIG_NAMESPACE, ".countersign/key-sn-author-ed25519-2026-10.msg"], { cwd: root, stdio: "ignore" });
@@ -141,6 +145,30 @@ describe("the whole flow, on a copy of the ledger", () => {
     expect(run("-e", 'import("./weigh/ledger-events.mjs").then(async (m) => console.log(JSON.stringify((await m.ledgerEvents(".")).excluded)))')).toContain("which only countersigns");
     expect(() => run("-e", 'import("./ledger-records.mjs").then((m) => m.assertPublisherKey(".", "sn-author-ed25519-2026-10", "a note"))')).toThrow(/only countersigns/);
     writeFileSync(note, original);
+    // A file planted elsewhere with a copied content_hash is not a passing record.
+    const planted = join(root, "notes/0f000000-0000-4000-8000-000000000000");
+    cpSync(join(root, "notes/024d8307-1ab3-4fa3-9be5-6ae5634bf124"), planted, { recursive: true });
+    expect(run("-e", 'import("./countersign-ledger.mjs").then(async (m) => console.log((await m.ledgerLookup(".")).lookup("notes/0f000000-0000-4000-8000-000000000000/v1.json").reason))')).toContain("not a ledger record");
+    rmSync(planted, { recursive: true });
+    // A record signed by a key the history does not declare is refused.
+    expect(() => run("-e", 'import("./ledger-records.mjs").then((m) => m.assertPublisherKey(".", "sn-ed25519-alias", "a note"))')).toThrow(/absent from the key history/);
+    // The author key takes no part in a publisher transition.
+    writeFileSync(historyPath, JSON.stringify({ ...history, transitions: [{ signed_by: "sn-author-ed25519-2026-10", introduces: "sn-ed25519-2026-07", statement: {}, signature: "" }] }));
+    expect(() => run("verify-key-history.mjs")).toThrow(/takes no part in publisher transitions/);
+    // A retired author key keeps its batches; it signs no new ones.
+    writeFileSync(historyPath, JSON.stringify({ ...history, keys: history.keys.map((k) => (k.role === "author" ? { ...k, status: "retired" } : k)) }));
+    expect(run("verify-countersignatures.mjs")).toContain("1 countersignature batch(es) hold");
+    expect(() => run("countersign.mjs", "prepare")).toThrow();
+    writeFileSync(historyPath, JSON.stringify(history));
+    // Pending is bounded: past the grace window, or not queued at all, it fails.
+    const pendingPath = join(root, "pending.json");
+    const queue = JSON.parse(readFileSync(pendingPath, "utf8"));
+    const stale = new Date(Date.now() - 30 * 3600 * 1000).toISOString();
+    writeFileSync(pendingPath, JSON.stringify({ entries: queue.entries.map((e) => (e.kind === "countersignature" ? { ...e, queued_at: stale } : e)) }));
+    expect(() => run("verify-countersignatures.mjs")).toThrow(/grace window/);
+    writeFileSync(pendingPath, JSON.stringify({ entries: queue.entries.filter((e) => e.kind !== "countersignature") }));
+    expect(() => run("verify-countersignatures.mjs")).toThrow(/not queued/);
+    writeFileSync(pendingPath, JSON.stringify(queue));
     // Edit one listed hash after signing: the verifier refuses the batch.
     const path = join(root, "countersignatures", `${id}.json`);
     const record = JSON.parse(readFileSync(path, "utf8"));

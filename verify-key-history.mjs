@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { canonicalize } from "./normalize/canonical-json.mjs";
 import { verifyRecord } from "./verify.mjs";
 import { authorKeyDivergences } from "./countersign-checks.mjs";
+import { pendingProblem } from "./countersign-ledger.mjs";
 import { bitcoinAttestation, stampedDigest, toHex } from "./verify/ots.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -17,7 +18,7 @@ if (!byId.has(history.trust_root) || !byId.has(history.current)) throw new Error
 // becomes current: the publisher key keeps signing at publish, and the author
 // key countersigns. Its fingerprint record is SSH-signed, so it is checked by
 // countersign-checks.mjs instead of verifyRecord's raw Ed25519 path.
-const publisher = byId.get(history.current);
+const publishers = history.keys.filter((k) => k.role !== "author");
 let authorKeys = 0;
 for (const key of history.keys.filter((k) => k.role === "author")) {
   if (key.id === history.current || key.id === history.trust_root) throw new Error(`an author key cannot be current or the trust root: ${key.id}`);
@@ -26,7 +27,11 @@ for (const key of history.keys.filter((k) => k.role === "author")) {
   const anchorPath = key.introduction?.bitcoin_anchor;
   if (anchorPath !== `keys/anchors/${key.id}.json`) throw new Error(`missing author-key fingerprint record: ${key.id}`);
   const anchor = JSON.parse(readFileSync(join(root, anchorPath), "utf8"));
-  const problems = await authorKeyDivergences(key, anchor, publisher);
+  // The publisher an anchor names when it was signed, not whichever key is
+  // current now: a later publisher rotation leaves it true.
+  const publisher = publishers.find((k) => k.id === anchor.payload?.attests_publisher?.pubkey_id);
+  if (!publisher) throw new Error(`author key ${key.id}: its fingerprint record names no publisher key in the history`);
+  const problems = await authorKeyDivergences(key, anchor, publisher, publishers);
   if (problems.length) throw new Error(`author key ${key.id}: ${problems.map(([k, d]) => `${k}: ${d}`).join("; ")}`);
   const otsPath = join(root, anchorPath.replace(/\.json$/, ".ots"));
   if (existsSync(otsPath)) {
@@ -37,6 +42,8 @@ for (const key of history.keys.filter((k) => k.role === "author")) {
   } else if (anchor.ots?.status === "confirmed") {
     throw new Error(`author-key anchor says confirmed but has no proof: ${key.id}`);
   }
+  const waiting = pendingProblem(root, anchor, anchorPath.replace(/\.json$/, ""));
+  if (waiting) throw new Error(`author-key anchor ${key.id}: ${waiting}`);
   authorKeys += 1;
 }
 
@@ -68,6 +75,7 @@ for (const transition of history.transitions) {
   const prior = byId.get(transition.signed_by);
   const next = byId.get(transition.introduces);
   if (!prior || !next) throw new Error("transition references an unknown key");
+  if (prior.role === "author" || next.role === "author") throw new Error(`an author key takes no part in publisher transitions: ${prior.id} -> ${next.id}`);
   const message = new TextEncoder().encode(canonicalize(transition.statement));
   const publicKey = await crypto.subtle.importKey("raw", Buffer.from(prior.public_key_base64, "base64"), { name: "Ed25519" }, false, ["verify"]);
   const ok = await crypto.subtle.verify("Ed25519", publicKey, Buffer.from(transition.signature, "base64"), message);

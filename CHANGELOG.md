@@ -19,7 +19,13 @@ passing the offline checks with the same hash, no record attested twice, and the
 proof once it lands. `sshsig.mjs` verifies OpenSSH signatures (ssh-ed25519 only).
 The author key only countersigns: every verifier that resolves a signing key
 (`verify.mjs`, `verify-records.mjs`, the rights and retraction checks, and
-`weigh.mjs`) now refuses a publisher record signed by it.
+`weigh.mjs`) refuses a publisher record signed by it or by any key the history
+does not declare. It must differ from every publisher key, takes no part in
+publisher transitions, and is pinned like the publisher key (DNS
+`_provenance-author` and the site's key document). Pending batches are bounded
+by the grace window. The release tarball now carries every module its verifiers
+import, which `verify/release-tarball.test.mjs` checks; it caught two that
+earlier releases already lacked (`stale-edge.mjs`, `index-parity.mjs`).
 
 Pinned in `verify/countersign.test.mjs` with real `ssh-keygen` keys: a good
 signature, a changed message, another key, another namespace, an ECDSA key, each

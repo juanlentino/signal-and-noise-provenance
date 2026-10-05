@@ -107,5 +107,8 @@ export function expectedParent({ version, genesisLeaf = null, previousContentHas
 export function assertPublisherKey(root, pubkeyId, what) {
   const history = JSON.parse(readFileSync(join(root, "keys", "key-history.json"), "utf8"));
   const key = history.keys.find((k) => k.id === pubkeyId);
-  if (key?.role === "author") throw new Error(`${what} is signed by the author key ${pubkeyId}, which only countersigns`);
+  // A .pub file alone declares nothing: an undeclared id (an alias of the
+  // author key, say) is refused like the author key itself.
+  if (!key) throw new Error(`${what} is signed by ${pubkeyId}, a key absent from the key history`);
+  if (key.role === "author") throw new Error(`${what} is signed by the author key ${pubkeyId}, which only countersigns`);
 }
