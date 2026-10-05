@@ -364,7 +364,10 @@ queued in `pending.json` and inside the ledger's grace window
 The author key is bound three ways: its own fingerprint record, signed by it,
 names the publisher key's fingerprint; it sits in the key history with role
 `author`, distinct from every publisher key, and can never be current, a trust
-root or part of a publisher transition; and `verify-key-pins.mjs` requires it
+root or part of a publisher transition. Only one author key is supported, and it
+must be active: every key whose signatures count is pinned, and retiring or
+rotating an author key needs pinned retired keys with closed validity windows,
+which is not built; and `verify-key-pins.mjs` requires it
 pinned outside GitHub, as a TXT record at `_provenance-author.juanlentino.com`
 and a `role: "author"` entry in the site's key document. It only countersigns:
 every verifier refuses a note, page, retraction or rights record it signed, and

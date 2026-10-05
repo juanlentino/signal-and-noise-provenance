@@ -22,8 +22,9 @@ The author key only countersigns: every verifier that resolves a signing key
 `weigh.mjs`) refuses a publisher record signed by it or by any key the history
 does not declare. It must differ from every publisher key, takes no part in
 publisher transitions, and is pinned like the publisher key (DNS
-`_provenance-author` and the site's key document). Pending batches are bounded
-by the grace window. The release tarball now carries every module its verifiers
+`_provenance-author` and the site's key document). Only one active author key is supported until
+pinned retirement exists, so no unpinned key can sign batches. Pending batches
+are bounded by the grace window. The release tarball now carries every module its verifiers
 import, which `verify/release-tarball.test.mjs` checks; it caught two that
 earlier releases already lacked (`stale-edge.mjs`, `index-parity.mjs`).
 

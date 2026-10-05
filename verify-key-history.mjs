@@ -20,8 +20,14 @@ if (!byId.has(history.trust_root) || !byId.has(history.current)) throw new Error
 // countersign-checks.mjs instead of verifyRecord's raw Ed25519 path.
 const publishers = history.keys.filter((k) => k.role !== "author");
 let authorKeys = 0;
-for (const key of history.keys.filter((k) => k.role === "author")) {
+const authorEntries = history.keys.filter((k) => k.role === "author");
+if (authorEntries.length > 1) throw new Error(`${authorEntries.length} author keys in the history: only one active author key is supported`);
+for (const key of authorEntries) {
   if (key.id === history.current || key.id === history.trust_root) throw new Error(`an author key cannot be current or the trust root: ${key.id}`);
+  // Only an active author key is pinned (verify-key-pins.mjs), so only an
+  // active one may exist: a "retired" author key would verify batches without
+  // ever appearing in DNS or the site's key document.
+  if (key.status !== "active") throw new Error(`author key ${key.id} is ${JSON.stringify(key.status)}: author-key retirement is not supported yet, only one active author key`);
   const published = readFileSync(join(root, `keys/${key.id}.pub`), "utf8").trim();
   if (published !== key.public_key_base64) throw new Error(`published key mismatch: ${key.id}`);
   const anchorPath = key.introduction?.bitcoin_anchor;

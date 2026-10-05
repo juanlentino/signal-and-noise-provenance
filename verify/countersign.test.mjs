@@ -155,10 +155,15 @@ describe("the whole flow, on a copy of the ledger", () => {
     // The author key takes no part in a publisher transition.
     writeFileSync(historyPath, JSON.stringify({ ...history, transitions: [{ signed_by: "sn-author-ed25519-2026-10", introduces: "sn-ed25519-2026-07", statement: {}, signature: "" }] }));
     expect(() => run("verify-key-history.mjs")).toThrow(/takes no part in publisher transitions/);
-    // A retired author key keeps its batches; it signs no new ones.
+    // Only one active, pinned author key is supported: a retired one would
+    // verify batches without ever being pinned, so it is refused everywhere.
     writeFileSync(historyPath, JSON.stringify({ ...history, keys: history.keys.map((k) => (k.role === "author" ? { ...k, status: "retired" } : k)) }));
-    expect(run("verify-countersignatures.mjs")).toContain("1 countersignature batch(es) hold");
+    expect(() => run("verify-key-history.mjs")).toThrow(/retirement is not supported yet/);
+    expect(() => run("verify-countersignatures.mjs")).toThrow(/not an author key/);
     expect(() => run("countersign.mjs", "prepare")).toThrow();
+    const second = history.keys.find((k) => k.role === "author");
+    writeFileSync(historyPath, JSON.stringify({ ...history, keys: [...history.keys, { ...second, id: "sn-author-ed25519-2026-11" }] }));
+    expect(() => run("verify-key-history.mjs")).toThrow(/only one active author key/);
     writeFileSync(historyPath, JSON.stringify(history));
     // Pending is bounded: past the grace window, or not queued at all, it fails.
     const pendingPath = join(root, "pending.json");

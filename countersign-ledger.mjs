@@ -16,14 +16,14 @@ export function readHistory(root) {
 }
 
 /**
- * Author keys by id. Verification reads every author key that is not
- * revoked, so a batch signed before a routine rotation keeps verifying;
- * `prepare` signs only with an active one.
+ * The author key by id. One active author key is all the ledger accepts for
+ * now: every key whose signatures count must be pinned outside GitHub, and
+ * verify-key-pins.mjs pins the active one. Retiring or rotating an author key
+ * needs pinned retired keys with closed validity windows, which is not built;
+ * verify-key-history.mjs refuses any author key that is not active.
  */
-export function authorKeys(history, { activeOnly = false } = {}) {
-  return new Map(history.keys
-    .filter((k) => k.role === "author" && k.status !== "revoked" && (!activeOnly || k.status === "active"))
-    .map((k) => [k.id, k]));
+export function authorKeys(history) {
+  return new Map(history.keys.filter((k) => k.role === "author" && k.status === "active").map((k) => [k.id, k]));
 }
 
 /** Batch ids on disk, sorted. */

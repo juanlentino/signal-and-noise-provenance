@@ -12,6 +12,7 @@
 //   node countersign.mjs prepare [--all]
 //   node countersign.mjs finish <batch-id>
 
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -68,6 +69,9 @@ async function keyPrepare() {
     attests_publisher: { pubkey_id: publisher.id, sha256_fingerprint: publisher.sha256_fingerprint },
   };
   const msg = stage(`key-${id}`, payload, { id, ssh_public_key: readFileSync(pubPath, "utf8").trim() });
+  // Where the author's key lives on this machine, so later batches print a
+  // command that works. Local only: .countersign/ is git-ignored.
+  writeFileSync(join(work, "signing-key.json"), json({ id, pub: pubPath }));
   console.log(`Sign the key record, then run key-finish:\n\n  ${signCommand(pubPath, msg)}\n  node countersign.mjs key-finish --id ${id}`);
 }
 
@@ -79,7 +83,10 @@ async function keyFinish() {
   const key = { id, algorithm: "Ed25519", role: "author", public_key_base64: p.public_key_base64, sha256_fingerprint: p.sha256_fingerprint, ssh_public_key: state.ssh_public_key, introduced_at: new Date().toISOString().slice(0, 10), status: "active", introduction: { type: "author-key", bitcoin_anchor: anchorPath } };
   const anchor = { payload: p, content_hash: contentHash(p), signature_format: "sshsig", signature, pubkey_id: id, ots: { status: "pending" } };
   const history = readHistory(root);
-  const problems = await authorKeyDivergences(key, anchor, history.keys.find((k) => k.id === history.current));
+  const publishers = history.keys.filter((k) => k.role !== "author");
+  const named = publishers.find((k) => k.id === p.attests_publisher?.pubkey_id);
+  if (!named) fail("refused: the staged record names no publisher key in the history");
+  const problems = await authorKeyDivergences(key, anchor, named, publishers);
   if (problems.length) fail(`refused: ${problems.map(([k, d]) => `${k}: ${d}`).join("; ")}`);
   writeFileSync(join(root, `keys/${id}.pub`), `${p.public_key_base64}\n`);
   writeFileSync(join(root, anchorPath), json(anchor));
@@ -89,7 +96,7 @@ async function keyFinish() {
 }
 
 async function prepare() {
-  const keys = [...authorKeys(readHistory(root), { activeOnly: true }).values()];
+  const keys = [...authorKeys(readHistory(root)).values()];
   if (keys.length !== 1) fail(`expected exactly one active author key, found ${keys.length}`);
   const attested = new Set(batchIds(root).flatMap((b) => readBatch(root, b).payload.records.map((r) => r.content_hash)));
   const { passing } = await ledgerLookup(root);
@@ -100,9 +107,14 @@ async function prepare() {
   while (batchIds(root).includes(`${today}-${n}`) || existsSync(join(work, `${today}-${n}.msg`))) n += 1;
   const id = `${today}-${n}`;
   const msg = stage(id, batchPayload(id, keys[0].id, records), { id });
-  // ssh-keygen signs with the private key the agent holds, found by its .pub.
-  writeFileSync(join(work, "author.pub"), `${keys[0].ssh_public_key}\n`);
-  console.log(`Batch ${id}: ${records.length} record(s). Sign it, then run finish:\n\n  ${signCommand(join(".countersign", "author.pub"), msg)}\n  node countersign.mjs finish ${id}`);
+  // ssh-keygen -Y sign takes a .pub only when the agent holds its private
+  // half (ssh-keygen(1)), so name the key file key-prepare saw and say how to
+  // load it if the agent does not have it.
+  const local = existsSync(join(work, "signing-key.json")) ? JSON.parse(readFileSync(join(work, "signing-key.json"), "utf8")) : null;
+  const pub = local?.id === keys[0].id ? local.pub : "<path to your author key .pub>";
+  const loaded = (() => { try { return execFileSync("ssh-add", ["-L"], { encoding: "utf8" }).includes(keys[0].ssh_public_key.split(/\s+/)[1]); } catch { return false; } })();
+  const load = loaded ? "" : `  ssh-add --apple-use-keychain ${pub.replace(/\.pub$/, "")}\n`;
+  console.log(`Batch ${id}: ${records.length} record(s). Sign it, then run finish:\n\n${load}  ${signCommand(pub, msg)}\n  node countersign.mjs finish ${id}`);
 }
 
 async function finish() {
