@@ -120,11 +120,14 @@ note's DOI for the note, the ledger's for the chain it sits in.
   `_provenance-author.juanlentino.com` and in the site's key document, and the
   first batch, `countersignatures/2026-10-05-1.json`, attests all 105 note and
   page records that passed. To countersign records published since, on `main`:
-  `node countersign.mjs prepare`, run the `ssh-keygen -Y sign` command it
-  prints, then `node countersign.mjs finish <batch-id>` and open a pull request.
-  If the Worker's hourly sweep changes `pending.json` while that pull request is
-  open, rebase it on `main` and keep both queue rows.
-- `verify-records.mjs` checks every note and page record on disk the same way:
+  `node countersign.mjs prepare`, run the commands it prints (an `ssh-add` line
+  first when the agent does not hold the key, then `ssh-keygen -Y sign`), then
+  `node countersign.mjs finish <batch-id>` and open a pull request. If the
+  Worker's hourly sweep changes `pending.json` while that pull request is open,
+  take `main`'s `pending.json` as it is and append only the batch's own row, so
+  entries the sweep confirmed and removed stay removed.
+- `verify-records.mjs` checks every version of every indexed note, and every
+  page directory on disk, the same way:
   hash, signature, proof digest, a publisher key (never the author key),
   versions contiguous from v1, the parent chain across `notes/` and `pages/`,
   and the block a confirmed record names. `verify-genesis.mjs` also checks the
