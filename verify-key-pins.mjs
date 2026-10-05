@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { captureEvidence, fetchSite, installEvidenceReport } from "./fetch-site.mjs";
-import { keyPinDivergences } from "./key-pins.mjs";
+import { authorPinDivergences, keyPinDivergences } from "./key-pins.mjs";
 installEvidenceReport("verify:key-pins");
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -37,4 +37,15 @@ if (divergences.length) {
   throw new Error(`HTTPS key mirror does not match key history — ${detail}. Document had keys [${Object.keys(document ?? {}).join(",")}], ${raw.length} bytes.`);
 }
 
-console.log(`DNS and HTTPS key pins agree on ${current.id} (${current.sha256_fingerprint})`);
+// Author keys are pinned the same way, under their own DNS name and as
+// role:"author" entries in the same mirror document. Read even when the
+// history holds none, so pins left behind by a deleted key still fail.
+const authors = history.keys.filter((key) => key.role === "author" && key.status === "active");
+const authorAnswers = await resolveTxt("_provenance-author.juanlentino.com").then(
+  (records) => records.map((chunks) => chunks.join("")),
+  (error) => { if (error.code === "ENOTFOUND" || error.code === "ENODATA") return []; throw error; },
+);
+const authorProblems = authorPinDivergences(document, authorAnswers, authors);
+if (authorProblems.length) throw new Error(`author-key pins do not match key history: ${authorProblems.join("; ")}`);
+
+console.log(`DNS and HTTPS key pins agree on ${current.id} (${current.sha256_fingerprint})${authors.length ? ` and ${authors.length} author key(s)` : ""}`);

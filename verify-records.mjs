@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { verifyRecord } from "./verify.mjs";
-import { contiguousFromV1, expectedParent, recordVersions } from "./ledger-records.mjs";
+import { assertPublisherKey, contiguousFromV1, expectedParent, recordVersions } from "./ledger-records.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const notesRoot = join(root, "notes");
@@ -31,6 +31,7 @@ for (const entry of index.entries) {
     const base = join(notesRoot, entry.note_uid, `v${version}`);
     const record = JSON.parse(readFileSync(`${base}.json`, "utf8"));
     const otsBytes = new Uint8Array(readFileSync(`${base}.ots`));
+    assertPublisherKey(root, record.pubkey_id, `${entry.slug} v${version}`);
     const pubB64 = readFileSync(join(root, "keys", `${record.pubkey_id}.pub`), "utf8");
     const result = await verifyRecord({ record, pubB64, otsBytes });
     if (!result.hashOk || !result.sigOk || !result.otsHashOk) {
@@ -55,3 +56,44 @@ for (const entry of index.entries) {
 }
 
 console.log(`${checked}/${checked} note records across ${index.entries.length} notes pass offline hash, signature, OTS-digest, and commit-chain verification`);
+
+// Signed pages get the same offline check as notes, every version of every
+// page directory on disk: verify:coverage compares indexed page rows with
+// their records but never checked a signature, so a page signed by any key,
+// the countersign-only author key included, passed, and an unindexed page was
+// never looked at.
+const pagesRoot = join(root, "pages");
+const pageUids = existsSync(pagesRoot) ? readdirSync(pagesRoot, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name).sort() : [];
+let pagesChecked = 0;
+for (const uid of pageUids) {
+  // A note converted to a page keeps its history: earlier versions stay under
+  // notes/, so the chain runs across both directories, the page copy first.
+  const versions = [...new Set([...recordVersions(notesRoot, uid), ...recordVersions(pagesRoot, uid)])].sort((a, b) => a - b);
+  if (!contiguousFromV1(versions)) throw new Error(`page record versions are not contiguous from v1 for ${uid}: ${versions.map((v) => `v${v}`).join(",")}`);
+  let previous = null;
+  for (const version of versions) {
+    const base = existsSync(join(pagesRoot, uid, `v${version}.json`)) ? join(pagesRoot, uid, `v${version}`) : join(notesRoot, uid, `v${version}`);
+    const record = JSON.parse(readFileSync(`${base}.json`, "utf8"));
+    assertPublisherKey(root, record.pubkey_id, `page ${uid} v${version}`);
+    const pubB64 = readFileSync(join(root, "keys", `${record.pubkey_id}.pub`), "utf8");
+    const result = await verifyRecord({ record, pubB64, otsBytes: new Uint8Array(readFileSync(`${base}.ots`)) });
+    if (!result.hashOk || !result.sigOk || !result.otsHashOk) {
+      throw new Error(`offline record verification failed for page ${uid} v${version} (hash=${result.hashOk}, signature=${result.sigOk}, otsDigest=${result.otsHashOk})`);
+    }
+    // A page payload carries no kind and names its own directory: a signed
+    // retraction, rights record or genesis root copied here is not a page.
+    if (record.payload.kind !== undefined || typeof record.payload.content !== "string") throw new Error(`page ${uid} v${version} is a ${JSON.stringify(record.payload.kind ?? "malformed")} record, not a page`);
+    if (record.payload.note_uid !== uid) throw new Error(`page record names subject ${record.payload.note_uid}, filed under ${uid}`);
+    if (record.payload.version !== version) throw new Error(`record filename disagrees with its payload for page ${uid}: v${version}.json declares version ${record.payload.version}`);
+    const parent = expectedParent({ version, genesisLeaf: genesisLeaf.get(uid) ?? null, previousContentHash: previous?.content_hash ?? null });
+    if ((record.payload.parent ?? null) !== parent) {
+      throw new Error(`broken commit chain for page ${uid} v${version}: record names parent ${JSON.stringify(record.payload.parent ?? null)}, expected ${JSON.stringify(parent)}`);
+    }
+    if (record.ots?.status === "confirmed" && (!result.btc || result.btc.height !== record.ots.bitcoin_block)) {
+      throw new Error(`confirmed OTS block mismatch for page ${uid} v${version}`);
+    }
+    previous = record;
+    pagesChecked += 1;
+  }
+}
+if (pageUids.length) console.log(`${pagesChecked} page records across ${pageUids.length} pages pass offline hash, signature, OTS-digest, and commit-chain verification`);

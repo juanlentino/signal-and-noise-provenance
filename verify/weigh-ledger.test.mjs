@@ -120,6 +120,8 @@ describe("weigh, over the ledger", () => {
     expect(ledger.events).toEqual([]);
     expect(ledger.excluded.length).toBeGreaterThan(100);
     expect(ledger.excluded.every((x) => x.reason.includes("not the key being weighed"))).toBe(true);
+    // Still sound, so still eligible for a countersignature after the rotation.
+    expect(ledger.passing.length).toBe(real.passing.length);
   });
   it("an incomplete genesis derivation set proves no genesis event", async () => {
     const root = copy();

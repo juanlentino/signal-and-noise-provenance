@@ -1,5 +1,39 @@
 # Changelog
 
+## 2026-10-05: the author countersigns with a key of their own
+
+The Worker signs every note and page at publish. `countersign.mjs` lets the
+author add a second signature with an Ed25519 SSH key the author holds: a batch
+under `countersignatures/` lists records by path and content hash under a fixed
+statement, and `ssh-keygen -Y sign` signs it in this ledger's namespace
+(`sn-provenance@juanlentino.com`). The script writes the bytes to sign and the
+command, then checks the returned signature before writing; the private key
+never reaches it. The Worker's sweep anchors each batch through `pending.json`.
+
+The author key enters `keys/key-history.json` with role `author`, beside the
+publisher key, which stays current. Its own signed fingerprint record names the
+publisher key's fingerprint, and `verify-key-history.mjs` refuses an author key
+that is current or the trust root. `verify-countersignatures.mjs` (a CI step)
+checks every batch offline: the signature, the content hash, every listed record
+passing the offline checks with the same hash, no record attested twice, and the
+proof once it lands. `sshsig.mjs` verifies OpenSSH signatures (ssh-ed25519 only).
+The author key only countersigns: every verifier that resolves a signing key
+(`verify.mjs`, `verify-records.mjs`, the rights and retraction checks, and
+`weigh.mjs`) refuses a publisher record signed by it or by any key the history
+does not declare. It must differ from every publisher key, takes no part in
+publisher transitions, and is pinned like the publisher key (DNS
+`_provenance-author` and the site's key document). `verify:key-pins` compares those pins with the history in both directions, so a repository that deletes its author key while the pins still advertise it fails. `verify:records` now checks every page record on disk offline as well, indexed or not, exactly as it checks notes: hash, signature, proof digest, a publisher key, versions contiguous from v1, the parent chain, and the block a confirmed record names. Nothing did before: `verify:coverage` compared indexed page rows with their records but never a signature. A page record must also be a page (no `kind`, a string body, the `note_uid` of its directory), so a signed record of another kind copied into `pages/` fails. `verify:genesis` now checks the root's own envelope (hash, signature, proof digest) and that a publisher key signed it; it rebuilt the Merkle tree but never looked at the signer. A mirror that lists the same key id twice fails `verify:key-pins`. `key-finish` and `finish` recheck at write time, so a second author key or a record attested in two batches is refused before it lands. Deleting a batch is not detected; VERIFY.md says why. Only one active author key is supported until
+pinned retirement exists, so no unpinned key can sign batches. Pending batches
+are bounded by the grace window. The release tarball now carries every module its verifiers
+import, which `verify/release-tarball.test.mjs` checks; it caught two that
+earlier releases already lacked (`stale-edge.mjs`, `index-parity.mjs`).
+
+Pinned in `verify/countersign.test.mjs` with real `ssh-keygen` keys: a good
+signature, a changed message, another key, another namespace, an ECDSA key, each
+batch and author-key rule by name, and the whole flow on a copy of the ledger.
+Every rule was broken once and its test went red. No author key or batch exists
+yet; `weigh.mjs` is unchanged and does not read countersignatures.
+
 ## 2026-10-05: weigh the key
 
 `weigh.mjs` computes the key's weight under a policy the verifier states,

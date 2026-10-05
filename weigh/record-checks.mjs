@@ -34,6 +34,7 @@ export async function check(root, keys, path, record) {
 async function checkOrThrow(root, keys, path, record) {
   const key = keys.get(record.pubkey_id);
   if (!key) return { reason: `signed under ${JSON.stringify(record.pubkey_id)}, a key outside the history` };
+  if (key.role === "author") return { reason: `signed by the author key ${record.pubkey_id}, which only countersigns` };
   const ots = new Uint8Array(readFileSync(join(root, path.replace(/\.json$/, ".ots"))));
   const r = await verifyRecord({ record, pubB64: key.public_key_base64, otsBytes: ots });
   if (!r.hashOk || !r.sigOk || !r.otsHashOk) return { reason: `fails offline checks (hash=${r.hashOk}, signature=${r.sigOk}, otsDigest=${r.otsHashOk})` };

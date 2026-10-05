@@ -16,7 +16,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { verifyRecord } from "./verify.mjs";
-import { contiguousFromV1, recordVersions } from "./ledger-records.mjs";
+import { assertPublisherKey, contiguousFromV1, recordVersions } from "./ledger-records.mjs";
 import { evidenceDivergences } from "./rights-evidence-checks.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -42,6 +42,7 @@ for (const uid of uids) {
     }
     const record = JSON.parse(readFileSync(`${base}.json`, "utf8"));
     const otsBytes = new Uint8Array(readFileSync(`${base}.ots`));
+    assertPublisherKey(root, record.pubkey_id, `rights-evidence ${uid} v${version}`);
     const pubPath = join(root, "keys", `${record.pubkey_id}.pub`);
     if (!existsSync(pubPath)) throw new Error(`rights-evidence ${uid} v${version} names unpublished key ${record.pubkey_id}`);
     const { hashOk, sigOk, otsHashOk, btc } = await verifyRecord({ record, pubB64: readFileSync(pubPath, "utf8"), otsBytes });

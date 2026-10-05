@@ -33,6 +33,9 @@ jobs:
             verify-rights-signals.mjs \
             normalize verify fetch-site.mjs ledger-records.mjs key-pins.mjs \
             anchor-grace.mjs package.json VERIFY.md \
+            verify-countersignatures.mjs countersign-checks.mjs countersign-ledger.mjs \
+            sshsig.mjs retraction-checks.mjs rights-evidence-checks.mjs \
+            weigh weigh.mjs policy stale-edge.mjs index-parity.mjs \
             keys/key-history.json keys/provenance-keys.json keys/*.pub
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v2

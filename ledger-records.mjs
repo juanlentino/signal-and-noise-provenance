@@ -11,7 +11,7 @@
 // the site of tampering when it was the index that was stale. Both readings
 // live here now so they cannot drift apart again.
 
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const RECORD = /^v(\d+)\.json$/;
@@ -91,4 +91,24 @@ export function contiguousFromV1(versions) {
  */
 export function expectedParent({ version, genesisLeaf = null, previousContentHash = null }) {
   return version > 1 ? previousContentHash : genesisLeaf;
+}
+
+/**
+ * Refuse a record whose signing key is the author key. The author key
+ * (role "author" in keys/key-history.json) countersigns; it never signs a
+ * note, page, retraction or rights record, even though it is an Ed25519 key
+ * whose .pub file sits beside the publisher's. Every verifier that resolves a
+ * key by pubkey_id calls this first.
+ *
+ * @param {string} root     Repository root.
+ * @param {string} pubkeyId The record's pubkey_id.
+ * @param {string} what     The record, for the error message.
+ */
+export function assertPublisherKey(root, pubkeyId, what) {
+  const history = JSON.parse(readFileSync(join(root, "keys", "key-history.json"), "utf8"));
+  const key = history.keys.find((k) => k.id === pubkeyId);
+  // A .pub file alone declares nothing: an undeclared id (an alias of the
+  // author key, say) is refused like the author key itself.
+  if (!key) throw new Error(`${what} is signed by ${pubkeyId}, a key absent from the key history`);
+  if (key.role === "author") throw new Error(`${what} is signed by the author key ${pubkeyId}, which only countersigns`);
 }

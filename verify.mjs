@@ -31,6 +31,7 @@ function normalizerForAlgo(algo) {
   throw new Error(`unknown payload.algo "${algo}" — update the verifier's reference implementations`);
 }
 import { bitcoinAttestation, stampedDigest, toHex } from "./verify/ots.mjs";
+import { assertPublisherKey } from "./ledger-records.mjs";
 
 const b64 = (s) => Uint8Array.from(Buffer.from(String(s).trim(), "base64"));
 
@@ -158,6 +159,7 @@ async function main() {
   const otsPath = isGenesis ? join(dir, "2026-07-09-root.ots") : join(dir, `v${version}.ots`);
   const record   = JSON.parse(readFileSync(recordPath, "utf8"));
   const otsBytes = new Uint8Array(readFileSync(otsPath));
+  assertPublisherKey(here, record.pubkey_id, `record ${uid} v${version}`);
   const pubB64   = readFileSync(join(here, "keys", `${record.pubkey_id}.pub`), "utf8");
 
   const { hashOk, sigOk, otsHashOk, recomputed, btc } = await verifyRecord({ record, pubB64, otsBytes });

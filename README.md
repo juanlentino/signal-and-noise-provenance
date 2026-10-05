@@ -107,6 +107,15 @@ note's DOI for the note, the ledger's for the chain it sits in.
   header from a public explorer. `verify/ots.mjs` is a minimal, vendored OTS
   reader; everything but the block-header lookup is offline. Tested against a
   real confirmed record in `verify/verify.test.mjs` (`npm test`).
+- `countersign.mjs` + `countersign-checks.mjs` + `countersign-ledger.mjs` +
+  `sshsig.mjs`: the author's own SSH key countersigns note and page records in
+  batches under `countersignatures/`. The script writes the bytes to sign and
+  the `ssh-keygen -Y sign` command, then checks the returned signature before
+  writing anything; the private key never reaches it. The author key sits in
+  `keys/key-history.json` with role `author` beside the publisher key, which
+  stays current. `verify-countersignatures.mjs` checks every batch offline
+  (`npm run verify:countersignatures`). See "What a countersignature attests" in
+  VERIFY.md. Tested in `verify/countersign.test.mjs` with real `ssh-keygen` keys.
 - `weigh.mjs` + `weigh/`: the key's weight under a policy the verifier states,
   equation (1) of *Provenance Without Institutions* (SSRN 7456638), computed
   offline from the records here with exact fractions and the confirmed Bitcoin

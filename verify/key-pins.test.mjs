@@ -11,7 +11,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { keyPinDivergences, KEY_MIRROR_SCHEMA } from "../key-pins.mjs";
+import { authorPinDivergences, keyPinDivergences, pinTxt, KEY_MIRROR_SCHEMA } from "../key-pins.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const history = JSON.parse(readFileSync(join(root, "keys/key-history.json"), "utf8"));
@@ -92,5 +92,37 @@ describe("the committed mirror snapshot", () => {
 
   it("would pass the same comparison the live mirror is held to", () => {
     expect(keyPinDivergences(snapshot, current)).toEqual([]);
+  });
+});
+
+describe("an author key in the mirror", () => {
+  const author = { id: "sn-author-ed25519-2026-10", algorithm: "Ed25519", role: "author", public_key_base64: "AAAA", sha256_fingerprint: "ff", status: "active", introduced_at: "2026-10-05" };
+  const withAuthor = (over = {}) => ({ ...served(), keys: [...served().keys, { id: author.id, algorithm: "Ed25519", role: "author", public_key_base64: "AAAA", sha256_fingerprint: "ff", status: "active", introduced_at: "2026-10-05", valid_from: "2026-10-05", valid_until: null, ...over }] });
+  it("passes when mirrored with its role", () => {
+    expect(keyPinDivergences(withAuthor(), author)).toEqual([]);
+  });
+  it("fails when the mirror drops the role or the key", () => {
+    expect(keyPinDivergences(withAuthor({ role: undefined }), author).map(([f]) => f)).toEqual(["role"]);
+    expect(keyPinDivergences(served(), author).map(([f]) => f)).toEqual([`keys[id=${author.id}]`]);
+  });
+  it("holds when the pins and the history agree, in either state", () => {
+    expect(authorPinDivergences(withAuthor(), [pinTxt(author)], [author])).toEqual([]);
+    expect(authorPinDivergences(served(), [], [])).toEqual([]);
+  });
+  it("fails when the history drops a key the pins still advertise", () => {
+    expect(authorPinDivergences(withAuthor(), [pinTxt(author)], [])).toEqual([
+      `the mirror carries author key ${author.id}, which the key history does not hold`,
+      `DNS pins an author key the key history does not hold: ${pinTxt(author)}`,
+    ]);
+    expect(authorPinDivergences(served(), [pinTxt(author)], [])).toHaveLength(1);
+  });
+  it("fails when the mirror lists an author key twice, whatever the order", () => {
+    const twice = withAuthor();
+    const swapped = { ...twice.keys.at(-1), public_key_base64: "BBBB" };
+    expect(authorPinDivergences({ ...twice, keys: [...twice.keys, swapped] }, [pinTxt(author)], [author])).toContain(`the mirror lists key ${author.id} more than once`);
+  });
+  it("fails when a pin is missing for a key the history holds", () => {
+    expect(authorPinDivergences(withAuthor(), [], [author])).toEqual([`DNS author-key pin missing for ${author.id}`]);
+    expect(authorPinDivergences(served(), [pinTxt(author)], [author])[0]).toMatch(/the mirror's .* keys\[id=/);
   });
 });

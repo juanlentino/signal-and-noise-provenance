@@ -28,7 +28,8 @@ import { retractionDivergences } from "./retraction-checks.mjs";
 const root = dirname(fileURLToPath(import.meta.url));
 const dir = join(root, "retractions");
 const history = JSON.parse(readFileSync(join(root, "keys/key-history.json"), "utf8"));
-const keyById = new Map(history.keys.map((k) => [k.id, k.public_key_base64]));
+// The author key countersigns only; a retraction is a publisher record.
+const keyById = new Map(history.keys.filter((k) => k.role !== "author").map((k) => [k.id, k.public_key_base64]));
 
 const subjects = existsSync(dir) ? readdirSync(dir).filter((d) => !d.startsWith(".")) : [];
 let checked = 0;
