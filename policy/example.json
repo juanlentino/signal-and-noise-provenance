@@ -1,0 +1,18 @@
+{
+  "schema": "sn-weigh-policy-v1",
+  "description": "An illustration, written for this repository's README and tests. It is not the framework's policy and carries no authority: the paper leaves all seven inputs to the verifier. Two persistence types are counted, work (the first signed version of a note or page, or its genesis leaf) and revision (each later version). An epoch is 4320 blocks, about thirty days; a work keeps 9/10 of its contribution per epoch and a revision 3/4. The attestation constants have nothing to act on in this ledger: the recognition set is empty.",
+  "recognition_set": [],
+  "partition": {},
+  "attestation_coefficients": {},
+  "delta": 3,
+  "gamma": "1/2",
+  "d_table": ["1/2", "3/4", "1"],
+  "decay": {
+    "form": "epoch-retain",
+    "epoch_blocks": 4320,
+    "retain": {
+      "work": "9/10",
+      "revision": "3/4"
+    }
+  }
+}
