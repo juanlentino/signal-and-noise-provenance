@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-05: the README says what is live
+
+The README now names the live author key, its pins and the first batch, gives the routine steps for countersigning new records, and describes what `verify-records.mjs` and `verify-genesis.mjs` check since #41. Docs only.
+
 ## 2026-10-05: the author countersigns with a key of their own
 
 The Worker signs every note and page at publish. `countersign.mjs` lets the

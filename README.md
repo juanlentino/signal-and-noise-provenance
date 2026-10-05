@@ -116,6 +116,19 @@ note's DOI for the note, the ledger's for the chain it sits in.
   stays current. `verify-countersignatures.mjs` checks every batch offline
   (`npm run verify:countersignatures`). See "What a countersignature attests" in
   VERIFY.md. Tested in `verify/countersign.test.mjs` with real `ssh-keygen` keys.
+  Live since 2026-10-05: the key is `sn-author-ed25519-2026-10`, pinned at DNS
+  `_provenance-author.juanlentino.com` and in the site's key document, and the
+  first batch, `countersignatures/2026-10-05-1.json`, attests all 105 note and
+  page records that passed. To countersign records published since, on `main`:
+  `node countersign.mjs prepare`, run the `ssh-keygen -Y sign` command it
+  prints, then `node countersign.mjs finish <batch-id>` and open a pull request.
+  If the Worker's hourly sweep changes `pending.json` while that pull request is
+  open, rebase it on `main` and keep both queue rows.
+- `verify-records.mjs` checks every note and page record on disk the same way:
+  hash, signature, proof digest, a publisher key (never the author key),
+  versions contiguous from v1, the parent chain across `notes/` and `pages/`,
+  and the block a confirmed record names. `verify-genesis.mjs` also checks the
+  genesis root's own signature and signer.
 - `weigh.mjs` + `weigh/`: the key's weight under a policy the verifier states,
   equation (1) of *Provenance Without Institutions* (SSRN 7456638), computed
   offline from the records here with exact fractions and the confirmed Bitcoin
