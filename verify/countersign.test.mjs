@@ -114,6 +114,17 @@ describe("the whole flow, on a copy of the ledger", () => {
     for (const d of ["keys", "genesis", "notes", "pages", "rights-evidence", "retractions", "normalize", "verify", "weigh"]) cpSync(join(repo, d), join(root, d), { recursive: true });
     for (const f of ["countersign.mjs", "countersign-checks.mjs", "countersign-ledger.mjs", "sshsig.mjs", "verify-countersignatures.mjs", "verify-key-history.mjs", "verify.mjs", "fetch-site.mjs", "ledger-records.mjs", "retraction-checks.mjs", "rights-evidence-checks.mjs", "retired-subjects.json", "pending.json", "package.json", "anchor-grace.mjs", "verify-records.mjs", "index.json", "verify-genesis.mjs"]) cpSync(join(repo, f), join(root, f));
     const run = (...args) => execFileSync(process.execPath, args, { cwd: root }).toString();
+    // Start from the ledger as it was before any author key, so the flow
+    // below introduces one from scratch.
+    const realHistory = JSON.parse(readFileSync(join(root, "keys/key-history.json"), "utf8"));
+    for (const k of realHistory.keys.filter((k) => k.role === "author")) {
+      rmSync(join(root, `keys/${k.id}.pub`), { force: true });
+      rmSync(join(root, `keys/anchors/${k.id}.json`), { force: true });
+      rmSync(join(root, `keys/anchors/${k.id}.ots`), { force: true });
+    }
+    writeFileSync(join(root, "keys/key-history.json"), JSON.stringify({ ...realHistory, keys: realHistory.keys.filter((k) => k.role !== "author") }));
+    const realPending = JSON.parse(readFileSync(join(root, "pending.json"), "utf8"));
+    writeFileSync(join(root, "pending.json"), JSON.stringify({ ...realPending, entries: realPending.entries.filter((e) => !String(e.path).startsWith("keys/anchors/sn-author-")) }));
     run("countersign.mjs", "key-prepare", "--id", "sn-author-ed25519-2026-10", "--ssh-pub", `${author.priv}.pub`);
     execFileSync("ssh-keygen", ["-Y", "sign", "-f", author.priv, "-n", SSHSIG_NAMESPACE, ".countersign/key-sn-author-ed25519-2026-10.msg"], { cwd: root, stdio: "ignore" });
     run("countersign.mjs", "key-finish", "--id", "sn-author-ed25519-2026-10");

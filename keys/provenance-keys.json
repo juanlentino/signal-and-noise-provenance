@@ -11,6 +11,17 @@
       "introduced_at": "2026-07-09",
       "valid_from": "2026-07-09",
       "valid_until": null
+    },
+    {
+      "id": "sn-author-ed25519-2026-10",
+      "algorithm": "Ed25519",
+      "role": "author",
+      "public_key_base64": "V7kvC41ull/Pp8q7q7t7bY3XEz3g6DohCAtP/1Fho4o=",
+      "sha256_fingerprint": "d94be6324e347112cd4397fd92320c8c475f1453fd3f2e25cb402eda37895cd0",
+      "status": "active",
+      "introduced_at": "2026-10-05",
+      "valid_from": "2026-10-05",
+      "valid_until": null
     }
   ]
 }
