@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,9 +24,9 @@ const copy = (dirs = DIRS) => {
   return root;
 };
 const edit = (root, path, change) => {
-  const record = JSON.parse(readFileSync(join(root, path), "utf8"));
-  change(record);
-  writeFileSync(join(root, path), JSON.stringify(record));
+  const value = JSON.parse(readFileSync(join(root, path), "utf8"));
+  change(value);
+  writeFileSync(join(root, path), JSON.stringify(value));
 };
 const ids = (ledger) => ledger.events.map((e) => `${e.class}:${e.uid}:v${e.version}@${e.height}`).sort();
 
@@ -69,6 +69,45 @@ describe("weigh, over the ledger", () => {
     cpSync(join(root, "rights-evidence", first.uid), join(root, "rights-evidence", "00000000-0000-5000-8000-000000000000"), { recursive: true });
     const heights = (ledger) => ledger.events.filter((e) => e.class === "rights-evidence").map((e) => `${e.height}`).sort();
     expect(heights(await ledgerEvents(root))).toEqual(heights(real));
+  });
+  it("lists retracted subjects of every class as withdrawn", () => {
+    const targets = readdirSync(join(repo, "retractions")).map((uid) => JSON.parse(readFileSync(join(repo, "retractions", uid, "v1.json"), "utf8")).payload.note_uid).sort();
+    expect(targets.length).toBeGreaterThan(0);
+    expect(real.withdrawn).toEqual(targets);
+  });
+  it("a damaged copy of a record filed twice does not hide the sound copy", async () => {
+    const root = copy();
+    writeFileSync(join(root, "notes/01cea10c-9ad3-4f8b-9d74-d0e7e90dbd1d/v2.ots"), "not a proof");
+    expect(ids(await ledgerEvents(root))).toEqual(ids(real));
+  });
+  it("a missing middle version breaks contiguity for every later version", async () => {
+    const root = copy();
+    rmSync(join(root, `notes/${target.uid}/v2.json`));
+    rmSync(join(root, `notes/${target.uid}/v2.ots`));
+    const ledger = await ledgerEvents(root);
+    expect(ids(ledger)).toEqual(ids(real).filter((id) => !id.startsWith(`revision:${target.uid}:`)));
+    expect(ledger.excluded[0].reason).toContain("not contiguous from v1");
+  });
+  it("a key rotation leaves earlier-key chains whole", async () => {
+    const root = copy();
+    edit(root, "keys/key-history.json", (h) => {
+      h.keys.push({ ...h.keys[0], id: "sn-ed25519-2099-01", public_key_base64: "AAAA", sha256_fingerprint: "00" });
+      h.current = "sn-ed25519-2099-01";
+    });
+    const ledger = await ledgerEvents(root);
+    expect(ledger.events).toEqual([]);
+    expect(ledger.excluded.length).toBeGreaterThan(100);
+    expect(ledger.excluded.every((x) => x.reason.includes("not the key being weighed"))).toBe(true);
+  });
+  it("an incomplete genesis derivation set proves no genesis event", async () => {
+    const root = copy();
+    edit(root, "genesis/2026-07-09-leaves.json", (leaves) => leaves.pop());
+    const ledger = await ledgerEvents(root);
+    expect(ledger.excluded).toEqual([{ path: "genesis/2026-07-09-leaves.json", reason: expect.stringContaining("do not reproduce") }]);
+    const works = new Map(ledger.events.filter((e) => e.class === "work").map((e) => [e.uid, e.height]));
+    for (const { note_uid: uid } of JSON.parse(readFileSync(join(repo, "genesis/2026-07-09-root.json"), "utf8")).payload.notes) {
+      expect(works.get(uid)).toBe(BigInt(JSON.parse(readFileSync(join(repo, `notes/${uid}/v1.json`), "utf8")).ots.bitcoin_block));
+    }
   });
   it("a bad signature contributes nothing", async () => {
     const root = copy();

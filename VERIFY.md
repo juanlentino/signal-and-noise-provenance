@@ -274,10 +274,15 @@ is refused as well.
 A record contributes only if it passes the offline checks `verify-records.mjs`
 runs: the content hash recomputes, the signature holds under a key in the
 history, the `.ots` proof commits to that hash, and the anchor is confirmed at
-the block the record names. For notes and pages the commit chain must also hold
-up to that record. A record that fails is listed under `excluded` with its
-reason, and later versions of the same subject go with it. A record filed in
-two directories (the About page, see `misfiled-records.json`) counts once.
+the block the record names. For notes and pages the versions must run
+contiguously from v1 and the commit chain must hold up to that record. A
+record that fails, or whose proof cannot be read, is listed under `excluded`
+with its reason, and later versions of the same subject go with it. A sound
+record signed under an earlier key in the history keeps its chain whole and is
+listed as belonging to another key. A record filed in two directories (the
+About page, see `misfiled-records.json`) counts once, from whichever copy
+passes. Genesis events need the whole derivation set to reproduce the root,
+as `verify-genesis.mjs` requires.
 
 The clock is the confirmed Bitcoin block height: the block each record's
 `.ots` proof attests. Run offline, that is the block the proof names. Matching
@@ -317,8 +322,9 @@ What a result does not show:
 - A weight is not proof of identity or of human authorship. Zero means nothing
   has accumulated in the record, and the tool sets no threshold.
 
-A note's original signed events still count after a retraction names it or
+A subject's original signed events still count after a retraction names it or
 after it leaves the posts corpus (`retired-subjects.json`), and the output
-lists such subjects by id. A retraction is never an event of its own. Every
-retraction in the ledger today targets a rights-evidence record, so no note is
+lists such subjects by id under `withdrawn` and `retired`. A retraction is
+never an event of its own. Every retraction in the ledger today targets a
+rights-evidence record, which the example policy does not count, so no note is
 withdrawn.
