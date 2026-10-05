@@ -61,7 +61,9 @@ export function report(ledger, policy, at, atSource) {
       classes_this_policy_does_not_name: Object.fromEntries(Object.entries(unnamed).sort(byKey)),
       excluded: ledger.excluded.filter((x) => x.height === undefined || x.height <= at).map(({ path, reason }) => ({ path, reason })),
       withdrawn: ledger.withdrawn.filter((w) => w.height <= at).map((w) => w.uid),
-      retired: ledger.retired,
+      // retired-subjects.json is current metadata, unsigned and unanchored; a
+      // subject is named only once one of its events is in the record at --at.
+      retired: ledger.retired.filter((uid) => ledger.events.some((e) => e.uid === uid && e.height <= at)),
     },
   };
 }

@@ -203,6 +203,16 @@ describe("weigh, over the ledger", () => {
     expect(ids(ledger)).toEqual(ids(real));
     expect(ledger.excluded[0].reason).toContain("is not a note or page");
   });
+  it("a retired subject is named only once its events are in the record at --at", () => {
+    expect(report(real, policy, 0n, "test").record.retired).toEqual([]);
+    expect(report(real, policy, real.highest, "test").record.retired).toEqual(real.retired);
+  });
+  it("a malformed genesis derivation entry withholds genesis events, not the run", async () => {
+    const root = copy();
+    edit(root, "genesis/2026-07-09-leaves.json", (leaves) => { leaves[0] = null; });
+    const ledger = await ledgerEvents(root);
+    expect(ledger.excluded).toEqual([expect.objectContaining({ path: "genesis/2026-07-09-leaves.json" })]);
+  });
   it("a bad signature contributes nothing", async () => {
     const root = copy();
     edit(root, targetPath, (r) => { r.signature = `${r.signature[1]}${r.signature[0]}${r.signature.slice(2)}`; });

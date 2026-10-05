@@ -332,8 +332,8 @@ What a result does not show:
 A subject's original signed events still count after a retraction names it or
 after it leaves the posts corpus (`retired-subjects.json`), and the output
 lists such subjects by id under `withdrawn` and `retired`. A withdrawal, an
-exclusion or a class the policy omits is listed only when its record is
-anchored at or before `--at`. A retraction is
+exclusion, a retired subject or a class the policy omits is listed only when
+its record is anchored at or before `--at`. A retraction is
 never an event of its own. Every retraction in the ledger today targets a
 rights-evidence record, which the example policy does not count, so no note is
 withdrawn.

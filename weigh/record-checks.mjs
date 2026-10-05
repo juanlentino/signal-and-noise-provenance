@@ -101,7 +101,8 @@ export async function checkGenesis(root, keys) {
   const hashes = notes.map((note) => note.leaf_hash);
   const derivations = existsSync(join(root, `${GENESIS}-leaves.json`)) ? readJson(root, `${GENESIS}-leaves.json`) : [];
   const rootOk = genesisRootHolds(record);
-  const complete = rootOk && derivations.length === notes.length && derivations.every((entry, index) => {
+  const complete = rootOk && Array.isArray(derivations) && derivations.length === notes.length && derivations.every((entry, index) => {
+    if (entry === null || typeof entry !== "object" || entry.payload === null || typeof entry.payload !== "object") return false;
     const leaf = leafHash(canonicalize(entry.payload));
     return entry.note_uid === notes[index].note_uid && leaf === hashes[index]
       && verifyAuditPath(leaf, auditPath(hashes, index), record.payload.root);
