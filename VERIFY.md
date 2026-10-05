@@ -384,3 +384,9 @@ What a countersignature does not show:
   need an author-side signing step at publish, which is a separate decision.
 - Anything about the weight. `weigh.mjs` weighs the publisher key and does not
   read countersignatures.
+- That every batch is still here. Batches do not commit to one another and the
+  site pins no latest batch, so deleting one from the repository is not
+  detected. Deletion can only remove an attestation, never forge one, and the
+  batch's Bitcoin proof and the git history still show it existed. Detecting it
+  would need the site to publish the newest batch, an owner step after every
+  signing, which is not built.

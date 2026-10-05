@@ -22,7 +22,7 @@ The author key only countersigns: every verifier that resolves a signing key
 `weigh.mjs`) refuses a publisher record signed by it or by any key the history
 does not declare. It must differ from every publisher key, takes no part in
 publisher transitions, and is pinned like the publisher key (DNS
-`_provenance-author` and the site's key document). `verify:key-pins` compares those pins with the history in both directions, so a repository that deletes its author key while the pins still advertise it fails. Only one active author key is supported until
+`_provenance-author` and the site's key document). `verify:key-pins` compares those pins with the history in both directions, so a repository that deletes its author key while the pins still advertise it fails. `verify:records` now checks every signed page record offline as well (hash, signature, proof digest and a publisher key), which nothing did before: `verify:coverage` compared page rows with their records but never a signature. `key-finish` and `finish` recheck at write time, so a second author key or a record attested in two batches is refused before it lands. Deleting a batch is not detected; VERIFY.md says why. Only one active author key is supported until
 pinned retirement exists, so no unpinned key can sign batches. Pending batches
 are bounded by the grace window. The release tarball now carries every module its verifiers
 import, which `verify/release-tarball.test.mjs` checks; it caught two that

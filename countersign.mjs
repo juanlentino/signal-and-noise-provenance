@@ -85,6 +85,9 @@ async function keyFinish() {
   const key = { id, algorithm: "Ed25519", role: "author", public_key_base64: p.public_key_base64, sha256_fingerprint: p.sha256_fingerprint, ssh_public_key: state.ssh_public_key, introduced_at: new Date().toISOString().slice(0, 10), status: "active", introduction: { type: "author-key", bitcoin_anchor: anchorPath } };
   const anchor = { payload: p, content_hash: contentHash(p), signature_format: "sshsig", signature, pubkey_id: id, ots: { status: "pending" } };
   const history = readHistory(root);
+  // Rechecked here, not only at key-prepare: two keys staged before either
+  // finished, or a finish run twice, would otherwise append a second one.
+  if (history.keys.some((k) => k.role === "author")) fail("refused: the key history already has an author key, and rotation is not built");
   const publishers = history.keys.filter((k) => k.role !== "author");
   const named = publishers.find((k) => k.id === p.attests_publisher?.pubkey_id);
   if (!named) fail("refused: the staged record names no publisher key in the history");
@@ -127,6 +130,11 @@ async function finish() {
   const { state, signature } = staged(id);
   const p = state.payload;
   const record = { payload: p, content_hash: contentHash(p), signature_format: "sshsig", signature, pubkey_id: p.signer, ots: { status: "pending" } };
+  // Two batches prepared before either finished can list the same records;
+  // the verifier refuses a record attested twice, so refuse it here first.
+  const attested = new Set(batchIds(root).flatMap((b) => readBatch(root, b).payload.records.map((r) => r.content_hash)));
+  const twice = p.records.filter((r) => attested.has(r.content_hash)).map((r) => r.path);
+  if (twice.length) fail(`refused: already attested in another batch: ${twice.join(", ")}; run prepare again`);
   const { lookup } = await ledgerLookup(root);
   const problems = await countersignatureDivergences(record, { id, authorKeys: authorKeys(readHistory(root)), lookup });
   if (problems.length) fail(`refused: ${problems.map(([k, d]) => `${k}: ${d}`).join("; ")}`);

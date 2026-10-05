@@ -56,3 +56,24 @@ for (const entry of index.entries) {
 }
 
 console.log(`${checked}/${checked} note records across ${index.entries.length} notes pass offline hash, signature, OTS-digest, and commit-chain verification`);
+
+// Signed pages get the same offline check, every version: verify:coverage
+// compares page rows with their records but never checked a signature, so a
+// page signed by any key, the countersign-only author key included, passed.
+const pageRows = Array.isArray(index.pages) ? index.pages : [];
+let pagesChecked = 0;
+for (const row of pageRows) {
+  for (const version of recordVersions(join(root, "pages"), row.note_uid)) {
+    const base = join(root, "pages", row.note_uid, `v${version}`);
+    const record = JSON.parse(readFileSync(`${base}.json`, "utf8"));
+    assertPublisherKey(root, record.pubkey_id, `page ${row.slug} v${version}`);
+    const pubB64 = readFileSync(join(root, "keys", `${record.pubkey_id}.pub`), "utf8");
+    const result = await verifyRecord({ record, pubB64, otsBytes: new Uint8Array(readFileSync(`${base}.ots`)) });
+    if (!result.hashOk || !result.sigOk || !result.otsHashOk) {
+      throw new Error(`offline record verification failed for page ${row.slug} v${version} (hash=${result.hashOk}, signature=${result.sigOk}, otsDigest=${result.otsHashOk})`);
+    }
+    if (record.payload.version !== version) throw new Error(`record filename disagrees with its payload for page ${row.slug}: v${version}.json declares version ${record.payload.version}`);
+    pagesChecked += 1;
+  }
+}
+if (pageRows.length) console.log(`${pagesChecked} page records across ${pageRows.length} pages pass offline hash, signature and OTS-digest verification`);

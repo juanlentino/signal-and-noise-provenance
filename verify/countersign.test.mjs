@@ -112,16 +112,22 @@ describe("the whole flow, on a copy of the ledger", () => {
   it("introduces a key, countersigns every passing record, and the verifiers agree", () => {
     const root = mkdtempSync(join(tmpdir(), "countersign-ledger-"));
     for (const d of ["keys", "genesis", "notes", "pages", "rights-evidence", "retractions", "normalize", "verify", "weigh"]) cpSync(join(repo, d), join(root, d), { recursive: true });
-    for (const f of ["countersign.mjs", "countersign-checks.mjs", "countersign-ledger.mjs", "sshsig.mjs", "verify-countersignatures.mjs", "verify-key-history.mjs", "verify.mjs", "fetch-site.mjs", "ledger-records.mjs", "retraction-checks.mjs", "rights-evidence-checks.mjs", "retired-subjects.json", "pending.json", "package.json", "anchor-grace.mjs"]) cpSync(join(repo, f), join(root, f));
+    for (const f of ["countersign.mjs", "countersign-checks.mjs", "countersign-ledger.mjs", "sshsig.mjs", "verify-countersignatures.mjs", "verify-key-history.mjs", "verify.mjs", "fetch-site.mjs", "ledger-records.mjs", "retraction-checks.mjs", "rights-evidence-checks.mjs", "retired-subjects.json", "pending.json", "package.json", "anchor-grace.mjs", "verify-records.mjs", "index.json"]) cpSync(join(repo, f), join(root, f));
     const run = (...args) => execFileSync(process.execPath, args, { cwd: root }).toString();
     run("countersign.mjs", "key-prepare", "--id", "sn-author-ed25519-2026-10", "--ssh-pub", `${author.priv}.pub`);
     execFileSync("ssh-keygen", ["-Y", "sign", "-f", author.priv, "-n", SSHSIG_NAMESPACE, ".countersign/key-sn-author-ed25519-2026-10.msg"], { cwd: root, stdio: "ignore" });
     run("countersign.mjs", "key-finish", "--id", "sn-author-ed25519-2026-10");
     expect(run("verify-key-history.mjs")).toContain("1 author key(s)");
-    const out = run("countersign.mjs", "prepare");
-    const id = out.match(/Batch (\S+):/)[1];
-    execFileSync("ssh-keygen", ["-Y", "sign", "-f", author.priv, "-n", SSHSIG_NAMESPACE, `.countersign/${id}.msg`], { cwd: root, stdio: "ignore" });
+    // Finishing the same staged key again would append a second author key.
+    expect(() => run("countersign.mjs", "key-finish", "--id", "sn-author-ed25519-2026-10")).toThrow(/rotation is not built/);
+    // Two batches prepared before either is finished list the same records:
+    // the first finish writes, the second is refused.
+    const id = run("countersign.mjs", "prepare").match(/Batch (\S+):/)[1];
+    const twin = run("countersign.mjs", "prepare").match(/Batch (\S+):/)[1];
+    expect(twin).not.toBe(id);
+    for (const b of [id, twin]) execFileSync("ssh-keygen", ["-Y", "sign", "-f", author.priv, "-n", SSHSIG_NAMESPACE, `.countersign/${b}.msg`], { cwd: root, stdio: "ignore" });
     run("countersign.mjs", "finish", id);
+    expect(() => run("countersign.mjs", "finish", twin)).toThrow(/already attested in another batch/);
     expect(run("verify-countersignatures.mjs")).toMatch(/1 countersignature batch\(es\) hold, \d+ record\(s\) attested/);
     const pending = JSON.parse(readFileSync(join(root, "pending.json"), "utf8")).entries.map((e) => e.kind);
     expect(pending).toEqual(expect.arrayContaining(["key-fingerprint", "countersignature"]));
@@ -143,6 +149,13 @@ describe("the whole flow, on a copy of the ledger", () => {
     expect(run("-e", 'import("./weigh/ledger-events.mjs").then(async (m) => console.log(JSON.stringify((await m.ledgerEvents(".")).excluded)))')).toContain("which only countersigns");
     expect(() => run("-e", 'import("./ledger-records.mjs").then((m) => m.assertPublisherKey(".", "sn-author-ed25519-2026-10", "a note"))')).toThrow(/only countersigns/);
     writeFileSync(note, original);
+    // A page claiming the author key fails verify:records too.
+    expect(run("verify-records.mjs")).toMatch(/page records across \d+ pages pass/);
+    const page = join(root, "pages/01cea10c-9ad3-4f8b-9d74-d0e7e90dbd1d/v1.json");
+    const pageOriginal = readFileSync(page, "utf8");
+    writeFileSync(page, JSON.stringify({ ...JSON.parse(pageOriginal), pubkey_id: "sn-author-ed25519-2026-10" }));
+    expect(() => run("verify-records.mjs")).toThrow(/only countersigns/);
+    writeFileSync(page, pageOriginal);
     // A file planted elsewhere with a copied content_hash is not a passing record.
     const planted = join(root, "notes/0f000000-0000-4000-8000-000000000000");
     cpSync(join(root, "notes/024d8307-1ab3-4fa3-9be5-6ae5634bf124"), planted, { recursive: true });
