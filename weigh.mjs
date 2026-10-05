@@ -32,16 +32,19 @@ export function parseArgs(argv) {
     } else throw new Error(`unknown argument ${JSON.stringify(flag)}`);
   }
   if (!args.policy) throw new Error("--policy is required: the policy is the verifier's to state, and there is no default");
-  if (args.at !== undefined && !/^(0|[1-9]\d*)$/.test(args.at)) throw new Error("--at is a Bitcoin block height");
+  if (args.at !== undefined && (!/^(0|[1-9]\d*)$/.test(args.at) || BigInt(args.at) > BigInt(Number.MAX_SAFE_INTEGER))) throw new Error("--at is a Bitcoin block height");
   return args;
 }
 
 /** The whole report, as plain data. Pure given the ledger and the policy. */
 export function report(ledger, policy, at, atSource) {
   const { P, persistenceSum, attest, W } = compose({ events: ledger.events, attestations: [] }, policy, at);
-  const persistence = Object.fromEntries([...P].map(([type, slot]) => [type, { events: slot.events, P: show(slot.P), P_decimal: decimal(slot.P) }]));
+  // Policy-derived keys are sorted: two policies with the same canonical hash
+  // differ at most in member order, and must give the same bytes.
+  const byKey = ([a], [b]) => (a < b ? -1 : a > b ? 1 : 0);
+  const persistence = Object.fromEntries([...P].sort(byKey).map(([type, slot]) => [type, { events: slot.events, P: show(slot.P), P_decimal: decimal(slot.P) }]));
   const unnamed = {};
-  for (const event of ledger.events) if (!policy.retain.has(event.class)) unnamed[event.class] = (unnamed[event.class] ?? 0) + 1;
+  for (const event of ledger.events) if (!policy.retain.has(event.class) && event.height <= at) unnamed[event.class] = (unnamed[event.class] ?? 0) + 1;
   return {
     computation: "weight of one key under the stated policy; Provenance Without Institutions, equation (1)",
     key: ledger.key,
@@ -49,13 +52,13 @@ export function report(ledger, policy, at, atSource) {
     at_source: atSource,
     policy: { sha256: policy.sha256, description: policy.description },
     persistence: { ...persistence, sum: show(persistenceSum), sum_decimal: decimal(persistenceSum) },
-    attestations: { counts: Object.fromEntries([...attest.counts].map(([t, n]) => [t, Number(n)])), C: attest.C, D_of_C: show(attest.D), term: show(attest.term), reason: ATTESTATION_REASON },
+    attestations: { counts: Object.fromEntries([...attest.counts].sort(byKey).map(([t, n]) => [t, Number(n)])), C: attest.C, D_of_C: show(attest.D), term: show(attest.term), reason: ATTESTATION_REASON },
     W: show(W),
     W_decimal: decimal(W),
     ...(W.n === 0n ? { reading: ZERO_WORDING } : {}),
     record: {
       anchored_after_at: ledger.events.filter((e) => e.height > at).length,
-      classes_this_policy_does_not_name: unnamed,
+      classes_this_policy_does_not_name: Object.fromEntries(Object.entries(unnamed).sort(byKey)),
       excluded: ledger.excluded,
       withdrawn: ledger.withdrawn.filter((w) => w.height <= at).map((w) => w.uid),
       retired: ledger.retired,

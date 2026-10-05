@@ -79,7 +79,8 @@ export async function ledgerEvents(root) {
     return null;
   };
 
-  const subjects = [...new Set(SUBJECT_DIRS.flatMap((dir) => listDirs(root, dir)))].sort();
+  // A subject the genesis root proves is visited even with no file of its own.
+  const subjects = [...new Set([...SUBJECT_DIRS.flatMap((dir) => listDirs(root, dir)), ...genesis.proven])].sort();
   for (const uid of subjects) {
     const counted = [];
     let previous = null;

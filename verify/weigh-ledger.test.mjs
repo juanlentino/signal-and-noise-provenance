@@ -130,6 +130,31 @@ describe("weigh, over the ledger", () => {
       expect(works.get(uid)).toBe(BigInt(JSON.parse(readFileSync(join(repo, `notes/${uid}/v1.json`), "utf8")).ots.bitcoin_block));
     }
   });
+  it("classes the policy omits are counted only up to --at", () => {
+    expect(report(real, policy, 0n, "test").record.classes_this_policy_does_not_name).toEqual({});
+  });
+  it("member order inside the policy does not change the bytes", () => {
+    const raw = JSON.parse(readFileSync(join(repo, "policy/example.json"), "utf8"));
+    const flipped = { ...raw, decay: { ...raw.decay, retain: Object.fromEntries(Object.entries(raw.decay.retain).reverse()) }, attestation_coefficients: Object.fromEntries(Object.entries(raw.attestation_coefficients).reverse()) };
+    expect(JSON.stringify(report(real, loadPolicy(flipped), real.highest, "test"))).toBe(JSON.stringify(report(real, policy, real.highest, "test")));
+  });
+  it("a damaged genesis root withholds genesis events but keeps every note's chain", async () => {
+    const root = copy();
+    writeFileSync(join(root, "genesis/2026-07-09-root.ots"), "not a proof");
+    const ledger = await ledgerEvents(root);
+    expect(ledger.excluded).toEqual([{ path: "genesis/2026-07-09-root.json", reason: expect.stringContaining("cannot be checked") }]);
+    const revisions = (l) => ids(l).filter((id) => id.startsWith("revision:"));
+    expect(revisions(ledger)).toEqual(revisions(real));
+    expect(ledger.events.filter((e) => e.class === "work")).toHaveLength(real.events.filter((e) => e.class === "work").length);
+  });
+  it("a genesis subject with no file of its own keeps its genesis work event", async () => {
+    const root = copy();
+    const uid = JSON.parse(readFileSync(join(repo, "genesis/2026-07-09-root.json"), "utf8")).payload.notes.map((n) => n.note_uid)
+      .find((u) => real.events.some((e) => e.uid === u && e.class === "work" && e.height === GENESIS_HEIGHT));
+    rmSync(join(root, "notes", uid), { recursive: true });
+    const ledger = await ledgerEvents(root);
+    expect(ledger.events.filter((e) => e.uid === uid)).toEqual([{ class: "work", uid, version: 1, height: GENESIS_HEIGHT }]);
+  });
   it("a bad signature contributes nothing", async () => {
     const root = copy();
     edit(root, targetPath, (r) => { r.signature = `${r.signature[1]}${r.signature[0]}${r.signature.slice(2)}`; });

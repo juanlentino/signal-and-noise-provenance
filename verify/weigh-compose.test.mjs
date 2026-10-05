@@ -112,5 +112,6 @@ describe("the policy loader", () => {
   it("there is no default policy", () => {
     expect(() => parseArgs([])).toThrow(/--policy is required/);
     expect(() => parseArgs(["--policy", "p.json", "--at", "2026-10-01"])).toThrow(/block height/);
+    expect(() => parseArgs(["--policy", "p.json", "--at", "9007199254740993"])).toThrow(/block height/);
   });
 });

@@ -68,9 +68,12 @@ export async function checkGenesis(root, keys) {
   if (!existsSync(join(root, `${GENESIS}-root.json`))) return none;
   const record = readJson(root, `${GENESIS}-root.json`);
   const result = await check(root, keys, `${GENESIS}-root.json`, record);
-  if (result.reason) return { ...none, record, result };
-  const notes = record.payload.notes;
+  // The leaves the root names stay the parents its notes' v1 records must
+  // carry even when the root itself fails, as verify-records.mjs reads them;
+  // a failed root only withholds the genesis events.
+  const notes = Array.isArray(record.payload?.notes) ? record.payload.notes : [];
   const chainLeaves = new Map(notes.map((note) => [note.note_uid, note.leaf_hash]));
+  if (result.reason) return { ...none, record, result, chainLeaves };
   const hashes = notes.map((note) => note.leaf_hash);
   const derivations = existsSync(join(root, `${GENESIS}-leaves.json`)) ? readJson(root, `${GENESIS}-leaves.json`) : [];
   const complete = derivations.length === notes.length && derivations.every((entry, index) => {
