@@ -17,6 +17,9 @@ that is current or the trust root. `verify-countersignatures.mjs` (a CI step)
 checks every batch offline: the signature, the content hash, every listed record
 passing the offline checks with the same hash, no record attested twice, and the
 proof once it lands. `sshsig.mjs` verifies OpenSSH signatures (ssh-ed25519 only).
+The author key only countersigns: every verifier that resolves a signing key
+(`verify.mjs`, `verify-records.mjs`, the rights and retraction checks, and
+`weigh.mjs`) now refuses a publisher record signed by it.
 
 Pinned in `verify/countersign.test.mjs` with real `ssh-keygen` keys: a good
 signature, a changed message, another key, another namespace, an ECDSA key, each

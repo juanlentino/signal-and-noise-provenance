@@ -35,7 +35,7 @@ import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { bitcoinAttestation, stampedDigest, toHex } from "./verify/ots.mjs";
-import { contiguousFromV1, recordVersions } from "./ledger-records.mjs";
+import { assertPublisherKey, contiguousFromV1, recordVersions } from "./ledger-records.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const signalsRoot = join(root, "rights-signals");
@@ -92,6 +92,7 @@ for (const slug of slugs) {
     const recomputed = await sha256Hex(raw);
     if (recomputed !== record.content_hash) throw new Error(`rights-signal hash mismatch for ${slug} v${version}: .raw hashes to ${recomputed}, record says ${record.content_hash}`);
 
+    assertPublisherKey(root, record.pubkey_id, `rights-signal ${slug} v${version}`);
     const pubPath = join(root, "keys", `${record.pubkey_id}.pub`);
     if (!existsSync(pubPath)) throw new Error(`rights-signal ${slug} v${version} names unpublished key ${record.pubkey_id}`);
     const key = await crypto.subtle.importKey("raw", b64(readFileSync(pubPath, "utf8")), { name: "Ed25519" }, false, ["verify"]);

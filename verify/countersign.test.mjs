@@ -133,6 +133,14 @@ describe("the whole flow, on a copy of the ledger", () => {
     writeFileSync(historyPath, JSON.stringify({ ...history, current: "sn-author-ed25519-2026-10" }));
     expect(() => run("verify-key-history.mjs")).toThrow(/author key cannot be current/);
     writeFileSync(historyPath, JSON.stringify(history));
+    // The author key never signs a publisher record: a note claiming it is
+    // refused by role before any signature is checked.
+    const note = join(root, "notes/024d8307-1ab3-4fa3-9be5-6ae5634bf124/v1.json");
+    const original = readFileSync(note, "utf8");
+    writeFileSync(note, JSON.stringify({ ...JSON.parse(original), pubkey_id: "sn-author-ed25519-2026-10" }));
+    expect(run("-e", 'import("./weigh/ledger-events.mjs").then(async (m) => console.log(JSON.stringify((await m.ledgerEvents(".")).excluded)))')).toContain("which only countersigns");
+    expect(() => run("-e", 'import("./ledger-records.mjs").then((m) => m.assertPublisherKey(".", "sn-author-ed25519-2026-10", "a note"))')).toThrow(/only countersigns/);
+    writeFileSync(note, original);
     // Edit one listed hash after signing: the verifier refuses the batch.
     const path = join(root, "countersignatures", `${id}.json`);
     const record = JSON.parse(readFileSync(path, "utf8"));

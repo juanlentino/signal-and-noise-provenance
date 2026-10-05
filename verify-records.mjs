@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { verifyRecord } from "./verify.mjs";
-import { contiguousFromV1, expectedParent, recordVersions } from "./ledger-records.mjs";
+import { assertPublisherKey, contiguousFromV1, expectedParent, recordVersions } from "./ledger-records.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const notesRoot = join(root, "notes");
@@ -31,6 +31,7 @@ for (const entry of index.entries) {
     const base = join(notesRoot, entry.note_uid, `v${version}`);
     const record = JSON.parse(readFileSync(`${base}.json`, "utf8"));
     const otsBytes = new Uint8Array(readFileSync(`${base}.ots`));
+    assertPublisherKey(root, record.pubkey_id, `${entry.slug} v${version}`);
     const pubB64 = readFileSync(join(root, "keys", `${record.pubkey_id}.pub`), "utf8");
     const result = await verifyRecord({ record, pubB64, otsBytes });
     if (!result.hashOk || !result.sigOk || !result.otsHashOk) {
