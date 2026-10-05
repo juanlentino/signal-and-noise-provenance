@@ -63,18 +63,23 @@ export async function ledgerEvents(root) {
   const genesis = await checkGenesis(root, keys);
   const excluded = [];
   if (genesis.result.reason) excluded.push({ path: `${GENESIS}-root.json`, reason: genesis.result.reason });
-  if (genesis.reason) excluded.push({ path: `${GENESIS}-leaves.json`, reason: genesis.reason });
+  if (genesis.reason) excluded.push({ path: `${GENESIS}-leaves.json`, reason: genesis.reason, height: genesis.result.height });
   const genesisHeight = genesis.proven.size && genesis.record.pubkey_id === keyId ? genesis.result.height : null;
-  const heights = genesis.record && !genesis.result.reason ? [genesis.result.height] : [];
+  // A root whose derivations fail is rejected, and its height sets no clock.
+  const heights = genesis.record && !genesis.result.reason && !genesis.reason ? [genesis.result.height] : [];
   const events = [];
 
-  /** List a record that does not count; return its height when it does. */
+  /**
+   * List a record that does not count; return its height when it does. An
+   * exclusion keeps the height its proof attests, when the checks got that
+   * far, so a report at an earlier --at does not list a record not yet there.
+   */
   const tally = (path, record, reason, height) => {
-    if (reason) excluded.push({ path, reason });
+    if (reason) excluded.push({ path, reason, height });
     else {
       heights.push(height);
       if (record.pubkey_id === keyId) return height;
-      excluded.push({ path, reason: `signed under ${record.pubkey_id}, not the key being weighed` });
+      excluded.push({ path, reason: `signed under ${record.pubkey_id}, not the key being weighed`, height });
     }
     return null;
   };
@@ -134,7 +139,7 @@ export async function ledgerEvents(root) {
       const result = await check(root, keys, path, record);
       const problems = result.reason ? [] : retractionDivergences(record, { uid, file: `v${version}.json`, exists: (rel) => existsSync(join(root, rel)), publishedKeyIds: [...keys.keys()] });
       const reason = result.reason ?? (problems.length ? `fails the retraction rules (${problems.map(([k]) => k).join(", ")})` : null);
-      if (reason) { excluded.push({ path, reason }); continue; }
+      if (reason) { excluded.push({ path, reason, height: result.height }); continue; }
       heights.push(result.height);
       const target = record.payload.note_uid;
       if (!withdrawals.has(target) || result.height < withdrawals.get(target)) withdrawals.set(target, result.height);

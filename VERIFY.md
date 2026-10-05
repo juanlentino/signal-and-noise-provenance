@@ -281,8 +281,9 @@ with its reason, and later versions of the same subject go with it. A sound
 record signed under an earlier key in the history keeps its chain whole and is
 listed as belonging to another key. A record filed in two directories (the
 About page, see `misfiled-records.json`) counts once, from whichever copy
-passes. Genesis events need the whole derivation set to reproduce the root,
-as `verify-genesis.mjs` requires. Rights-evidence and retraction records must
+passes. Genesis events need a genesis record whose leaves rebuild the very root its
+anchor commits to, and the whole derivation set to reproduce it, as
+`verify-genesis.mjs` requires. Rights-evidence and retraction records must
 also pass the claim rules their own verifiers apply (`rights-evidence-checks.mjs`,
 `retraction-checks.mjs`).
 
@@ -322,12 +323,14 @@ What a result does not show:
   to the verifier; the example's 4320-block epoch and its retain fractions were
   chosen for this repository and claim nothing beyond it.
 - A weight is not proof of identity or of human authorship. Zero means nothing
-  has accumulated in the record, and the tool sets no threshold.
+  has accumulated in the record under this policy, and the tool sets no
+  threshold.
 
 A subject's original signed events still count after a retraction names it or
 after it leaves the posts corpus (`retired-subjects.json`), and the output
-lists such subjects by id under `withdrawn` and `retired`. A withdrawal is
-listed only when its retraction is anchored at or before `--at`. A retraction is
+lists such subjects by id under `withdrawn` and `retired`. A withdrawal, an
+exclusion or a class the policy omits is listed only when its record is
+anchored at or before `--at`. A retraction is
 never an event of its own. Every retraction in the ledger today targets a
 rights-evidence record, which the example policy does not count, so no note is
 withdrawn.

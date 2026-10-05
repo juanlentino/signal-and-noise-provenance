@@ -10,7 +10,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { canonicalize } from "../normalize/canonical-json.mjs";
-import { auditPath, leafHash, verifyAuditPath } from "../normalize/merkle-v1.mjs";
+import { auditPath, leafHash, rootFromLeafHashes, verifyAuditPath } from "../normalize/merkle-v1.mjs";
 import { verifyRecord } from "../verify.mjs";
 
 export const GENESIS = "genesis/2026-07-09";
@@ -63,6 +63,19 @@ export async function pickCopy(root, keys, copies) {
  * reproduces the root, as verify-genesis.mjs requires: a truncated or altered
  * set proves nothing, and the reason is listed.
  */
+/**
+ * As verify-genesis.mjs: the record is a genesis root, and the leaves it names
+ * rebuild the very root its anchor commits to. Pure, because a signed root
+ * that breaks this cannot be built without the key, and a rule nobody can
+ * exercise end to end is tested directly instead.
+ */
+export function genesisRootHolds(record) {
+  const notes = Array.isArray(record?.payload?.notes) ? record.payload.notes : [];
+  return record.payload.kind === "genesis" && notes.length > 0
+    && rootFromLeafHashes(notes.map((note) => note.leaf_hash)) === record.payload.root
+    && record.payload.root === record.content_hash;
+}
+
 export async function checkGenesis(root, keys) {
   const none = { record: null, result: { reason: null }, chainLeaves: new Map(), proven: new Set(), reason: null };
   if (!existsSync(join(root, `${GENESIS}-root.json`))) return none;
@@ -76,7 +89,8 @@ export async function checkGenesis(root, keys) {
   if (result.reason) return { ...none, record, result, chainLeaves };
   const hashes = notes.map((note) => note.leaf_hash);
   const derivations = existsSync(join(root, `${GENESIS}-leaves.json`)) ? readJson(root, `${GENESIS}-leaves.json`) : [];
-  const complete = derivations.length === notes.length && derivations.every((entry, index) => {
+  const rootOk = genesisRootHolds(record);
+  const complete = rootOk && derivations.length === notes.length && derivations.every((entry, index) => {
     const leaf = leafHash(canonicalize(entry.payload));
     return entry.note_uid === notes[index].note_uid && leaf === hashes[index]
       && verifyAuditPath(leaf, auditPath(hashes, index), record.payload.root);

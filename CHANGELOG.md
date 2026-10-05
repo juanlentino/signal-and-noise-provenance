@@ -30,9 +30,10 @@ the decay grid, every policy refusal) and `verify/weigh-ledger.test.mjs`
 key, a mutated `published_at`, a failed or missing middle version, a damaged
 copy of a record filed twice, a note's records copied under another id, a key
 rotation, an incomplete genesis set, a rights-evidence record copied under a
-second id and a retraction its own rules reject; genesis heights; withdrawn
-subjects of every class, each only from its retraction's height; no network;
-byte-identical output). Each rule was broken once and its test went
+second id and a retraction its own rules reject; genesis heights and the
+genesis root rule; withdrawn subjects of every class, exclusions and omitted
+classes, each only from its own height; member order inside a policy; no
+network; byte-identical output). Each rule was broken once and its test went
 red. CI runs `weigh` twice and compares the bytes. Nothing under `notes/`,
 `pages/`, `keys/`, `genesis/`, `rights-signals/`, `rights-evidence/` or
 `retractions/` changed.

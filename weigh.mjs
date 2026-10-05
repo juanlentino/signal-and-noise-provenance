@@ -19,7 +19,7 @@ import { loadPolicy } from "./weigh/policy.mjs";
 import { decimal, show } from "./weigh/rational.mjs";
 
 export const ATTESTATION_REASON = "No recognition attestation exists in this record: no issuer holding its own key has signed a scoped claim about this key, and the ledger has no record format for one. The ORCID identifier, the WebFinger subject and the did:web document are the author's own statements and are not counted. The institutional track has nothing to read.";
-export const ZERO_WORDING = "Nothing has accumulated in the record.";
+export const ZERO_WORDING = "Nothing has accumulated in the record under this policy.";
 
 export function parseArgs(argv) {
   const args = { explain: false };
@@ -59,7 +59,7 @@ export function report(ledger, policy, at, atSource) {
     record: {
       anchored_after_at: ledger.events.filter((e) => e.height > at).length,
       classes_this_policy_does_not_name: Object.fromEntries(Object.entries(unnamed).sort(byKey)),
-      excluded: ledger.excluded,
+      excluded: ledger.excluded.filter((x) => x.height === undefined || x.height <= at).map(({ path, reason }) => ({ path, reason })),
       withdrawn: ledger.withdrawn.filter((w) => w.height <= at).map((w) => w.uid),
       retired: ledger.retired,
     },

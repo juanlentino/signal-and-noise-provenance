@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 import { ledgerEvents } from "../weigh/ledger-events.mjs";
+import { genesisRootHolds } from "../weigh/record-checks.mjs";
 import { loadPolicy } from "../weigh/policy.mjs";
 import { explain, report, ZERO_WORDING } from "../weigh.mjs";
 
@@ -87,7 +88,7 @@ describe("weigh, over the ledger", () => {
     rmSync(join(root, "rights-evidence", w.uid), { recursive: true });
     const ledger = await ledgerEvents(root);
     expect(ledger.withdrawn.map((x) => x.uid)).not.toContain(w.uid);
-    expect(ledger.excluded).toContainEqual({ path: `retractions/${w.uid}/v1.json`, reason: expect.stringContaining("retracted_path") });
+    expect(ledger.excluded).toContainEqual(expect.objectContaining({ path: `retractions/${w.uid}/v1.json`, reason: expect.stringContaining("retracted_path") }));
   });
   it("a note's records copied under another id are not a second history", async () => {
     const root = copy();
@@ -124,7 +125,7 @@ describe("weigh, over the ledger", () => {
     const root = copy();
     edit(root, "genesis/2026-07-09-leaves.json", (leaves) => leaves.pop());
     const ledger = await ledgerEvents(root);
-    expect(ledger.excluded).toEqual([{ path: "genesis/2026-07-09-leaves.json", reason: expect.stringContaining("do not reproduce") }]);
+    expect(ledger.excluded).toEqual([expect.objectContaining({ path: "genesis/2026-07-09-leaves.json", reason: expect.stringContaining("do not reproduce") })]);
     const works = new Map(ledger.events.filter((e) => e.class === "work").map((e) => [e.uid, e.height]));
     for (const { note_uid: uid } of JSON.parse(readFileSync(join(repo, "genesis/2026-07-09-root.json"), "utf8")).payload.notes) {
       expect(works.get(uid)).toBe(BigInt(JSON.parse(readFileSync(join(repo, `notes/${uid}/v1.json`), "utf8")).ots.bitcoin_block));
@@ -154,6 +155,28 @@ describe("weigh, over the ledger", () => {
     rmSync(join(root, "notes", uid), { recursive: true });
     const ledger = await ledgerEvents(root);
     expect(ledger.events.filter((e) => e.uid === uid)).toEqual([{ class: "work", uid, version: 1, height: GENESIS_HEIGHT }]);
+  });
+  it("an exclusion anchored after --at is not listed at that height", async () => {
+    const root = copy();
+    edit(root, "keys/key-history.json", (h) => {
+      h.keys.push({ ...h.keys[0], id: "sn-ed25519-2099-01", public_key_base64: "AAAA", sha256_fingerprint: "00" });
+      h.current = "sn-ed25519-2099-01";
+    });
+    const ledger = await ledgerEvents(root);
+    expect(report(ledger, policy, 0n, "test").record.excluded).toEqual([]);
+    expect(report(ledger, policy, ledger.highest, "test").record.excluded.length).toBeGreaterThan(100);
+  });
+  it("a genesis root must be a genesis record that rebuilds its own anchored hash", () => {
+    const genesisRoot = JSON.parse(readFileSync(join(repo, "genesis/2026-07-09-root.json"), "utf8"));
+    expect(genesisRootHolds(genesisRoot)).toBe(true);
+    expect(genesisRootHolds({ ...genesisRoot, payload: { ...genesisRoot.payload, kind: "note" } })).toBe(false);
+    expect(genesisRootHolds({ ...genesisRoot, content_hash: "00".repeat(32) })).toBe(false);
+    expect(genesisRootHolds({ ...genesisRoot, payload: { ...genesisRoot.payload, notes: genesisRoot.payload.notes.slice(1) } })).toBe(false);
+  });
+  it("a rejected genesis root sets no clock", async () => {
+    const root = copy(["keys", "genesis"]);
+    edit(root, "genesis/2026-07-09-leaves.json", (leaves) => leaves.pop());
+    expect((await ledgerEvents(root)).highest).toBe(0n);
   });
   it("a bad signature contributes nothing", async () => {
     const root = copy();
@@ -215,7 +238,7 @@ describe("weigh, over the ledger", () => {
     const r = report(ledger, policy, ledger.highest, "test");
     expect(r.W).toBe("0");
     expect(r.reading).toBe(ZERO_WORDING);
-    expect(explain(r)).toContain("Nothing has accumulated in the record.");
+    expect(explain(r)).toContain("Nothing has accumulated in the record under this policy.");
   });
   it("speaks of weight under a policy, never of scores, ranks or tiers", () => {
     const r = report(real, policy, real.highest, "test");
