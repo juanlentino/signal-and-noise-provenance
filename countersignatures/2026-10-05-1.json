@@ -433,6 +433,7 @@
   "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgV7kvC41ull/Pp8q7q7t7bY3XEz\n3g6DohCAtP/1Fho4oAAAAdc24tcHJvdmVuYW5jZUBqdWFubGVudGluby5jb20AAAAAAAAA\nBnNoYTUxMgAAAFMAAAALc3NoLWVkMjU1MTkAAABAlD40qw8Aam7XW8MavOzshMExnVF/b1\n3emywoiD7QfxpNjXLa0MTcsm0gf5Z9AL/L45SJ5LHYFoos1flg3mb+CA==\n-----END SSH SIGNATURE-----",
   "pubkey_id": "sn-author-ed25519-2026-10",
   "ots": {
-    "status": "pending"
+    "status": "confirmed",
+    "bitcoin_block": 970063
   }
 }
