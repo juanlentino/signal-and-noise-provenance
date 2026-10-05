@@ -156,6 +156,21 @@ describe("the whole flow, on a copy of the ledger", () => {
     writeFileSync(page, JSON.stringify({ ...JSON.parse(pageOriginal), pubkey_id: "sn-author-ed25519-2026-10" }));
     expect(() => run("verify-records.mjs")).toThrow(/only countersigns/);
     writeFileSync(page, pageOriginal);
+    // A page directory the index does not list is still checked.
+    const unindexed = join(root, "pages/0f000000-0000-4000-8000-000000000001");
+    cpSync(join(root, "pages/01cea10c-9ad3-4f8b-9d74-d0e7e90dbd1d"), unindexed, { recursive: true });
+    const unindexedV1 = join(unindexed, "v1.json");
+    writeFileSync(unindexedV1, JSON.stringify({ ...JSON.parse(pageOriginal), pubkey_id: "sn-author-ed25519-2026-10" }));
+    expect(() => run("verify-records.mjs")).toThrow(/page 0f000000-0000-4000-8000-000000000001 v1 is signed by the author key/);
+    writeFileSync(unindexedV1, pageOriginal);
+    // Its versions must be contiguous from v1.
+    rmSync(join(unindexed, "v2.json"));
+    expect(() => run("verify-records.mjs")).toThrow(/not contiguous from v1/);
+    rmSync(unindexed, { recursive: true });
+    // A confirmed page must be anchored at the block it names.
+    writeFileSync(page, JSON.stringify({ ...JSON.parse(pageOriginal), ots: { ...JSON.parse(pageOriginal).ots, bitcoin_block: JSON.parse(pageOriginal).ots.bitcoin_block + 1 } }));
+    expect(() => run("verify-records.mjs")).toThrow(/confirmed OTS block mismatch for page/);
+    writeFileSync(page, pageOriginal);
     // A file planted elsewhere with a copied content_hash is not a passing record.
     const planted = join(root, "notes/0f000000-0000-4000-8000-000000000000");
     cpSync(join(root, "notes/024d8307-1ab3-4fa3-9be5-6ae5634bf124"), planted, { recursive: true });

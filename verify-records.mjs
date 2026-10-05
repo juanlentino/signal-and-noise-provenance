@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { verifyRecord } from "./verify.mjs";
@@ -57,23 +57,37 @@ for (const entry of index.entries) {
 
 console.log(`${checked}/${checked} note records across ${index.entries.length} notes pass offline hash, signature, OTS-digest, and commit-chain verification`);
 
-// Signed pages get the same offline check, every version: verify:coverage
-// compares page rows with their records but never checked a signature, so a
-// page signed by any key, the countersign-only author key included, passed.
-const pageRows = Array.isArray(index.pages) ? index.pages : [];
+// Signed pages get the same offline check as notes, every version of every
+// page directory on disk: verify:coverage compares indexed page rows with
+// their records but never checked a signature, so a page signed by any key,
+// the countersign-only author key included, passed, and an unindexed page was
+// never looked at.
+const pagesRoot = join(root, "pages");
+const pageUids = existsSync(pagesRoot) ? readdirSync(pagesRoot, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name).sort() : [];
 let pagesChecked = 0;
-for (const row of pageRows) {
-  for (const version of recordVersions(join(root, "pages"), row.note_uid)) {
-    const base = join(root, "pages", row.note_uid, `v${version}`);
+for (const uid of pageUids) {
+  const versions = recordVersions(pagesRoot, uid);
+  if (!contiguousFromV1(versions)) throw new Error(`page record versions are not contiguous from v1 for ${uid}: ${versions.map((v) => `v${v}`).join(",")}`);
+  let previous = null;
+  for (const version of versions) {
+    const base = join(pagesRoot, uid, `v${version}`);
     const record = JSON.parse(readFileSync(`${base}.json`, "utf8"));
-    assertPublisherKey(root, record.pubkey_id, `page ${row.slug} v${version}`);
+    assertPublisherKey(root, record.pubkey_id, `page ${uid} v${version}`);
     const pubB64 = readFileSync(join(root, "keys", `${record.pubkey_id}.pub`), "utf8");
     const result = await verifyRecord({ record, pubB64, otsBytes: new Uint8Array(readFileSync(`${base}.ots`)) });
     if (!result.hashOk || !result.sigOk || !result.otsHashOk) {
-      throw new Error(`offline record verification failed for page ${row.slug} v${version} (hash=${result.hashOk}, signature=${result.sigOk}, otsDigest=${result.otsHashOk})`);
+      throw new Error(`offline record verification failed for page ${uid} v${version} (hash=${result.hashOk}, signature=${result.sigOk}, otsDigest=${result.otsHashOk})`);
     }
-    if (record.payload.version !== version) throw new Error(`record filename disagrees with its payload for page ${row.slug}: v${version}.json declares version ${record.payload.version}`);
+    if (record.payload.version !== version) throw new Error(`record filename disagrees with its payload for page ${uid}: v${version}.json declares version ${record.payload.version}`);
+    const parent = expectedParent({ version, genesisLeaf: genesisLeaf.get(uid) ?? null, previousContentHash: previous?.content_hash ?? null });
+    if ((record.payload.parent ?? null) !== parent) {
+      throw new Error(`broken commit chain for page ${uid} v${version}: record names parent ${JSON.stringify(record.payload.parent ?? null)}, expected ${JSON.stringify(parent)}`);
+    }
+    if (record.ots?.status === "confirmed" && (!result.btc || result.btc.height !== record.ots.bitcoin_block)) {
+      throw new Error(`confirmed OTS block mismatch for page ${uid} v${version}`);
+    }
+    previous = record;
     pagesChecked += 1;
   }
 }
-if (pageRows.length) console.log(`${pagesChecked} page records across ${pageRows.length} pages pass offline hash, signature and OTS-digest verification`);
+if (pageUids.length) console.log(`${pagesChecked} page records across ${pageUids.length} pages pass offline hash, signature, OTS-digest, and commit-chain verification`);
