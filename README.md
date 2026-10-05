@@ -107,6 +107,17 @@ note's DOI for the note, the ledger's for the chain it sits in.
   header from a public explorer. `verify/ots.mjs` is a minimal, vendored OTS
   reader; everything but the block-header lookup is offline. Tested against a
   real confirmed record in `verify/verify.test.mjs` (`npm test`).
+- `weigh.mjs` + `weigh/`: the key's weight under a policy the verifier states,
+  equation (1) of *Provenance Without Institutions* (SSRN 7456638), computed
+  offline from the records here with exact fractions and the confirmed Bitcoin
+  block height as the clock (`npm run weigh -- --policy policy/example.json`,
+  add `--explain` for sentences). It refuses to run without a policy. See
+  "Weigh the key" in VERIFY.md for what a result means and what it does not
+  show. Tested in `verify/weigh-compose.test.mjs` and
+  `verify/weigh-ledger.test.mjs`.
+- `policy/example.json`: an illustrative weighing policy, the seven inputs the
+  paper leaves to the verifier. It says in its own description that it is an
+  illustration and carries no authority.
 - `backfill-v1.done` — one-time marker: present once the Worker's historical
   `bitcoin_block` backfill has run (for Notes confirmed before the Worker began
   recording the block).

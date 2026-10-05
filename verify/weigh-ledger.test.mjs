@@ -84,6 +84,16 @@ describe("weigh, over the ledger", () => {
     expect(ids(ledger)).toEqual(without);
     expect(ledger.excluded[0].reason).toContain("outside the history");
   });
+  it("a failed middle version takes every later version of the subject with it", async () => {
+    // verify-records.mjs halts at the first failure; nothing after one has passed.
+    const root = copy();
+    edit(root, `notes/${target.uid}/v2.json`, (r) => { r.ots.status = "pending"; });
+    const ledger = await ledgerEvents(root);
+    const gone = ids(real).filter((id) => id.startsWith(`revision:${target.uid}:`));
+    expect(gone.length).toBe(target.version - 1);
+    expect(ids(ledger)).toEqual(ids(real).filter((id) => !gone.includes(id)));
+    expect(ledger.excluded.slice(1).every((x) => x.reason.includes("earlier record that did not pass"))).toBe(true);
+  });
   it("mutating published_at can drop a record but never moves an event", async () => {
     // published_at sits inside the signed payload: changing it breaks the hash
     // and the signature, so the record stops counting. Every other event keeps

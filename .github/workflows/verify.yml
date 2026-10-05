@@ -113,6 +113,13 @@ jobs:
       - run: npm run verify:key-pins
       - run: npm run verify:retractions
       - run: npm run verify:coverage
+      # weigh.mjs claims the same commit and the same policy give the same
+      # bytes. Two runs and a cmp make that a guard instead of a sentence.
+      - name: Weigh the key twice and compare
+        run: |
+          npm run --silent weigh -- --policy policy/example.json > "$RUNNER_TEMP/weigh-1.json"
+          npm run --silent weigh -- --policy policy/example.json > "$RUNNER_TEMP/weigh-2.json"
+          cmp "$RUNNER_TEMP/weigh-1.json" "$RUNNER_TEMP/weigh-2.json"
       # The ONLY step whose strictness depends on the trigger. Everything else
       # — records, genesis, keys, key-pins, coverage, the test suite — runs
       # identically on every trigger, because none of them can be legitimately

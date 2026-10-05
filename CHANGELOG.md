@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-10-05: weigh the key
+
+`weigh.mjs` computes the key's weight under a policy the verifier states,
+equation (1) of *Provenance Without Institutions* (Lentino, SSRN 7456638,
+Section 6), from the records already in this repository. It is the first step
+on identity, the gap the plugin's gap analysis parked until the third paper was
+public. The paper splits that gap into custody and anchoring and answers
+anchoring with this computation; custody stays open, and the key is still the
+Worker-held one.
+
+A record contributes only if it passes the offline checks `verify-records.mjs`
+runs, and the clock is its confirmed Bitcoin block height, never
+`published_at`. Decay is exact: `retain ^ floor((at − h) / epoch_blocks)` in
+BigInt fractions, so the weight is the same reduced fraction in any language.
+The attestation term is computed in full and fed nothing, because no
+recognition attestation exists here. Under `policy/example.json` W therefore
+equals the persistence sum, which is the paper's floor property on a key with
+no recognized attester. The policy is required, unknown fields and decay forms
+are refused, and D is a table checked against the paper's four properties.
+Retractions name withdrawn subjects and never count as events.
+`rights-signals/` is not read: those records sign raw bytes that
+`verifyRecord()` cannot check.
+
+Pinned in `verify/weigh-compose.test.mjs` (the cap, the multiplier, the floor,
+the decay grid, every policy refusal) and `verify/weigh-ledger.test.mjs`
+(copies of this repository with a bad signature, a pending anchor, an unknown
+key, a mutated `published_at` and a failed middle version; genesis heights; no
+network; byte-identical output). Each rule was broken once and its test went
+red. CI runs `weigh` twice and compares the bytes. Nothing under `notes/`,
+`pages/`, `keys/`, `genesis/`, `rights-signals/`, `rights-evidence/` or
+`retractions/` changed.
+
 ## 2026-10-01: the rights-evidence checker runs on Workers
 
 `rights-evidence-checks.mjs` decodes its namespace hex by hand instead of with
