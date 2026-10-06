@@ -701,6 +701,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 969499
+    },
+    {
+      "note_uid": "7d682766-70e6-4af7-9eda-7d2a6ff35e09",
+      "slug": "find-out-who-already-answered-for-your-catalog",
+      "title": "Find out who already answered for your catalog",
+      "published_at": "2026-10-06T15:21:13Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "39a6438f5d5e628c20a5b19aaba1cc516beb4d8400e5c00cc7ae462be3faa2f3",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
