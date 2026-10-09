@@ -120,13 +120,13 @@
       "title": "Five layers, one system",
       "published_at": "2026-05-19T20:14:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "1e666863f9ca3a3a690fbd52b82b7bb89ff9a00c0e1dc7e125798c03222cbb3f",
+      "version": 2,
+      "content_hash": "968960e38313407fce0d32ce26f2ae8fc74ea0b68cff3c53b03d18261cb11ecc",
       "leaf_hash": "4086d94c946b1d911fb8b5afb1d31fbb6d5b16c9d7f169f89d1bcc079bb362d3",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "5bc0e8fc-94e5-4891-a123-5fc3574e8ac9",
