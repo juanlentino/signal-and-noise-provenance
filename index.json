@@ -162,13 +162,13 @@
       "title": "Falsifiability is the line",
       "published_at": "2026-05-27T19:24:00Z",
       "anchor": "genesis",
-      "version": 3,
-      "content_hash": "2a345f3e7201efdbd0e16687b22d5b3674c57bcf95c6f3f1c9e9ce9d422da10b",
+      "version": 4,
+      "content_hash": "f150d3d841552a579164b15ee57b960a4671e78e8a7d4df9431488997b6b4fd0",
       "leaf_hash": "964150870dc7ea8f9df37c11de1095dcead674d2fcd2761779c81b6efe23e7cf",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 965106
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "5c3d0e61-0f95-4bd4-b665-41571fdad1a3",
@@ -288,13 +288,13 @@
       "title": "The unlabeled majority",
       "published_at": "2026-07-10T15:19:01Z",
       "anchor": "per-note",
-      "version": 2,
-      "content_hash": "196dec626d9b16eab76d3cadb001d3c96ca13ad41fd59dc95ecafe6a080d0d4e",
+      "version": 3,
+      "content_hash": "730c7f6f524997346680c91e6b2f7bc69468d47c8334c30a085c9ca8fab0c674",
       "bitcoin_block": 966903,
       "ots_status": "confirmed",
       "anchored_version": 2,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 966903
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "b89d5f64-194d-42cc-ae18-696efda7662a",
