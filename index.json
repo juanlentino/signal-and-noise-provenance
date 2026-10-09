@@ -316,13 +316,13 @@
       "title": "Where provenance has to live",
       "published_at": "2026-07-17T20:23:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "f0fbdc78fa2f85f95a424e14bbf613cb9ab1f9dbac8f792769a2b773db36f8a0",
+      "version": 2,
+      "content_hash": "458bd45fc8795ac53d62d117dc56357822c7472f798ef4d087a013f01b4fcae7",
       "bitcoin_block": 958455,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958455
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "15240786-b0b0-4936-8998-b4c60854732e",
