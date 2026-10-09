@@ -36,13 +36,13 @@
       "title": "Where artist signatures live",
       "published_at": "2026-05-03T01:37:50Z",
       "anchor": "genesis",
-      "version": 2,
-      "content_hash": "fbca7ce381cdf2d31cf8f59c99e070e1f2885e9a36b227f03255edb8755dcf17",
+      "version": 3,
+      "content_hash": "b2090a23d5c13e3d11fc1bd9478e4baba1ff8a86229aefbe1037567652c8f248",
       "leaf_hash": "659caca9a017b9e4183fee38154be111936a67c82e61e42a67ef9187be3a4953",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 962461
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "dedf0479-0b1b-4551-a411-7e5840c87097",
@@ -78,13 +78,13 @@
       "title": "Verifying the artist isn't enough",
       "published_at": "2026-05-09T22:33:32Z",
       "anchor": "genesis",
-      "version": 3,
-      "content_hash": "60d1fc0811e9dfcb552760ffb8b34b47cc642e28232c5859cc3715a7b6ac22e0",
+      "version": 4,
+      "content_hash": "eca5eabdbf09d90cf3cab3afc74d4881e126607226169a05ed36ab6a2cb677b5",
       "leaf_hash": "6bea3b91d6bfa6aa9dd37cfaf4b87523962e032fdcc148c38f772ac2464c23ed",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 965390
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "1059fb8d-2602-45a7-912e-18f463c7146d",
@@ -92,13 +92,13 @@
       "title": "Music's billion-dollar metadata problem",
       "published_at": "2026-05-12T16:33:00Z",
       "anchor": "genesis",
-      "version": 2,
-      "content_hash": "328e765902d443316bd13442d5722bf24c3c1b46e221f66ed5b0b29aff8b04ac",
+      "version": 3,
+      "content_hash": "25e35b2947ae38c93993d08701924c432e00c191318ea7247d7b2e9a94f7f9d3",
       "leaf_hash": "951f161acbb4a2ddda3143f9ac8d86fa9eb8eb99eda3e086ff824e2428f86248",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 965103
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "37808493-429c-48d0-9fa6-767f4b673d26",
@@ -344,13 +344,13 @@
       "title": "Two kinds of provenance",
       "published_at": "2026-07-25T15:18:23Z",
       "anchor": "per-note",
-      "version": 3,
-      "content_hash": "c69d18970086f31004b0db4bac3d42fbe4dc7711f91e314c428453256be5be02",
+      "version": 4,
+      "content_hash": "968d30d8e17445edd6b9b2e97b36b8ae068681aee063037a59c52e64ef370294",
       "bitcoin_block": 961530,
       "ots_status": "confirmed",
       "anchored_version": 3,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 961530
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "422f8047-09f8-42b6-83b0-6608556ede76",
@@ -554,13 +554,13 @@
       "title": "There is no test that returns human",
       "published_at": "2026-09-06T20:39:52Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "1112dd041ccfc38494afa5acf46d7261efc68510399059b426c25f2b357a2ad8",
+      "version": 2,
+      "content_hash": "7037137d22113bfe6e6f8e7540953b45716ee3de23bcd13bc7cc0f80a04a4f0a",
       "bitcoin_block": 965831,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 965831
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "e320a65c-958c-433b-ab7f-2189c23be95d",
