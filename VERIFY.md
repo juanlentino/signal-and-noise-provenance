@@ -174,7 +174,10 @@ where `N` is the number of Notes the live site currently publishes; any live
 slug missing from `index.json` fails as a gap. Use `--offline` to validate only
 the committed manifest. CI runs it with `--offline` on branch and pull request
 runs, which make no request to the site, and live on a push to `main`, the
-daily schedule and a manual dispatch.
+daily schedule and a manual dispatch. Offline, one lag is tolerated and named: a record
+the Worker's anchor sweep confirmed while the committed index row still says
+pending with no block (the next live run rebuilds the index). Any other
+disagreement between a row and its record still fails.
 
 It also checks each indexed row against `notes/<uid>/v1.json` itself, so a
 `content_hash` or OTS mirror (`standalone_ots_status` /
