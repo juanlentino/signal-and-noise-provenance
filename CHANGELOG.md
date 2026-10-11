@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-10-11: the daily verification runs again
+
+The verify workflow had failed on every run since 2026-10-05, and because
+`npm test` runs first, every record, key, countersignature and served-page check
+after it was skipped for six days. The ledger was sound throughout: each of
+those checks passes when run on the 2026-10-11 ledger. The fault was in
+`verify/weigh-ledger.test.mjs`, which read the live ledger in two ways that its
+growth broke. It took "the newest version of the subject with the most
+versions" as a note, but since 2026-10-05 that subject is the /provenance/
+page, filed under `pages/`. And it expected the live ledger to exclude nothing,
+while a record whose anchor is still pending is excluded until Bitcoin confirms
+it, which is most hours. The test now picks its target among notes only, and
+each case asserts only the exclusions its own damage adds. No record, key or
+verifier changed.
+
 ## 2026-10-05: the README says what is live
 
 The README now names the live author key, its pins and the first batch, gives the routine steps for countersigning new records, and describes what `verify-records.mjs` and `verify-genesis.mjs` check since #41. Docs only.
