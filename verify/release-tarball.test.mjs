@@ -33,4 +33,17 @@ describe("the release tarball", () => {
     const missing = [...new Set(scripts.flatMap((s) => [...imports(s)]))].filter((f) => !covered(f));
     expect(missing).toEqual([]);
   });
+  it("carries every script package.json and VERIFY.md tell a reader to run", () => {
+    // The import walk starts from listed scripts, so it cannot see an entry
+    // point that was never listed (verify-rights-evidence.mjs and
+    // verify-retractions.mjs, 2026-10-11). The author's signing tool and the
+    // maintainer's index rebuild are not verifiers.
+    const notVerifiers = ["countersign.mjs", "scripts/build-index.mjs"];
+    const scripts = Object.values(JSON.parse(readFileSync(join(root, "package.json"), "utf8")).scripts ?? {});
+    const docs = readFileSync(join(root, "VERIFY.md"), "utf8");
+    const named = [...scripts.join("\n").matchAll(/\bnode\s+([\w./-]+\.mjs)/g), ...docs.matchAll(/\bnode\s+([\w./-]+\.mjs)/g)].map((m) => normalize(m[1]));
+    const missing = [...new Set(named)].filter((f) => !notVerifiers.includes(f) && isFile(join(root, f)) && !covered(f));
+    expect(named.length).toBeGreaterThan(5);
+    expect(missing).toEqual([]);
+  });
 });

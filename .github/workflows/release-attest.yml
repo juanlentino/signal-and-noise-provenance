@@ -30,7 +30,7 @@ jobs:
           tar -czf "dist/sn-verifier-${GITHUB_REF_NAME}.tar.gz" \
             verify.mjs verify-records.mjs verify-pages.mjs verify-genesis.mjs \
             verify-key-history.mjs verify-key-pins.mjs verify-coverage.mjs \
-            verify-rights-signals.mjs \
+            verify-rights-signals.mjs verify-rights-evidence.mjs verify-retractions.mjs \
             normalize verify fetch-site.mjs ledger-records.mjs key-pins.mjs \
             anchor-grace.mjs package.json VERIFY.md \
             verify-countersignatures.mjs countersign-checks.mjs countersign-ledger.mjs \
