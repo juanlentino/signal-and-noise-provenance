@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -32,11 +32,20 @@ const edit = (root, path, change) => {
 const ids = (ledger) => ledger.events.map((e) => `${e.class}:${e.uid}:v${e.version}@${e.height}`).sort();
 
 // The newest version of the note with the most versions: dropping it removes
-// exactly one revision and leaves every chain intact.
+// exactly one revision and leaves every chain intact. Notes only: a page's
+// revisions are revision events too, and since 2026-10-05 the /provenance/
+// page has had the most versions, which sent every path below to notes/
+// for a uid filed under pages/.
 const real = await ledgerEvents(repo);
-const target = real.events.filter((e) => e.class === "revision").sort((a, b) => b.version - a.version || (a.uid < b.uid ? -1 : 1))[0];
+const target = real.events.filter((e) => e.class === "revision" && existsSync(join(repo, "notes", e.uid, `v${e.version}.json`))).sort((a, b) => b.version - a.version || (a.uid < b.uid ? -1 : 1))[0];
 const targetPath = `notes/${target.uid}/v${target.version}.json`;
 const without = ids(real).filter((id) => id !== `revision:${target.uid}:v${target.version}@${target.height}`);
+
+// What a damaged copy excludes beyond what the live ledger already excludes.
+// The ledger takes a record every hour and its anchor confirms hours later, so
+// the real exclusion list is rarely empty (a pending anchor is listed); each
+// test asserts only the exclusions its own damage added.
+const added = (ledger) => ledger.excluded.filter((x) => !real.excluded.some((r) => r.path === x.path && r.reason === x.reason));
 
 const realFetch = globalThis.fetch;
 afterEach(() => { globalThis.fetch = realFetch; });
@@ -70,7 +79,7 @@ describe("weigh, over the ledger", () => {
     cpSync(join(root, "rights-evidence", first.uid), join(root, "rights-evidence", "00000000-0000-5000-8000-000000000000"), { recursive: true });
     const ledger = await ledgerEvents(root);
     expect(ids(ledger)).toEqual(ids(real));
-    expect(ledger.excluded[0].reason).toContain("rights-evidence rules (id)");
+    expect(added(ledger)[0].reason).toContain("rights-evidence rules (id)");
   });
   it("lists retracted subjects of every class as withdrawn", () => {
     const targets = readdirSync(join(repo, "retractions")).map((uid) => JSON.parse(readFileSync(join(repo, "retractions", uid, "v1.json"), "utf8")).payload.note_uid).sort();
@@ -95,7 +104,7 @@ describe("weigh, over the ledger", () => {
     cpSync(join(root, "notes", target.uid), join(root, "pages", "00000000-0000-4000-8000-000000000000"), { recursive: true });
     const ledger = await ledgerEvents(root);
     expect(ids(ledger)).toEqual(ids(real));
-    expect(ledger.excluded[0].reason).toContain("payload names subject");
+    expect(added(ledger)[0].reason).toContain("payload names subject");
   });
   it("a damaged copy of a record filed twice does not hide the sound copy", async () => {
     const root = copy();
@@ -108,7 +117,7 @@ describe("weigh, over the ledger", () => {
     rmSync(join(root, `notes/${target.uid}/v2.ots`));
     const ledger = await ledgerEvents(root);
     expect(ids(ledger)).toEqual(ids(real).filter((id) => !id.startsWith(`revision:${target.uid}:`)));
-    expect(ledger.excluded[0].reason).toContain("not contiguous from v1");
+    expect(added(ledger)[0].reason).toContain("not contiguous from v1");
   });
   it("a key rotation leaves earlier-key chains whole", async () => {
     const root = copy();
@@ -119,7 +128,7 @@ describe("weigh, over the ledger", () => {
     const ledger = await ledgerEvents(root);
     expect(ledger.events).toEqual([]);
     expect(ledger.excluded.length).toBeGreaterThan(100);
-    expect(ledger.excluded.every((x) => x.reason.includes("not the key being weighed"))).toBe(true);
+    expect(added(ledger).every((x) => x.reason.includes("not the key being weighed"))).toBe(true);
     // Still sound, so still eligible for a countersignature after the rotation.
     expect(ledger.passing.length).toBe(real.passing.length);
   });
@@ -127,7 +136,7 @@ describe("weigh, over the ledger", () => {
     const root = copy();
     edit(root, "genesis/2026-07-09-leaves.json", (leaves) => leaves.pop());
     const ledger = await ledgerEvents(root);
-    expect(ledger.excluded).toEqual([expect.objectContaining({ path: "genesis/2026-07-09-leaves.json", reason: expect.stringContaining("do not reproduce") })]);
+    expect(added(ledger)).toEqual([expect.objectContaining({ path: "genesis/2026-07-09-leaves.json", reason: expect.stringContaining("do not reproduce") })]);
     const works = new Map(ledger.events.filter((e) => e.class === "work").map((e) => [e.uid, e.height]));
     for (const { note_uid: uid } of JSON.parse(readFileSync(join(repo, "genesis/2026-07-09-root.json"), "utf8")).payload.notes) {
       expect(works.get(uid)).toBe(BigInt(JSON.parse(readFileSync(join(repo, `notes/${uid}/v1.json`), "utf8")).ots.bitcoin_block));
@@ -145,7 +154,7 @@ describe("weigh, over the ledger", () => {
     const root = copy();
     writeFileSync(join(root, "genesis/2026-07-09-root.ots"), "not a proof");
     const ledger = await ledgerEvents(root);
-    expect(ledger.excluded).toEqual([{ path: "genesis/2026-07-09-root.json", reason: expect.stringContaining("cannot be checked") }]);
+    expect(added(ledger)).toEqual([{ path: "genesis/2026-07-09-root.json", reason: expect.stringContaining("cannot be checked") }]);
     const revisions = (l) => ids(l).filter((id) => id.startsWith("revision:"));
     expect(revisions(ledger)).toEqual(revisions(real));
     expect(ledger.events.filter((e) => e.class === "work")).toHaveLength(real.events.filter((e) => e.class === "work").length);
@@ -165,7 +174,9 @@ describe("weigh, over the ledger", () => {
       h.current = "sn-ed25519-2099-01";
     });
     const ledger = await ledgerEvents(root);
-    expect(report(ledger, policy, 0n, "test").record.excluded).toEqual([]);
+    // A pending record has no anchor height, so it is listed at every --at;
+    // the rotation adds nothing at height 0 beyond what the live ledger lists.
+    expect(report(ledger, policy, 0n, "test").record.excluded).toEqual(report(real, policy, 0n, "test").record.excluded);
     expect(report(ledger, policy, ledger.highest, "test").record.excluded.length).toBeGreaterThan(100);
   });
   it("a genesis root must be a genesis record that rebuilds its own anchored hash", () => {
@@ -189,7 +200,7 @@ describe("weigh, over the ledger", () => {
     const root = copy();
     edit(root, "genesis/2026-07-09-root.json", (r) => { r.payload.notes[0] = null; });
     const ledger = await ledgerEvents(root);
-    expect(ledger.excluded[0]).toEqual(expect.objectContaining({ path: "genesis/2026-07-09-root.json" }));
+    expect(added(ledger)[0]).toEqual(expect.objectContaining({ path: "genesis/2026-07-09-root.json" }));
   });
   it("the clock is the earliest block a forked proof attests, whatever the record names", async () => {
     const root = copy();
@@ -203,7 +214,7 @@ describe("weigh, over the ledger", () => {
     cpSync(join(root, "retractions", w.uid), join(root, "pages", w.uid), { recursive: true });
     const ledger = await ledgerEvents(root);
     expect(ids(ledger)).toEqual(ids(real));
-    expect(ledger.excluded[0].reason).toContain("is not a note or page");
+    expect(added(ledger)[0].reason).toContain("is not a note or page");
   });
   it("a retired subject is named only once its events are in the record at --at", () => {
     expect(report(real, policy, 0n, "test").record.retired).toEqual([]);
@@ -213,28 +224,28 @@ describe("weigh, over the ledger", () => {
     const root = copy();
     edit(root, "genesis/2026-07-09-leaves.json", (leaves) => { leaves[0] = null; });
     const ledger = await ledgerEvents(root);
-    expect(ledger.excluded).toEqual([expect.objectContaining({ path: "genesis/2026-07-09-leaves.json" })]);
+    expect(added(ledger)).toEqual([expect.objectContaining({ path: "genesis/2026-07-09-leaves.json" })]);
   });
   it("a bad signature contributes nothing", async () => {
     const root = copy();
     edit(root, targetPath, (r) => { r.signature = `${r.signature[1]}${r.signature[0]}${r.signature.slice(2)}`; });
     const ledger = await ledgerEvents(root);
     expect(ids(ledger)).toEqual(without);
-    expect(ledger.excluded).toEqual([{ path: targetPath, reason: expect.stringContaining("signature=false") }]);
+    expect(added(ledger)).toEqual([{ path: targetPath, reason: expect.stringContaining("signature=false") }]);
   });
   it("a pending anchor contributes nothing", async () => {
     const root = copy();
     edit(root, targetPath, (r) => { r.ots.status = "pending"; });
     const ledger = await ledgerEvents(root);
     expect(ids(ledger)).toEqual(without);
-    expect(ledger.excluded[0].reason).toContain("not confirmed");
+    expect(added(ledger)[0].reason).toContain("not confirmed");
   });
   it("an unknown key contributes nothing", async () => {
     const root = copy();
     edit(root, targetPath, (r) => { r.pubkey_id = "sn-ed25519-1999-01"; });
     const ledger = await ledgerEvents(root);
     expect(ids(ledger)).toEqual(without);
-    expect(ledger.excluded[0].reason).toContain("outside the history");
+    expect(added(ledger)[0].reason).toContain("outside the history");
   });
   it("a failed middle version takes every later version of the subject with it", async () => {
     // verify-records.mjs halts at the first failure; nothing after one has passed.
@@ -244,7 +255,7 @@ describe("weigh, over the ledger", () => {
     const gone = ids(real).filter((id) => id.startsWith(`revision:${target.uid}:`));
     expect(gone.length).toBe(target.version - 1);
     expect(ids(ledger)).toEqual(ids(real).filter((id) => !gone.includes(id)));
-    expect(ledger.excluded.slice(1).every((x) => x.reason.includes("earlier record that did not pass"))).toBe(true);
+    expect(added(ledger).slice(1).every((x) => x.reason.includes("earlier record that did not pass"))).toBe(true);
   });
   it("mutating published_at can drop a record but never moves an event", async () => {
     // published_at sits inside the signed payload: changing it breaks the hash
@@ -254,7 +265,7 @@ describe("weigh, over the ledger", () => {
     edit(root, targetPath, (r) => { r.payload.published_at = "1999-01-01T00:00:00Z"; });
     const ledger = await ledgerEvents(root);
     expect(ids(ledger)).toEqual(without);
-    expect(ledger.excluded[0].reason).toContain("hash=false");
+    expect(added(ledger)[0].reason).toContain("hash=false");
   });
   it("nothing in the weigh code reads published_at, writes a file or calls the network", () => {
     for (const file of ["weigh.mjs", "weigh/ledger-events.mjs", "weigh/compose.mjs", "weigh/policy.mjs", "weigh/rational.mjs"]) {
