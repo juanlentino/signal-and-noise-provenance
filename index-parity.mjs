@@ -54,3 +54,22 @@ export function describeMismatch(recordOts, row) {
   const right = `${row?.ots_status ?? null}/${row?.bitcoin_block ?? null}`;
   return `record says ${left}, index says ${right}`;
 }
+
+/**
+ * True when a record was confirmed AFTER its index row was written: the record
+ * names a confirmed block and the row still says pending with no block. That
+ * is the state the Worker's OTS sweep leaves behind, because the sweep rewrites
+ * the record in place under [skip ci] and the index is rebuilt only by the next
+ * live run. Offline coverage tolerates exactly this and nothing else: a row that
+ * claims more than its record, or a different block, is still drift.
+ *
+ * @param {{status?: string, bitcoin_block?: number|null}} recordOts
+ * @param {{ots_status?: string, bitcoin_block?: number|null}} row
+ * @returns {boolean}
+ */
+export function sweptAhead(recordOts, row) {
+  return recordOts?.status === "confirmed"
+    && Number.isInteger(recordOts?.bitcoin_block)
+    && (row?.ots_status ?? null) !== "confirmed"
+    && (row?.bitcoin_block ?? null) === null;
+}

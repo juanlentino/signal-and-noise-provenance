@@ -9,7 +9,7 @@ on:
 
 # contents: write for exactly one step: committing the rebuilt index.json when
 # a Worker record commit outran it (the index is a DERIVED artifact, rebuilt
-# deterministically from committed files — offline, no live-site dependency).
+# from committed records and the live note and page lists).
 permissions:
   contents: write
 
@@ -56,6 +56,15 @@ jobs:
       # HEAD_MSG is read through env and never interpolated into the script
       # body — a commit message is attacker-controllable text, and putting it
       # directly in `run:` is the classic Actions script-injection sink.
+      #
+      # Does this run read the live site? (2026-10-11)
+      #
+      # Only a push to main, the daily schedule and a manual dispatch fetch
+      # juanlentino.com. A live run makes about 145 site fetches, and on
+      # 2026-10-05 58 runs (51 of them branch or PR runs) made 8,659, enough to
+      # dominate the site's machine-reader counts. Branch, PR and tag runs
+      # verify the committed files with every offline check; the live checks
+      # run once the change lands on main.
       - name: Classify the trigger
         id: trigger
         env:
@@ -69,6 +78,14 @@ jobs:
           else
             echo "record_push=false" >> "$GITHUB_OUTPUT"
             echo "Not a record push — verifying with nothing tolerated."
+          fi
+          if [ "$EVENT_NAME" = "schedule" ] || [ "$EVENT_NAME" = "workflow_dispatch" ] \
+             || { [ "$EVENT_NAME" = "push" ] && [ "$GITHUB_REF" = "refs/heads/main" ]; }; then
+            echo "live_site=true" >> "$GITHUB_OUTPUT"
+            echo "Live run: build-index, verify:key-pins, verify:coverage and verify:pages read juanlentino.com."
+          else
+            echo "live_site=false" >> "$GITHUB_OUTPUT"
+            echo "Offline run ($EVENT_NAME on $GITHUB_REF): no site fetches, and verify:coverage runs with --offline."
           fi
       # Self-heal (2026-07-29): the Worker commits records but never index
       # rows, so every new anchor used to red the coverage guard until a
@@ -85,8 +102,11 @@ jobs:
       # notes is only knowable from the site and comparing it against the
       # ledger IS the reverse-coverage guard. Those calls go through
       # fetch-site.mjs, which validates the payload shape and reports the
-      # status, content-type and cf-ray when the edge intercepts.
+      # status, content-type and cf-ray when the edge intercepts. Because it
+      # is live, it runs only on a live run (see "Classify the trigger"); a
+      # branch or PR run checks the committed index.json as it stands.
       - name: Rebuild coverage index from committed records
+        if: steps.trigger.outputs.live_site == 'true'
         run: node scripts/build-index.mjs
       - name: Push the healed index (main only)
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -110,9 +130,22 @@ jobs:
       - run: npm run verify:rights-evidence
       - run: npm run verify:genesis
       - run: npm run verify:keys
-      - run: npm run verify:key-pins
+      # Live: the key mirror is fetched from the site.
+      - if: steps.trigger.outputs.live_site == 'true'
+        run: npm run verify:key-pins
       - run: npm run verify:retractions
-      - run: npm run verify:coverage
+      # On a branch or PR run, --offline still holds every index row to its
+      # record and every record directory to an index row. Only the live note
+      # list (one fetch) waits for main.
+      - name: Verify coverage
+        env:
+          LIVE_SITE: ${{ steps.trigger.outputs.live_site }}
+        run: |
+          if [ "$LIVE_SITE" = "true" ]; then
+            npm run verify:coverage
+          else
+            npm run verify:coverage -- --offline
+          fi
       - run: npm run verify:countersignatures
       # weigh.mjs claims the same commit and the same policy give the same
       # bytes. Two runs and a cmp make that a guard instead of a sentence.
@@ -121,11 +154,12 @@ jobs:
           npm run --silent weigh -- --policy policy/example.json > "$RUNNER_TEMP/weigh-1.json"
           npm run --silent weigh -- --policy policy/example.json > "$RUNNER_TEMP/weigh-2.json"
           cmp "$RUNNER_TEMP/weigh-1.json" "$RUNNER_TEMP/weigh-2.json"
-      # The ONLY step whose strictness depends on the trigger. Everything else
-      # — records, genesis, keys, key-pins, coverage, the test suite — runs
-      # identically on every trigger, because none of them can be legitimately
-      # wrong just because a push is young.
+      # The ONLY step whose strictness depends on whether the push is a
+      # record push. No other check can be legitimately wrong just because a
+      # push is young, so none of them changes with it. Like every step that
+      # reads the site, it runs only on a live run.
       - name: Verify served pages reproduce their records
+        if: steps.trigger.outputs.live_site == 'true'
         env:
           RECORD_PUSH: ${{ steps.trigger.outputs.record_push }}
         run: |
@@ -155,8 +189,9 @@ jobs:
           '
       # Kept whatever the outcome: a GREEN run that absorbed a challenge is the
       # evidence that the retry works, and it is lost if we only keep failures.
+      # Gated with the live steps: an offline run asks the edge nothing.
       - name: Keep any bot-challenge bodies the edge served
-        if: always()
+        if: always() && steps.trigger.outputs.live_site == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: challenge-evidence-${{ github.run_id }}
