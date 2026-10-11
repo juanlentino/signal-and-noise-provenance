@@ -715,6 +715,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 970194
+    },
+    {
+      "note_uid": "14906d77-912a-4e7d-9e88-2d529baab93b",
+      "slug": "how-to-trace-a-royalty-that-looks-wrong",
+      "title": "How to trace a royalty that looks wrong",
+      "published_at": "2026-10-11T16:32:49Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "e4dbd7cea086250652b640f3edf9310dfff7066bc061dd752df594dc16a63db6",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
