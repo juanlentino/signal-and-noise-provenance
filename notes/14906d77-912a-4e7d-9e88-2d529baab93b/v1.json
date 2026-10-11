@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v2",
+    "author": "Juan Lentino",
+    "content": "Almost every artist eventually looks at a statement and decides a number is wrong. Sometimes it is. More often the money went somewhere real, following a record that says something different from what the artist believes. Either way, the path to an answer runs in the same order, and skipping steps is how a two-week fix becomes a six-month argument.\n\nStart with the statement\n\nRoyalty statements are organized around identifiers, not titles. For recordings, the key one is the ISRC, the code assigned to each specific recording at release. A remaster or a radio edit of the same song carries its own code and is paid separately. Before anything else, find the ISRC for the track in question and confirm it appears on the statement at all. A missing line is a different problem from a low one.\n\nNext, check the period. Platform reports lag, often by months, so a release that did well in spring may not show up until late summer. Compare the statement's dates with the activity you expect to see.\n\nFollow the record upstream\n\nIf the identifier is present and the period is right, the next question is who the record says gets paid. A single song usually earns through two separate channels, and each one answers to a different record.\n\nA · Recording income\n\nFollows what was delivered\n\nPaid on the data your distributor or label sent at release, including the artist name and the account holder.\n\nB · Songwriting income\n\nFollows what was registered\n\nPaid on registrations with whichever society or administrator collects for the composition.\n\nThe two systems don't talk to each other, and an error in one never fixes itself in the other. Work out which channel the missing money belongs to before contacting anyone.\n\nThis is where the split sheet matters. A split sheet, the signed document listing each writer's share of a song, is the reference everyone eventually asks for. Without one, expect the dispute to start there.\n\nContact the party that delivered or registered the record, not the service that paid it. Streaming platforms pay whoever the data names, and they rarely change that data themselves.\n\nFix the source as well as the payment\n\nOnce the error is confirmed, request two repairs. One is the back payment. The other is a correction to the record that caused it, so the same mistake doesn't come back on the following statement. Plenty of disputes end with the first and skip the second, which is why the same artist ends up calling about the same song long after the first fix.\n\nKeep a simple log as you go: what you checked and what each party confirmed in writing, with dates. If the log shows the same correction requested twice, escalate in writing to the account manager at the distributor or administrator, citing the earlier confirmations.",
+    "note_uid": "14906d77-912a-4e7d-9e88-2d529baab93b",
+    "parent": null,
+    "published_at": "2026-10-11T16:32:49Z",
+    "title": "How to trace a royalty that looks wrong",
+    "version": 1
+  },
+  "content_hash": "e4dbd7cea086250652b640f3edf9310dfff7066bc061dd752df594dc16a63db6",
+  "signature": "ST+dzzUEM0ctdCjFZ5k5ITM0KdYfJwIXTUgqziS/aZIn+3Xr03UAFGwe3iiqVb7hVOHKFVYyDMmXeA7SE61vAA==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
