@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-10-11: branch and pull request runs no longer fetch the site
+
+The verify workflow read juanlentino.com on every push and pull request on
+every branch, about 145 requests a run under the `sn-ledger-verify` user agent.
+On 2026-10-05, 58 branch and PR runs made 8,659 of them and dominated the
+site's machine-reader counts. The four steps that read the site (rebuilding the
+index, `verify:key-pins`, the live note list in `verify:coverage`, and
+`verify:pages`) now run only on a push to `main`, the daily schedule and a
+manual dispatch. Branch, PR and tag runs make no request to the site: they run
+the test suite and every offline check, and `verify:coverage` runs with
+`--offline`, which still holds every index row to its record and every record
+to an index row. A PR's live checks run when it lands on `main`. The
+record-push tolerance in `verify:pages` is unchanged. No record, key or
+verifier changed.
+
 ## 2026-10-11: the release ships every verifier it documents
 
 The release workflow's tar list carried the rights-evidence and retraction

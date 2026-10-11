@@ -172,7 +172,9 @@ requires every live slug to have one unique `index.json` row with a confirmed
 genesis or per-note Bitcoin anchor. The success line is `N/N anchored, 0 gaps`,
 where `N` is the number of Notes the live site currently publishes; any live
 slug missing from `index.json` fails as a gap. Use `--offline` to validate only
-the committed manifest.
+the committed manifest. CI runs it with `--offline` on branch and pull request
+runs, which make no request to the site, and live on a push to `main`, the
+daily schedule and a manual dispatch.
 
 It also checks each indexed row against `notes/<uid>/v1.json` itself, so a
 `content_hash` or OTS mirror (`standalone_ots_status` /

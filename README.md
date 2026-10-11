@@ -19,9 +19,12 @@ Verify the bytes served by the public site—not merely the committed payload:
 node verify.mjs --from-page https://juanlentino.com/notes/<slug>/ <note_uid>
 ```
 
-The root `index.json` is the machine-checkable coverage manifest. The scheduled
-GitHub Action verifies the offline suites, reconstructs genesis, reconciles the
-live WordPress note list, and checks every served page for drift.
+The root `index.json` is the machine-checkable coverage manifest. The GitHub
+Action verifies the offline suites and reconstructs genesis on every push and
+pull request. On a push to `main`, the daily schedule and a manual dispatch it
+also rebuilds the index from the site, reconciles the live WordPress note list,
+checks the key mirror and checks every served page for drift. Branch and pull
+request runs make no request to the site.
 
 ## Citing the ledger
 
@@ -151,8 +154,17 @@ note's DOI for the note, the ledger's for the chain it sits in.
 
 Verification is deliberately **live**: the set of *public* Notes is only
 knowable from the site, and comparing it against the ledger is the whole point
-of the reverse-coverage guard. That puts ~60 requests per run against
-juanlentino.com from a GitHub Actions runner.
+of the reverse-coverage guard. That puts about 145 requests per run against
+juanlentino.com from a GitHub Actions runner (86 to rebuild the index, 57 for
+served pages, one each for the key mirror and the note list, measured
+2026-10-11).
+
+Only a push to `main`, the daily schedule and a manual dispatch make those
+requests. Branch, pull request and tag runs skip the four live steps and run
+`verify:coverage --offline`, so a pull request is still held to every offline
+check and is checked against the site once it lands on `main`. Until
+2026-10-11 every branch and PR run fetched the site too: on 2026-10-05, 58 of
+them made 8,659 requests, enough to dominate the site's machine-reader counts.
 
 The edge intermittently answers those runners with a **bot-challenge
 interstitial carrying HTTP 200** — ~12 KB titled `"One moment, please..."`
