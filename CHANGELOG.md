@@ -2,12 +2,13 @@
 
 ## 2026-10-11: the release ships every verifier it documents
 
-The attested release tarball carried the rights-evidence and retraction check
-modules but not the two scripts that run them, `verify-rights-evidence.mjs` and
-`verify-retractions.mjs`, so `npm run verify:rights-evidence` and
-`npm run verify:retractions`, and the `node verify-rights-evidence.mjs` line in
-VERIFY.md, failed on a downloaded copy. The release workflow now packs both. The
-last release, Verifier v1.0.0 (2026-08-14), predates these checks and the
+The release workflow's tar list carried the rights-evidence and retraction
+check modules (added 2026-10-05) but not the two scripts that run them, so the
+next attested tarball would have shipped `npm run verify:rights-evidence`,
+`npm run verify:retractions` and VERIFY.md's `node verify-rights-evidence.mjs`
+broken. The list now packs both, and `verify/release-tarball.test.mjs` fails
+when a script that package.json or VERIFY.md names is missing from it. The last
+release, Verifier v1.0.0 (2026-08-14), predates these checks and the
 countersignature verifier; the next tag carries all of them.
 
 ## 2026-10-11: the daily verification runs again
