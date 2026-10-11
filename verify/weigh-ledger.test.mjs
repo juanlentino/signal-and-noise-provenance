@@ -82,7 +82,9 @@ describe("weigh, over the ledger", () => {
     expect(added(ledger)[0].reason).toContain("rights-evidence rules (id)");
   });
   it("lists retracted subjects of every class as withdrawn", () => {
-    const targets = readdirSync(join(repo, "retractions")).map((uid) => JSON.parse(readFileSync(join(repo, "retractions", uid, "v1.json"), "utf8")).payload.note_uid).sort();
+    // Only a confirmed retraction withdraws: a new one stays pending for hours.
+    const confirmed = readdirSync(join(repo, "retractions")).map((uid) => JSON.parse(readFileSync(join(repo, "retractions", uid, "v1.json"), "utf8"))).filter((r) => r.ots?.status === "confirmed");
+    const targets = confirmed.map((r) => r.payload.note_uid).sort();
     expect(targets.length).toBeGreaterThan(0);
     expect(real.withdrawn.map((w) => w.uid)).toEqual(targets);
   });
@@ -93,7 +95,10 @@ describe("weigh, over the ledger", () => {
   });
   it("a retraction its own rules reject withdraws nothing", async () => {
     const root = copy();
-    const [w] = real.withdrawn;
+    // A withdrawn rights-evidence record: a retracted note would have no
+    // rights-evidence/ directory to remove.
+    const w = real.withdrawn.find((x) => existsSync(join(repo, "rights-evidence", x.uid)));
+    expect(w).toBeDefined();
     rmSync(join(root, "rights-evidence", w.uid), { recursive: true });
     const ledger = await ledgerEvents(root);
     expect(ledger.withdrawn.map((x) => x.uid)).not.toContain(w.uid);
@@ -210,7 +215,10 @@ describe("weigh, over the ledger", () => {
   });
   it("a signed retraction moved into pages/ is not a work", async () => {
     const root = copy();
-    const [w] = real.withdrawn;
+    // A withdrawn rights-evidence record: a retracted note would have no
+    // rights-evidence/ directory to remove.
+    const w = real.withdrawn.find((x) => existsSync(join(repo, "rights-evidence", x.uid)));
+    expect(w).toBeDefined();
     cpSync(join(root, "retractions", w.uid), join(root, "pages", w.uid), { recursive: true });
     const ledger = await ledgerEvents(root);
     expect(ids(ledger)).toEqual(ids(real));
