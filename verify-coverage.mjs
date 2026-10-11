@@ -5,10 +5,23 @@ import { fileURLToPath } from "node:url";
 import { fetchSiteJson, installEvidenceReport } from "./fetch-site.mjs";
 import { recordVersions } from "./ledger-records.mjs";
 import { pendingVerdict, DEFAULT_GRACE_HOURS } from "./anchor-grace.mjs";
-import { otsMatches, describeMismatch } from "./index-parity.mjs";
+import { otsMatches, describeMismatch, sweptAhead } from "./index-parity.mjs";
 installEvidenceReport("verify:coverage");
 
 const root = dirname(fileURLToPath(import.meta.url));
+// Branch and pull request runs check the COMMITTED index offline (verify.yml
+// fetches the site only on main, the schedule and dispatch). The Worker's OTS
+// sweep confirms records in place under [skip ci], so between a sweep and the
+// next live run the committed index can lag by one state: confirmed on disk,
+// pending in the row. Offline, that one state is named and tolerated; the next
+// live run rebuilds the index. Any other disagreement still fails.
+const OFFLINE = process.argv.includes("--offline");
+const behind = [];
+const tolerated = (slug, recordOts, row) => {
+  if (!OFFLINE || !sweptAhead(recordOts, row)) return false;
+  behind.push(slug);
+  return true;
+};
 const index = JSON.parse(readFileSync(join(root, "index.json"), "utf8"));
 const entries = index.entries || [];
 // RETIRED SUBJECTS (2026-08-18). A signed record is permanent; the subject it
@@ -59,8 +72,10 @@ for (const entry of entries) {
   if (!['genesis', 'per-note'].includes(entry.anchor)) throw new Error(`invalid anchor for ${entry.slug}`);
   if (entry.ots_status !== "confirmed" || !Number.isInteger(entry.bitcoin_block)) {
     const verdict = pendingVerdict(entry, { graceHours });
-    if (!verdict.ok) throw new Error(`anchor is not confirmed for ${entry.slug}: ${verdict.reason}`);
-    pending.push({ slug: entry.slug, hours: verdict.hours });
+    const named = entry.anchor === "per-note" && Number.isInteger(entry.anchored_version) ? entry.anchored_version : entry.version;
+    const onDisk = OFFLINE && named >= 1 ? JSON.parse(readFileSync(join(root, `notes/${entry.note_uid}/v${named}.json`), "utf8")).ots : null;
+    if (!verdict.ok && !(onDisk && tolerated(entry.slug, onDisk, entry))) throw new Error(`anchor is not confirmed for ${entry.slug}: ${verdict.reason}`);
+    if (!onDisk || !sweptAhead(onDisk, entry)) pending.push({ slug: entry.slug, hours: verdict.hours });
   }
   if (entry.anchor === "genesis" && !/^[0-9a-f]{64}$/.test(entry.leaf_hash || "")) throw new Error(`genesis leaf missing for ${entry.slug}`);
   if (entry.version >= 1 && !/^[0-9a-f]{64}$/.test(entry.content_hash || "")) throw new Error(`standalone hash missing for ${entry.slug}`);
@@ -83,7 +98,7 @@ for (const entry of entries) {
     // The standalone row keeps its own key names; adapt rather than teach
     // index-parity.mjs about three naming schemes.
     const standaloneRow = { ots_status: entry.standalone_ots_status, bitcoin_block: entry.standalone_bitcoin_block };
-    if (!otsMatches(record.ots, standaloneRow)) {
+    if (!otsMatches(record.ots, standaloneRow) && !tolerated(entry.slug, record.ots, standaloneRow)) {
       throw new Error(`index is stale for ${entry.slug}: ${describeMismatch(record.ots, standaloneRow)}; rerun node scripts/build-index.mjs`);
     }
     // A per-note row's anchor may name an EARLIER version than the current
@@ -94,7 +109,7 @@ for (const entry of entries) {
     if ("per-note" === entry.anchor) {
       if (!versions.includes(entry.anchored_version)) throw new Error(`index anchors ${entry.slug} to v${entry.anchored_version}, which is not on disk; rerun node scripts/build-index.mjs`);
       const anchorRecord = entry.anchored_version === entry.version ? record : JSON.parse(readFileSync(join(root, `notes/${entry.note_uid}/v${entry.anchored_version}.json`), "utf8"));
-      if (!otsMatches(anchorRecord.ots, entry)) {
+      if (!otsMatches(anchorRecord.ots, entry) && !tolerated(entry.slug, anchorRecord.ots, entry)) {
         throw new Error(`index anchor disagrees with v${entry.anchored_version} for ${entry.slug}: ${describeMismatch(anchorRecord.ots, entry)}; rerun node scripts/build-index.mjs`);
       }
     }
@@ -117,7 +132,7 @@ for (const row of signalRows) {
   if (row.version !== latest) throw new Error(`index is pinned to a superseded rights-signal record for ${row.slug}: row says v${row.version}, newest record is v${latest}; rerun node scripts/build-index.mjs`);
   const record = JSON.parse(readFileSync(join(signalsRoot, row.slug, `v${row.version}.json`), "utf8"));
   if (record.content_hash !== row.content_hash || record.url !== row.url) throw new Error(`index row disagrees with the rights-signal record for ${row.slug}; rerun node scripts/build-index.mjs`);
-  if ((record.ots?.status ?? "unknown") !== row.ots_status || (record.ots?.bitcoin_block ?? null) !== row.bitcoin_block) {
+  if (((record.ots?.status ?? "unknown") !== row.ots_status || (record.ots?.bitcoin_block ?? null) !== row.bitcoin_block) && !tolerated(`rights-signal ${row.slug}`, record.ots, row)) {
     throw new Error(`index anchor is stale for rights-signal ${row.slug}: record says ${record.ots?.status}/${record.ots?.bitcoin_block ?? null}, index says ${row.ots_status}/${row.bitcoin_block}; rerun node scripts/build-index.mjs`);
   }
 }
@@ -194,7 +209,7 @@ for (const row of pageRows) {
   if (record.content_hash !== row.content_hash) {
     throw new Error(`index content_hash disagrees with the page record for ${row.slug}; rerun node scripts/build-index.mjs`);
   }
-  if (!otsMatches(record.ots, row)) {
+  if (!otsMatches(record.ots, row) && !tolerated(`page ${row.slug}`, record.ots, row)) {
     throw new Error(`index is stale for page ${row.slug}: ${describeMismatch(record.ots, row)}; rerun node scripts/build-index.mjs`);
   }
 }
@@ -216,6 +231,9 @@ if (!process.argv.includes("--offline")) {
 } else {
   console.log(`${entries.length - pending.length}/${entries.length} indexed with confirmed anchors (offline)`);
   reportPending();
+  // Named, never silent: a pass that tolerated a lagging row says which.
+  const lagging = [...new Set(behind)];
+  if (lagging.length) console.log(`${lagging.length} subject${lagging.length === 1 ? "" : "s"} one OTS sweep ahead of the committed index (confirmed on disk, pending in the index; the next live run rebuilds it): ${lagging.join(", ")}`);
 }
 
 // A pending anchor passes, but never silently: the run names which Notes are

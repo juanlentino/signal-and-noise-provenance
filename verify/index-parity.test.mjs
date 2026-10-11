@@ -52,3 +52,25 @@ describe("otsMatches — real disagreement still fails", () => {
     expect(otsMatches({ status: "confirmed", bitcoin_block: 0 }, { ots_status: "confirmed", bitcoin_block: null })).toBe(false);
   });
 });
+
+// The Worker's OTS sweep rewrites a record in place ([skip ci]) and leaves the
+// index until the next live run. Offline coverage tolerates exactly that, and
+// nothing else (2026-10-11, review of #48).
+import { sweptAhead } from "../index-parity.mjs";
+describe("sweptAhead — a record confirmed ahead of its index row", () => {
+  it("is the sweep: record confirmed with a block, row still pending with none", () => {
+    expect(sweptAhead({ status: "confirmed", bitcoin_block: 970960 }, { ots_status: "pending", bitcoin_block: null })).toBe(true);
+  });
+  it("is not a row that claims MORE than its record (row confirmed, record pending)", () => {
+    expect(sweptAhead({ status: "pending", bitcoin_block: null }, { ots_status: "confirmed", bitcoin_block: 970960 })).toBe(false);
+  });
+  it("is not two different confirmed blocks", () => {
+    expect(sweptAhead({ status: "confirmed", bitcoin_block: 970960 }, { ots_status: "confirmed", bitcoin_block: 970961 })).toBe(false);
+  });
+  it("is not a confirmed record without a block", () => {
+    expect(sweptAhead({ status: "confirmed", bitcoin_block: null }, { ots_status: "pending", bitcoin_block: null })).toBe(false);
+  });
+  it("is not a pending row that already names a block", () => {
+    expect(sweptAhead({ status: "confirmed", bitcoin_block: 970960 }, { ots_status: "pending", bitcoin_block: 970960 })).toBe(false);
+  });
+});

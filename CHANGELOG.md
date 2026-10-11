@@ -4,16 +4,23 @@
 
 The verify workflow read juanlentino.com on every push and pull request on
 every branch, about 145 requests a run under the `sn-ledger-verify` user agent.
-On 2026-10-05, 58 branch and PR runs made 8,659 of them and dominated the
-site's machine-reader counts. The four steps that read the site (rebuilding the
+On 2026-10-05, 58 runs, 51 of them branch or PR runs, made 8,659 of them and
+dominated the site's machine-reader counts. The four steps that read the site (rebuilding the
 index, `verify:key-pins`, the live note list in `verify:coverage`, and
 `verify:pages`) now run only on a push to `main`, the daily schedule and a
 manual dispatch. Branch, PR and tag runs make no request to the site: they run
 the test suite and every offline check, and `verify:coverage` runs with
 `--offline`, which still holds every index row to its record and every record
 to an index row. A PR's live checks run when it lands on `main`. The
-record-push tolerance in `verify:pages` is unchanged. No record, key or
-verifier changed.
+record-push tolerance in `verify:pages` is unchanged.
+
+Offline, `verify:coverage` tolerates exactly one lag and names it: a record the
+Worker's OTS sweep confirmed (rewritten in place under `[skip ci]`) while the
+committed index row still says pending with no block. Without that, a branch
+run after every sweep would go red for hours until the next live run rebuilt
+the index (about 30% of the five days before this change). A row that claims
+more than its record, a different block, or any hash or version drift still
+fails. No record or key changed.
 
 ## 2026-10-11: the release ships every verifier it documents
 

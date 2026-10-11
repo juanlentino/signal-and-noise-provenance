@@ -61,7 +61,7 @@ jobs:
       #
       # Only a push to main, the daily schedule and a manual dispatch fetch
       # juanlentino.com. A live run makes about 145 site fetches, and on
-      # 2026-10-05 the 58 branch and PR runs made 8,659 of them, enough to
+      # 2026-10-05 58 runs (51 of them branch or PR runs) made 8,659, enough to
       # dominate the site's machine-reader counts. Branch, PR and tag runs
       # verify the committed files with every offline check; the live checks
       # run once the change lands on main.

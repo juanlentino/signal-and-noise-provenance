@@ -163,8 +163,9 @@ Only a push to `main`, the daily schedule and a manual dispatch make those
 requests. Branch, pull request and tag runs skip the four live steps and run
 `verify:coverage --offline`, so a pull request is still held to every offline
 check and is checked against the site once it lands on `main`. Until
-2026-10-11 every branch and PR run fetched the site too: on 2026-10-05, 58 of
-them made 8,659 requests, enough to dominate the site's machine-reader counts.
+2026-10-11 every branch and PR run fetched the site too: on 2026-10-05, 58 runs
+(51 of them branch or PR runs) made 8,659 requests, enough to dominate the site's
+machine-reader counts.
 
 The edge intermittently answers those runners with a **bot-challenge
 interstitial carrying HTTP 200** — ~12 KB titled `"One moment, please..."`
