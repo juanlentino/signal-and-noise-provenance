@@ -6,6 +6,13 @@
       "path": "pages/01cea10c-9ad3-4f8b-9d74-d0e7e90dbd1d/v5",
       "kind": "page",
       "queued_at": "2026-10-12T19:45:27.797Z"
+    },
+    {
+      "note_uid": "08396202-c963-46e8-839c-9f01d99bf0ef",
+      "version": 2,
+      "path": "notes/08396202-c963-46e8-839c-9f01d99bf0ef/v2",
+      "kind": "note",
+      "queued_at": "2026-10-12T19:45:33.830Z"
     }
   ]
 }
