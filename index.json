@@ -694,13 +694,13 @@
       "title": "Before you opt in to an AI music platform",
       "published_at": "2026-10-01T22:14:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "d5cddc51831bf4e06022d8238559ee3eb5f0650ad0e59be1acc5525c41fccb09",
+      "version": 2,
+      "content_hash": "0743f386ca3289130d12ddfbc1e32ce3e03c333da2dfbfddddab080a8ccb9e05",
       "bitcoin_block": 969499,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 969499
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "7d682766-70e6-4af7-9eda-7d2a6ff35e09",
