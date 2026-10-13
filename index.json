@@ -696,11 +696,11 @@
       "anchor": "per-note",
       "version": 2,
       "content_hash": "0743f386ca3289130d12ddfbc1e32ce3e03c333da2dfbfddddab080a8ccb9e05",
-      "bitcoin_block": 969499,
+      "bitcoin_block": 971134,
       "ots_status": "confirmed",
-      "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 2,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971134
     },
     {
       "note_uid": "7d682766-70e6-4af7-9eda-7d2a6ff35e09",
@@ -739,8 +739,8 @@
       "title": "About",
       "version": 5,
       "content_hash": "85c1ecf1f8996326c5cbadcdb325f7b3cccfcd4fce093114a034fe6bb5e310fa",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 971134
     },
     {
       "note_uid": "5acfdf1d-5894-4353-bdd4-a2425ef21ef4",
