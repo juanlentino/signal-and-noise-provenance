@@ -737,10 +737,10 @@
       "kind": "page",
       "slug": "about",
       "title": "About",
-      "version": 5,
-      "content_hash": "85c1ecf1f8996326c5cbadcdb325f7b3cccfcd4fce093114a034fe6bb5e310fa",
-      "ots_status": "confirmed",
-      "bitcoin_block": 971134
+      "version": 6,
+      "content_hash": "a19a2874d4bb83ab914b727bb9f881915bae9cde7c06a9c5eb60efb5c8cb1e37",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "note_uid": "5acfdf1d-5894-4353-bdd4-a2425ef21ef4",
