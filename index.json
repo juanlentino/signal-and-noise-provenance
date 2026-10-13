@@ -739,8 +739,8 @@
       "title": "About",
       "version": 6,
       "content_hash": "a19a2874d4bb83ab914b727bb9f881915bae9cde7c06a9c5eb60efb5c8cb1e37",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 971262
     },
     {
       "note_uid": "5acfdf1d-5894-4353-bdd4-a2425ef21ef4",
@@ -769,8 +769,8 @@
       "title": "On Provenance",
       "version": 8,
       "content_hash": "7ec3cfe562148219374d7845f6389d49ee0da0c29eeb3a3f3b415e0bd9cb3a4f",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 971262
     },
     {
       "note_uid": "a51872f0-7b1c-4d25-89f4-3331791ca68c",
