@@ -729,6 +729,20 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 970960
+    },
+    {
+      "note_uid": "fdadc891-43f5-40ea-a056-fa3b5a15f5ec",
+      "slug": "the-proposal-that-became-midi-asked-to-be-replaced",
+      "title": "The proposal that became MIDI asked to be replaced",
+      "published_at": "2026-10-13T17:01:55Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "1803c142dba89b11b8ad8dd518e0077992ff9985e0ad79b1271c7ca155eccc5f",
+      "bitcoin_block": 971279,
+      "ots_status": "confirmed",
+      "anchored_version": 1,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971279
     }
   ],
   "pages": [
