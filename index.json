@@ -743,6 +743,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 971279
+    },
+    {
+      "note_uid": "a0121208-1565-43e1-896f-f55f1b1cf3a2",
+      "slug": "the-honest-answer-now-costs-money",
+      "title": "The honest answer now costs money",
+      "published_at": "2026-10-16T13:12:00Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "0a4bb5f8ef95a6effaa7dc3e9977aeaec80fe1a1cd04415664f71711fd29c822",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
