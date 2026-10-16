@@ -1,0 +1,12 @@
+# Keeps the SHA-pinned actions and the npm devDependencies current.
+# Dependabot reads the "# vX.Y.Z" comment beside each pinned SHA and bumps both.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly

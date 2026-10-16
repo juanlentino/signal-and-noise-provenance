@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-16: every action is pinned to a commit, and Dependabot watches them
+
+`release-attest.yml` was the last workflow still naming actions by a moving
+tag: `actions/checkout@v4` and `actions/attest-build-provenance@v2`, the step
+that signs the verifier tarball. Both now name a full commit SHA with the
+release it resolves to (`v4.4.0`, `v2.4.0`; same major, no behavior change).
+The `setup-node` pin's comment now names its exact release (`v6.5.0`).
+A new `.github/dependabot.yml` keeps the pinned actions and the npm
+devDependencies current, weekly.
+
 ## 2026-10-11: branch and pull request runs no longer fetch the site
 
 The verify workflow read juanlentino.com on every push and pull request on
