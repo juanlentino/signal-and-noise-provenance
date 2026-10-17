@@ -41,6 +41,13 @@
       "path": "notes/08396202-c963-46e8-839c-9f01d99bf0ef/v3",
       "kind": "note",
       "queued_at": "2026-10-17T15:38:38.825Z"
+    },
+    {
+      "note_uid": "7d682766-70e6-4af7-9eda-7d2a6ff35e09",
+      "version": 2,
+      "path": "notes/7d682766-70e6-4af7-9eda-7d2a6ff35e09/v2",
+      "kind": "note",
+      "queued_at": "2026-10-17T15:38:44.809Z"
     }
   ]
 }
