@@ -120,13 +120,13 @@
       "title": "Five layers, one system",
       "published_at": "2026-05-19T20:14:00Z",
       "anchor": "genesis",
-      "version": 2,
-      "content_hash": "968960e38313407fce0d32ce26f2ae8fc74ea0b68cff3c53b03d18261cb11ecc",
+      "version": 3,
+      "content_hash": "23aec030db63b9cd2ee83c2d192c68f0d0d248eeb490fd3ec529ca56f6cf52ec",
       "leaf_hash": "4086d94c946b1d911fb8b5afb1d31fbb6d5b16c9d7f169f89d1bcc079bb362d3",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 970670
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "5bc0e8fc-94e5-4891-a123-5fc3574e8ac9",
@@ -246,13 +246,13 @@
       "title": "Open standards or no standards",
       "published_at": "2026-06-30T13:57:00Z",
       "anchor": "genesis",
-      "version": 5,
-      "content_hash": "21f0a1eab50701d62fc12cb426083f5ccfb7da4e0fbbdd6dc7b31e031d537eb6",
+      "version": 6,
+      "content_hash": "f75df6cf5d2dad8744371d06e765bfb6874a4f471ad06ce4d3ec5f373e9d46d2",
       "leaf_hash": "de3635fcc30bb568b330d3203ab6041fa725d55fc2dead8f23137e56fcde74c7",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 970670
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "b1d2f576-ef1d-4ac0-b30a-4ce93b11bc90",
