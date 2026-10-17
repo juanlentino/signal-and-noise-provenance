@@ -400,13 +400,13 @@
       "title": "The pen is not the notary",
       "published_at": "2026-08-05T11:28:00Z",
       "anchor": "per-note",
-      "version": 2,
-      "content_hash": "283be0aae89033d5b69201408513b15423d77def0501e40bb86921f1a336b069",
+      "version": 3,
+      "content_hash": "205ee1deb1a7964ba7772013d49d1484414dd00d8bd34445ee020212b7266844",
       "bitcoin_block": 961469,
       "ots_status": "confirmed",
       "anchored_version": 2,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 961469
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "420efe27-c853-49a2-9805-3809c1a60aac",
@@ -414,13 +414,13 @@
       "title": "Trust doesn't disappear, it relocates",
       "published_at": "2026-08-08T20:19:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "a144120676587992375916039e38f9fb7e0eee5225259c9377ccd01884dd5880",
+      "version": 2,
+      "content_hash": "60ce3d806149f34c731dad92fd3212a30af13fb0f3b8d0100b3ee538d1c1d831",
       "bitcoin_block": 961641,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 961641
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "4880499e-cb88-4b38-bcdd-686799f35879",
@@ -442,13 +442,13 @@
       "title": "The master never moves",
       "published_at": "2026-08-14T18:46:00Z",
       "anchor": "per-note",
-      "version": 3,
-      "content_hash": "2f66ece2aaa149643f02684db2e6521ce67c83b4db23f506809952e6b962d3b3",
+      "version": 4,
+      "content_hash": "4b0428d8f951518af7f57becad50ce6ae5e9472bafb81d14f6b527502573fa0e",
       "bitcoin_block": 962618,
       "ots_status": "confirmed",
       "anchored_version": 3,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 962618
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "ddd6c01d-a269-4a44-aecb-f0a517a1ac3a",
