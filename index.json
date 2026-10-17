@@ -484,13 +484,13 @@
       "title": "Detection publishes the answer key",
       "published_at": "2026-08-25T19:01:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "4eb153f89c0bef237706159d3e96e41746655c9be85109ab46a9f09eb169e439",
+      "version": 2,
+      "content_hash": "1f9f7732f90b71e9e1e371b9acdb23ecb5077a58553e6306e649bfb6a6dc72ed",
       "bitcoin_block": 964047,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 964047
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "b80ac83f-9c7b-47cd-9f08-0ad49a921ed9",
