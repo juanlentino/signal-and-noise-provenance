@@ -64,13 +64,13 @@
       "title": "Where AI actually saves time in record production",
       "published_at": "2026-05-07T17:59:00Z",
       "anchor": "genesis",
-      "version": 2,
-      "content_hash": "46a81a33355349627a30153ef32433ede472647d48a64e32d9143b641aea0fa1",
+      "version": 3,
+      "content_hash": "b335ec461ab1bb528ba3205210ed37d0dffbe9a0d5b94e7988286c661a96e111",
       "leaf_hash": "322a84a5e35c5d69048489d1ba092451087ef9f1d18e8d9199a05ddfa546439e",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 969397
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "4a32127e-5571-4b85-a1f5-84714682d30e",
@@ -232,13 +232,13 @@
       "title": "The seat was never given",
       "published_at": "2026-06-26T11:18:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "1dd1ca96cd11d41ff3cb5b50b02b967ba81db69990da3e630517a4fdef640ca5",
+      "version": 2,
+      "content_hash": "13a7e9554fe5ddee3c242c825dad2c7494f5decab937e4d88fab7007d9609007",
       "leaf_hash": "560b1873485b4dfb21e91cc8e6fd8a975e2dfb7856e647602d80de861b6dc255",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "7e1bb548-735e-4350-aa2c-d0ce4093c538",
@@ -358,13 +358,13 @@
       "title": "The gate is not the signature",
       "published_at": "2026-07-28T16:53:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "2df77cf3d795479e3c1f89bf313076ab30efd3b0068bb8a505b2f0745eba0b59",
+      "version": 2,
+      "content_hash": "e9a2fb0812e0075d2972d68b2da3767956d88c106f79f6db6c7cee6db3db9e96",
       "bitcoin_block": 960006,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 960006
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "afdc55c0-5899-49f1-b9f4-dc61e897f410",
