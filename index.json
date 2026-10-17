@@ -624,13 +624,13 @@
       "title": "Nobody is paid to check",
       "published_at": "2026-09-20T15:38:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "e6bb8725567a18a144b4c86cd4f44ed89dbda25543c9c31431ec6bafe2312993",
+      "version": 2,
+      "content_hash": "e7b57c3736476d6ab74680b6db0a8cd37db3bf3fcd364956f0cf1b8aee6b9d27",
       "bitcoin_block": 967855,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 967855
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "a4334d89-2155-44c1-9952-f774c36dd7d0",
@@ -638,13 +638,13 @@
       "title": "The free version already shipped",
       "published_at": "2026-09-22T16:15:27Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "fdd8fc083f4e88df26bd732dd2f6ac6e91a8efd37ba0d16a01360fa566cc48ec",
+      "version": 2,
+      "content_hash": "477ed843fb6b21e86784a93fc2015cb13a3dd6eb4722a35de4cf999f56e1f0cb",
       "bitcoin_block": 968170,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 968170
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "cf3084e2-a556-416f-8dc2-aca097a0d9e8",
@@ -708,13 +708,13 @@
       "title": "Find out who already answered for your catalog",
       "published_at": "2026-10-06T15:21:13Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "39a6438f5d5e628c20a5b19aaba1cc516beb4d8400e5c00cc7ae462be3faa2f3",
+      "version": 2,
+      "content_hash": "216fcf53f40a2ca99977c5bcdda4269aa7d81aae4897262d23e5cf5cbf0ffb6b",
       "bitcoin_block": 970194,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 970194
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "14906d77-912a-4e7d-9e88-2d529baab93b",
