@@ -13,9 +13,10 @@
   "signature": "pokc+HDYHRRIieBupcRmEnYfyRBACo9EGuUIu/QwgIM7YL0gz1dB2okaSdyfA+zpr1LyXag1UA5u+335UbAtDA==",
   "pubkey_id": "sn-ed25519-2026-07",
   "ots": {
-    "status": "pending",
+    "status": "confirmed",
     "calendars": [
       "alice.btc.calendar.opentimestamps.org"
-    ]
+    ],
+    "bitcoin_block": 971906
   }
 }
