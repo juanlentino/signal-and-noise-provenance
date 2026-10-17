@@ -764,13 +764,13 @@
       "title": "The credit that has to stay private",
       "published_at": "2026-10-16T20:08:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "32f29da503ce641b1e57254530eacf16798a1583ca171affb7b975d53ecfbf82",
+      "version": 2,
+      "content_hash": "89d84eff96567456a1eb094603ea90b1dac6d105089c353c6bacb67b50b3e43c",
       "bitcoin_block": 971764,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 971764
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
