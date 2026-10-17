@@ -456,13 +456,13 @@
       "title": "Payment systems pay what they can name",
       "published_at": "2026-08-18T15:41:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "7da9d32873e48e85349d2a60a9f252bee1ac56e48684b6cb5576a4be980dfa3c",
+      "version": 2,
+      "content_hash": "558535fe5e70e258b042e264391f5bd5ad3b61f0f8750d8fd06b7adbc36856c5",
       "bitcoin_block": 963066,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 963066
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "ef402571-9600-42fd-a00f-9bcf831d6e0b",
