@@ -22,13 +22,13 @@
       "title": "Pricing in dollars from Argentina",
       "published_at": "2026-04-28T14:56:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "7b2601002969ddda245ddafed0010eccc042fe62526d5a34baa4096efcc18f4f",
+      "version": 2,
+      "content_hash": "5ceab98df5b7a73da3f2bf9c3c316cf72b15beee81ba46a1e24c391d6d140e76",
       "leaf_hash": "2873b09f9f3a31456bd431f6e6853b3fdae91b2417e42edc2c106a1b668015e1",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "d95be039-064b-482f-b94c-caa581bc808a",
@@ -36,13 +36,13 @@
       "title": "Where artist signatures live",
       "published_at": "2026-05-03T01:37:50Z",
       "anchor": "genesis",
-      "version": 3,
-      "content_hash": "b2090a23d5c13e3d11fc1bd9478e4baba1ff8a86229aefbe1037567652c8f248",
+      "version": 4,
+      "content_hash": "d11719249d58d7c938e6e11ad2446a4557defec1abac42fd36da263f97657fff",
       "leaf_hash": "659caca9a017b9e4183fee38154be111936a67c82e61e42a67ef9187be3a4953",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 970670
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "dedf0479-0b1b-4551-a411-7e5840c87097",
@@ -218,13 +218,13 @@
       "title": "The music industry talks to itself in code",
       "published_at": "2026-06-20T13:38:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "6ccf833694e8dd4bb65fd9d235bb7ea4b46a16286930a7cc323e3b454215bea7",
+      "version": 2,
+      "content_hash": "ca07991c32e93d9f1fec2c86b617ffe937569ee7e15f8dc7c170a903dd8e4cf1",
       "leaf_hash": "f319e59c5537bdf89078bec7cdf0d54eceb07e0107772095c70b64d6f18ea031",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "f1ebff9e-e5f3-4528-92a3-eda1814e27af",
@@ -512,13 +512,13 @@
       "title": "Provenance is the wrong half",
       "published_at": "2026-09-01T13:52:00Z",
       "anchor": "per-note",
-      "version": 1,
-      "content_hash": "954c84a7deb31740bc6b46645906455c36f3f6e2e71c0947117109f5dcae8f94",
+      "version": 2,
+      "content_hash": "9f6396890718d277a388199dac00d9577bfb4d054a0c68918e4467d1c839d202",
       "bitcoin_block": 965045,
       "ots_status": "confirmed",
       "anchored_version": 1,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 965045
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "52781acb-dbaa-4337-9dfb-0cfc88c81f61",
