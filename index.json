@@ -50,13 +50,13 @@
       "title": "Provenance is for humans, not against AI",
       "published_at": "2026-05-05T16:13:00Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "853b8515cc43d41794eacccd3bdd80bf222d8e18378a58f7553e738a50754dc2",
+      "version": 2,
+      "content_hash": "42ebb8f322f9dfa520b16a2fda825b5aea3f29113f449277d8bc911720a3c758",
       "leaf_hash": "dbb629c8ed58314d723834980c2c0f62ff101308d7d1f0799da73779b0441fbe",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "afb6674f-befc-45af-a7a0-5bb4bc477b04",
@@ -106,13 +106,13 @@
       "title": "Five years of remote freelance work",
       "published_at": "2026-05-15T21:02:25Z",
       "anchor": "genesis",
-      "version": 1,
-      "content_hash": "181dd042c4c706e32512bb6e8b06295afa72047201b39b0f62a9dbb81fe4b658",
+      "version": 2,
+      "content_hash": "9af1f416f43cb3c1566029ee5bfd896ca517dc4875feb3676850d89d2fcbf6a2",
       "leaf_hash": "427a220b1f02e3cd419ed389623ed1353f3ec0ddc78d4a5ce2da879fe66ea34f",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 958897
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "94db36d5-b441-4c69-95dc-40dad622ab0f",
@@ -260,13 +260,13 @@
       "title": "The court found the floor",
       "published_at": "2026-07-03T19:06:12Z",
       "anchor": "genesis",
-      "version": 2,
-      "content_hash": "111469e97351c00681a11f251deef5092921b8e0fed977eb96253f04585e6c63",
+      "version": 3,
+      "content_hash": "741c79eac4c4d0b7d0bddc620df543df54f198289ab40a3492cc16470582c891",
       "leaf_hash": "07028fd5811af7416ab24cee470bbe62440658d3bdedf1ad1993e0ef8ea9cc5e",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 969745
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "8d448df2-db53-4c45-932f-06e3d69716c2",
@@ -372,13 +372,13 @@
       "title": "Provenance signs the claim, not the truth",
       "published_at": "2026-07-31T19:23:36Z",
       "anchor": "per-note",
-      "version": 3,
-      "content_hash": "f1d6335adb0193da0e7b6ebbc64344402a77abd6c3bd7b09704e801fee5a6927",
+      "version": 4,
+      "content_hash": "b590fe8046d786217fad86c728864316eb1d2a6fcb9d0da7482305351f0338f3",
       "bitcoin_block": 965106,
       "ots_status": "confirmed",
       "anchored_version": 3,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 965106
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "10bc8a21-fe13-41b4-a6a5-f63ed3597e7e",
