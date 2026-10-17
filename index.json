@@ -27,8 +27,8 @@
       "leaf_hash": "2873b09f9f3a31456bd431f6e6853b3fdae91b2417e42edc2c106a1b668015e1",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971879
     },
     {
       "note_uid": "d95be039-064b-482f-b94c-caa581bc808a",
@@ -41,8 +41,8 @@
       "leaf_hash": "659caca9a017b9e4183fee38154be111936a67c82e61e42a67ef9187be3a4953",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971879
     },
     {
       "note_uid": "dedf0479-0b1b-4551-a411-7e5840c87097",
@@ -125,8 +125,8 @@
       "leaf_hash": "4086d94c946b1d911fb8b5afb1d31fbb6d5b16c9d7f169f89d1bcc079bb362d3",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971884
     },
     {
       "note_uid": "5bc0e8fc-94e5-4891-a123-5fc3574e8ac9",
@@ -223,8 +223,8 @@
       "leaf_hash": "f319e59c5537bdf89078bec7cdf0d54eceb07e0107772095c70b64d6f18ea031",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971879
     },
     {
       "note_uid": "f1ebff9e-e5f3-4528-92a3-eda1814e27af",
@@ -251,8 +251,8 @@
       "leaf_hash": "de3635fcc30bb568b330d3203ab6041fa725d55fc2dead8f23137e56fcde74c7",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971884
     },
     {
       "note_uid": "b1d2f576-ef1d-4ac0-b30a-4ce93b11bc90",
@@ -318,11 +318,11 @@
       "anchor": "per-note",
       "version": 3,
       "content_hash": "9e36aed3f3a502ad20ca18d83263d4afa787fab1376a25c193cb57938d0eebcc",
-      "bitcoin_block": 970670,
+      "bitcoin_block": 971879,
       "ots_status": "confirmed",
-      "anchored_version": 2,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 3,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971879
     },
     {
       "note_uid": "15240786-b0b0-4936-8998-b4c60854732e",
@@ -344,13 +344,13 @@
       "title": "Two kinds of provenance",
       "published_at": "2026-07-25T15:18:23Z",
       "anchor": "per-note",
-      "version": 4,
-      "content_hash": "968d30d8e17445edd6b9b2e97b36b8ae068681aee063037a59c52e64ef370294",
+      "version": 5,
+      "content_hash": "7cc9470c927515e67d58dc08b8b16d5529b52e6e7b85b4af1812b0c22e43c7b0",
       "bitcoin_block": 970670,
       "ots_status": "confirmed",
       "anchored_version": 4,
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 970670
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "422f8047-09f8-42b6-83b0-6608556ede76",
@@ -514,11 +514,11 @@
       "anchor": "per-note",
       "version": 2,
       "content_hash": "9f6396890718d277a388199dac00d9577bfb4d054a0c68918e4467d1c839d202",
-      "bitcoin_block": 965045,
+      "bitcoin_block": 971879,
       "ots_status": "confirmed",
-      "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 2,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971879
     },
     {
       "note_uid": "52781acb-dbaa-4337-9dfb-0cfc88c81f61",
@@ -626,11 +626,11 @@
       "anchor": "per-note",
       "version": 2,
       "content_hash": "e7b57c3736476d6ab74680b6db0a8cd37db3bf3fcd364956f0cf1b8aee6b9d27",
-      "bitcoin_block": 967855,
+      "bitcoin_block": 971884,
       "ots_status": "confirmed",
-      "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 2,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971884
     },
     {
       "note_uid": "a4334d89-2155-44c1-9952-f774c36dd7d0",
@@ -640,11 +640,11 @@
       "anchor": "per-note",
       "version": 2,
       "content_hash": "477ed843fb6b21e86784a93fc2015cb13a3dd6eb4722a35de4cf999f56e1f0cb",
-      "bitcoin_block": 968170,
+      "bitcoin_block": 971884,
       "ots_status": "confirmed",
-      "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 2,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971884
     },
     {
       "note_uid": "cf3084e2-a556-416f-8dc2-aca097a0d9e8",
@@ -696,11 +696,11 @@
       "anchor": "per-note",
       "version": 3,
       "content_hash": "639699883c9ea659f7ac89519b81c6b7313797353a5ab64ac715158230279d93",
-      "bitcoin_block": 971134,
+      "bitcoin_block": 971884,
       "ots_status": "confirmed",
-      "anchored_version": 2,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 3,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971884
     },
     {
       "note_uid": "7d682766-70e6-4af7-9eda-7d2a6ff35e09",
@@ -710,11 +710,11 @@
       "anchor": "per-note",
       "version": 2,
       "content_hash": "216fcf53f40a2ca99977c5bcdda4269aa7d81aae4897262d23e5cf5cbf0ffb6b",
-      "bitcoin_block": 970194,
+      "bitcoin_block": 971884,
       "ots_status": "confirmed",
-      "anchored_version": 1,
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "anchored_version": 2,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 971884
     },
     {
       "note_uid": "14906d77-912a-4e7d-9e88-2d529baab93b",
