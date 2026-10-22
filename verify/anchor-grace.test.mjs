@@ -10,7 +10,7 @@
 // real wall clock would pass today and fail at some future hour, which is the
 // kind of test that erodes trust in the suite.
 import { describe, it, expect } from "vitest";
-import { hoursSince, pendingVerdict, DEFAULT_GRACE_HOURS } from "../anchor-grace.mjs";
+import { hoursSince, pendingVerdict, missingRecordVerdict, DEFAULT_GRACE_HOURS, MISSING_RECORD_GRACE_HOURS } from "../anchor-grace.mjs";
 
 const NOW = Date.parse("2026-08-05T12:00:00Z");
 const at = (iso, over = {}) => ({ ots_status: "pending", published_at: iso, ...over });
@@ -46,15 +46,21 @@ describe("pendingVerdict", () => {
   });
 
   it("passes right up to the window and fails past it", () => {
-    expect(pendingVerdict(at("2026-08-04T12:00:00Z"), { now: NOW }).ok).toBe(true);   // exactly 24h
-    expect(pendingVerdict(at("2026-08-04T11:59:00Z"), { now: NOW }).ok).toBe(false);  // 24.02h
+    expect(pendingVerdict(at("2026-08-02T12:00:00Z"), { now: NOW }).ok).toBe(true);   // exactly 72h
+    expect(pendingVerdict(at("2026-08-02T11:59:00Z"), { now: NOW }).ok).toBe(false);  // 72.02h
+  });
+
+  it("passes the slowest confirmation the ledger has seen (25.0h, 2026-09-16)", () => {
+    // 8cf78cdb v1 sat pending for 25.0h before Bitcoin confirmed it. The old
+    // 24h window would have failed a normal, healthy anchor.
+    expect(pendingVerdict(at("2026-08-04T11:00:00Z"), { now: NOW }).ok).toBe(true);
   });
 
   it("names the age when it fails, so the report is actionable", () => {
-    const v = pendingVerdict(at("2026-08-04T00:00:00Z"), { now: NOW }); // 36h before NOW
+    const v = pendingVerdict(at("2026-08-01T00:00:00Z"), { now: NOW }); // 108h before NOW
     expect(v.ok).toBe(false);
-    expect(v.reason).toContain("36.0h");
-    expect(v.reason).toContain("24h grace window");
+    expect(v.reason).toContain("108.0h");
+    expect(v.reason).toContain("72h grace window");
   });
 
   it("honours a custom window", () => {
@@ -108,7 +114,39 @@ describe("pendingVerdict", () => {
     }
   });
 
-  it("defaults to a 24h window", () => {
-    expect(DEFAULT_GRACE_HOURS).toBe(24);
+  it("defaults to a 72h window", () => {
+    expect(DEFAULT_GRACE_HOURS).toBe(72);
+  });
+});
+
+// A public Note with NO ledger record at all is a different question: the
+// Worker never dispatched, or dispatched and failed. That is real trouble, but
+// the record push lands minutes after publication, so a run in that gap must
+// not cry wolf. Two hours is generous for minutes and short enough that a
+// missed dispatch is reported the same day.
+describe("missingRecordVerdict", () => {
+  it("passes a Note published minutes ago, before the Worker's record push", () => {
+    const v = missingRecordVerdict("2026-08-05T11:30:00Z", { now: NOW });
+    expect(v.ok).toBe(true);
+    expect(v.reason).toBeNull();
+  });
+
+  it("fails a Note published past the short grace with no record", () => {
+    const v = missingRecordVerdict("2026-08-05T09:00:00Z", { now: NOW }); // 3h
+    expect(v.ok).toBe(false);
+    expect(v.reason).toContain("3.0h");
+    expect(v.reason).toContain("no ledger record");
+  });
+
+  it("fails when the publication time is unknown or in the future", () => {
+    for (const ts of [undefined, "", "soon", "2026-08-05T13:00:00Z"]) {
+      expect(missingRecordVerdict(ts, { now: NOW }).ok).toBe(false);
+    }
+  });
+
+  it("defaults to a 2h window", () => {
+    expect(MISSING_RECORD_GRACE_HOURS).toBe(2);
+    expect(missingRecordVerdict("2026-08-05T10:00:00Z", { now: NOW }).ok).toBe(true);  // exactly 2h
+    expect(missingRecordVerdict("2026-08-05T09:59:00Z", { now: NOW }).ok).toBe(false); // 2.02h
   });
 });

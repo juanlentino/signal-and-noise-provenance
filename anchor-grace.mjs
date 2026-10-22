@@ -15,7 +15,17 @@
 // Extracted from verify-coverage.mjs so the decision is unit-testable with an
 // injected clock; the script itself is a CLI with top-level side effects.
 
-export const DEFAULT_GRACE_HOURS = 24;
+// 72h, from the ledger's own history (2026-10-22): over 155 pending-to-confirmed
+// record pairs, p50 1.8h, p90 2.8h, p99 4.8h, and the slowest 25.0h (8cf78cdb
+// v1, 2026-09-16). The old 24h window sat BELOW that observed maximum, so a
+// healthy anchor could fail it. 72h is about three times the worst case seen,
+// and a stuck anchor is still reported within three days.
+export const DEFAULT_GRACE_HOURS = 72;
+
+// A public Note with no ledger record at all. The Worker's record push lands
+// minutes after publication, so 2h covers that gap with room to spare and
+// still reports a missed dispatch the same day.
+export const MISSING_RECORD_GRACE_HOURS = 2;
 
 /**
  * Hours between an ISO timestamp and `now`.
@@ -63,5 +73,22 @@ export function pendingVerdict(entry, { graceHours = DEFAULT_GRACE_HOURS, now = 
   if (hours > graceHours) {
     return { ok: false, hours, reason: `pending for ${hours.toFixed(1)}h, past the ${graceHours}h grace window` };
   }
+  return { ok: true, hours, reason: null };
+}
+
+/**
+ * Decide whether a public Note with NO ledger record may pass for now.
+ *
+ * Same rules as pendingVerdict: an unknown or future age never reads as young.
+ *
+ * @param {unknown} publishedAt ISO 8601 publication time from the site.
+ * @param {{graceHours?: number, now?: number}} opts
+ * @returns {{ok: boolean, hours: number|null, reason: string|null}}
+ */
+export function missingRecordVerdict(publishedAt, { graceHours = MISSING_RECORD_GRACE_HOURS, now = Date.now() } = {}) {
+  const hours = hoursSince(publishedAt, now);
+  if (hours === null) return { ok: false, hours, reason: "no ledger record, and the publication time is missing or unparseable" };
+  if (hours < 0) return { ok: false, hours, reason: `no ledger record, and the publication time is ${Math.abs(hours).toFixed(1)}h in the future` };
+  if (hours > graceHours) return { ok: false, hours, reason: `no ledger record ${hours.toFixed(1)}h after publication, past the ${graceHours}h grace window (the record dispatch did not land)` };
   return { ok: true, hours, reason: null };
 }

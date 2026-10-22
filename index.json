@@ -771,6 +771,20 @@
       "anchored_version": 2,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 971793
+    },
+    {
+      "note_uid": "4c48f80a-a886-4dce-9c77-36b45905ba1e",
+      "slug": "provenance-has-to-stay-refusable",
+      "title": "Provenance has to stay refusable",
+      "published_at": "2026-10-20T14:36:29Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "8b9d614964d0208c0e197790b01379353c9fafe0a99b8e2d54bf96aee69e3687",
+      "bitcoin_block": 972344,
+      "ots_status": "confirmed",
+      "anchored_version": 1,
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 972344
     }
   ],
   "pages": [
@@ -779,10 +793,10 @@
       "kind": "page",
       "slug": "about",
       "title": "About",
-      "version": 6,
-      "content_hash": "a19a2874d4bb83ab914b727bb9f881915bae9cde7c06a9c5eb60efb5c8cb1e37",
+      "version": 8,
+      "content_hash": "24148774a134564f0b9b5c076e1cd572636ea8de773bceb29af408ab63e41275",
       "ots_status": "confirmed",
-      "bitcoin_block": 971262
+      "bitcoin_block": 972571
     },
     {
       "note_uid": "5acfdf1d-5894-4353-bdd4-a2425ef21ef4",

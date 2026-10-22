@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchSiteJson, installEvidenceReport } from "./fetch-site.mjs";
 import { recordVersions } from "./ledger-records.mjs";
-import { pendingVerdict, DEFAULT_GRACE_HOURS } from "./anchor-grace.mjs";
+import { missingRecordVerdict, pendingVerdict, DEFAULT_GRACE_HOURS } from "./anchor-grace.mjs";
 import { otsMatches, describeMismatch, sweptAhead } from "./index-parity.mjs";
 installEvidenceReport("verify:coverage");
 
@@ -219,11 +219,19 @@ if (!process.argv.includes("--offline")) {
   // Same unguarded shape that broke build-index.mjs on 2026-08-02 (an `ok`
   // status is not a valid payload); routed through fetchSite before it could
   // fire here too and be misread as coverage drift.
-  const live = await fetchSiteJson("https://juanlentino.com/wp-json/wp/v2/posts?per_page=100&_fields=slug");
-  const gaps = live.map((post) => post.slug).filter((slug) => !slugs.has(slug));
+  const live = await fetchSiteJson("https://juanlentino.com/wp-json/wp/v2/posts?per_page=100&_fields=slug,date_gmt");
+  // A Note published minutes ago may not have its record yet (build-index
+  // skips it the same way). Past the short grace it is a gap like any other.
+  const awaiting = [];
+  const gaps = live.filter((post) => !slugs.has(post.slug)).filter((post) => {
+    const verdict = missingRecordVerdict(post.date_gmt ? `${post.date_gmt}Z` : undefined);
+    if (verdict.ok) awaiting.push(`${post.slug} (${verdict.hours.toFixed(1)}h)`);
+    return !verdict.ok;
+  }).map((post) => post.slug);
   const stale = entries.map((entry) => entry.slug).filter((slug) => !live.some((post) => post.slug === slug) && !retiredSlugs.has(slug));
   if (gaps.length || stale.length) throw new Error(`coverage drift: gaps=${gaps.join(",") || "none"}; stale=${stale.join(",") || "none"}`);
-  console.log(`${live.length}/${live.length} anchored, 0 gaps`);
+  console.log(`${live.length - awaiting.length}/${live.length} anchored, 0 gaps`);
+  if (awaiting.length) console.log(`${awaiting.length} awaiting a first record within the 2h grace window: ${awaiting.join(", ")}`);
   // An exemption list that grows in silence is the failure this repo's whole
   // style guards against, so a pass SAYS what it skipped.
   if (retiredUids.size) console.log(`${retiredUids.size} retired subject${retiredUids.size === 1 ? "" : "s"} excluded (records kept): ${[...retiredSlugs].join(", ")}`);

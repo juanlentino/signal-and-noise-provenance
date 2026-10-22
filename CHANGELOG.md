@@ -1,5 +1,35 @@
 # Changelog
 
+## 2026-10-22: the index reads a Note's uid from its ledger link, and the anchor window is 72h
+
+From 2026-10-19 every scheduled and `main` run failed with `unanchored public
+note`, first for `the-credit-that-has-to-stay-private`, then for
+`provenance-has-to-stay-refusable`. Neither Note was unanchored: both have
+confirmed records (`4c48f80a` v1 is in block 972344). Every Note page now
+carries a degree credential in its JSON-LD whose parchment.com URL holds an
+unrelated uuid, ahead of the provenance block, and `build-index.mjs` took the
+first uuid in the document. The failing slug was simply the newest Note.
+`noteUidFromPage` (in `ledger-records.mjs`) now reads the uid from the
+`/main/notes/<uid>` ledger link, the way the pages loop already reads
+`/main/pages/<uid>`; `build-genesis-derivations.mjs` uses it too. The rebuilt
+`index.json` adds the missing row and catches up the `01cea10c` page row.
+
+A public Note with no record at all is now judged by
+`missingRecordVerdict`: within 2h of publication it is reported as awaiting
+its record (the Worker's push lands minutes later); past 2h it fails as a
+missed dispatch, in both `build-index` and the live `verify:coverage`.
+
+The pending-anchor window moves from 24h to 72h. Over 155 pending-to-confirmed
+pairs in this ledger's history the median is 1.8h, p99 4.8h, and the slowest
+25.0h (`8cf78cdb` v1, 2026-09-16), which the old window would have failed.
+Countersignature batches share the window.
+
+The dependabot pull request runs that failed (#55, #56) were not failing on
+the author key: those lines are stderr from tests that expect the throw. The
+real failure was `weigh-ledger`'s byte-identical test, which spawns four
+full-ledger processes and took 5.4-6.1s on a busy runner against vitest's 5s
+default. It now has a 30s budget; its assertion is unchanged.
+
 ## 2026-10-16: every action is pinned to a commit, and Dependabot watches them
 
 `release-attest.yml` was the last workflow still naming actions by a moving
