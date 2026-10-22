@@ -785,6 +785,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 972344
+    },
+    {
+      "note_uid": "2c77b4d7-75c6-42cc-bbe9-f66ea66d0de8",
+      "slug": "the-key-stays-in-the-drawer",
+      "title": "The key stays in the drawer",
+      "published_at": "2026-10-22T15:28:53Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "6a198d644fa252254b8dc4a8606cd9f7ef5598701c88980d4fdcf4415e06abc2",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
