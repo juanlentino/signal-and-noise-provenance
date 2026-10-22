@@ -112,3 +112,19 @@ export function assertPublisherKey(root, pubkeyId, what) {
   if (!key) throw new Error(`${what} is signed by ${pubkeyId}, a key absent from the key history`);
   if (key.role === "author") throw new Error(`${what} is signed by the author key ${pubkeyId}, which only countersigns`);
 }
+
+/**
+ * The Note uid a served Note page points at, read from its LEDGER LINK.
+ *
+ * Not "the first uuid in the document": since 2026-10-19 every Note page carries
+ * a degree credential in its JSON-LD whose parchment.com URL holds an unrelated
+ * uuid, ahead of the provenance block. Anchoring on `/main/notes/<uid>` also
+ * confirms the KIND, exactly as the pages loop in build-index does for
+ * `/main/pages/`. Escaped slashes (the JSON manifest) are normalized first.
+ *
+ * @param {string} html Served page body.
+ * @returns {string|null}
+ */
+export function noteUidFromPage(html) {
+  return html.replace(/\\\//g, "/").match(/\/(?:tree\/)?main\/notes\/([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/)?.[1] ?? null;
+}

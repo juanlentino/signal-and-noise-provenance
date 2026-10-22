@@ -226,7 +226,7 @@ describe("the whole flow, on a copy of the ledger", () => {
     // Pending is bounded: past the grace window, or not queued at all, it fails.
     const pendingPath = join(root, "pending.json");
     const queue = JSON.parse(readFileSync(pendingPath, "utf8"));
-    const stale = new Date(Date.now() - 30 * 3600 * 1000).toISOString();
+    const stale = new Date(Date.now() - 80 * 3600 * 1000).toISOString(); // past the 72h window
     writeFileSync(pendingPath, JSON.stringify({ entries: queue.entries.map((e) => (e.kind === "countersignature" ? { ...e, queued_at: stale } : e)) }));
     expect(() => run("verify-countersignatures.mjs")).toThrow(/grace window/);
     writeFileSync(pendingPath, JSON.stringify({ entries: queue.entries.filter((e) => e.kind !== "countersignature") }));

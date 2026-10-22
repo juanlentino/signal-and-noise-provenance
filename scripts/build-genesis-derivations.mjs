@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import { canonicalize } from "../normalize/canonical-json.mjs";
 import { leafHash } from "../normalize/merkle-v1.mjs";
 import { normalizeV1 } from "../normalize/sn-normalize-v1.mjs";
+import { noteUidFromPage } from "../ledger-records.mjs";
 import { fetchSiteHtml, fetchSiteJson, installEvidenceReport } from "../fetch-site.mjs";
 installEvidenceReport("build-genesis-derivations");
 
@@ -20,7 +21,7 @@ const byUid = new Map();
 
 for (const post of posts) {
   const pageHtml = await fetchSiteHtml(post.link);
-  const uid = pageHtml.match(/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}/)?.[0];
+  const uid = noteUidFromPage(pageHtml);
   const published = pageHtml.match(/<meta\s+property="article:published_time"\s+content="([^"]+)"/i)?.[1];
   if (!uid || !published) throw new Error(`public provenance metadata missing for ${post.slug}`);
   byUid.set(uid, { post, pageHtml, published: new Date(published).toISOString().replace(".000Z", "Z") });

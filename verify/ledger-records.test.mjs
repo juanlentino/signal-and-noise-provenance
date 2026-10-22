@@ -2,7 +2,7 @@ import { describe, expect, it, beforeAll, afterAll } from "vitest";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { contiguousFromV1, expectedParent, latestRecordVersion, recordVersions } from "../ledger-records.mjs";
+import { contiguousFromV1, expectedParent, latestRecordVersion, noteUidFromPage, recordVersions } from "../ledger-records.mjs";
 
 // A note directory holds vN.json + vN.ots per version. These helpers are the
 // single place that answers "which record is current?", so every consumer
@@ -118,5 +118,34 @@ describe("expectedParent", () => {
   // same note and the chain would still read as intact.
   it("never lets a later record fall back to the genesis leaf", () => {
     expect(expectedParent({ version: 3, genesisLeaf: LEAF, previousContentHash: V1_HASH })).not.toBe(LEAF);
+  });
+});
+
+// 2026-10-19: every Note page began carrying a degree credential in its
+// JSON-LD (a parchment.com award URL with its own uuid) ABOVE the Note's
+// provenance block. The index builder took the first uuid in the document,
+// looked that up in the ledger, found nothing, and reported a confirmed Note
+// as "unanchored" every day until the regex was anchored to the ledger path.
+describe("noteUidFromPage", () => {
+  const UID = "4c48f80a-a886-4dce-9c77-36b45905ba1e";
+  const DECOY = "acd27b60-9389-4b6d-95e9-33c6755f53e5";
+  const decoy = `{"url":"https://www.parchment.com/lp/award/${DECOY}"}`;
+
+  it("ignores a uuid that appears before the Note's ledger link", () => {
+    const html = `${decoy}<a href="https://github.com/juanlentino/signal-and-noise-provenance/tree/main/notes/${UID}">GitHub</a>`;
+    expect(noteUidFromPage(html)).toBe(UID);
+  });
+
+  it("reads the escaped raw-record URL in the machine manifest", () => {
+    const html = `${decoy}{"record":"https:\/\/raw.githubusercontent.com\/juanlentino\/signal-and-noise-provenance\/main\/notes\/${UID}\/v1.json"}`;
+    expect(noteUidFromPage(html)).toBe(UID);
+  });
+
+  it("does not read a page record or a retraction as a Note", () => {
+    expect(noteUidFromPage(`${decoy}/main/pages/${UID}/v1.json /main/retractions/${UID}/v1.json`)).toBeNull();
+  });
+
+  it("returns null when the page carries no ledger link at all", () => {
+    expect(noteUidFromPage(decoy)).toBeNull();
   });
 });

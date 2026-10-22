@@ -55,7 +55,10 @@ describe("weigh, over the ledger", () => {
     const run = (...extra) => execFileSync(process.execPath, [join(repo, "weigh.mjs"), "--policy", join(repo, "policy/example.json"), ...extra]);
     expect(run().equals(run())).toBe(true);
     expect(run("--explain").equals(run("--explain"))).toBe(true);
-  });
+    // Four full-ledger child processes: ~1s alone, 5.4-6.1s on a busy CI
+    // runner (dependabot PR runs 2026-10-19 and 2026-10-21), past vitest's 5s
+    // default. The assertion is unchanged; only the wall-clock budget is.
+  }, 30_000);
   it("genesis events use the genesis height, or an earlier standalone anchor", () => {
     // Two backlog notes were anchored on their own (blocks 957333, 957350)
     // before the genesis root confirmed; the earliest witness is the clock.

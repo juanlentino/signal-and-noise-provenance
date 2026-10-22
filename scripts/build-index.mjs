@@ -3,7 +3,8 @@ import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchSite, fetchSiteJson, installEvidenceReport } from "../fetch-site.mjs";
-import { recordVersions } from "../ledger-records.mjs";
+import { noteUidFromPage, recordVersions } from "../ledger-records.mjs";
+import { missingRecordVerdict } from "../anchor-grace.mjs";
 installEvidenceReport("build-index");
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -16,12 +17,15 @@ const genesis = new Map(genesisRecord.payload.notes.map((note) => [note.note_uid
 // whole point of the reverse-coverage guard. It goes through fetchSite so an
 // intercepted edge response fails as a named diagnosis rather than as a
 // SyntaxError from JSON.parse (2026-08-02).
-const posts = await fetchSiteJson("https://juanlentino.com/wp-json/wp/v2/posts?per_page=100&_fields=slug,link,title");
+const posts = await fetchSiteJson("https://juanlentino.com/wp-json/wp/v2/posts?per_page=100&_fields=slug,link,title,date_gmt");
 const entries = [];
 
 for (const post of posts) {
   const { response: pageResponse, body: page } = await fetchSite(post.link, { expect: "html" });
-  const uid = page.match(/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}/)?.[0];
+  // Read from the ledger link, never "the first uuid on the page": a degree
+  // credential's uuid in the JSON-LD made every Note read as unanchored from
+  // 2026-10-19 to 2026-10-22. See noteUidFromPage.
+  const uid = noteUidFromPage(page);
   // A text/html body with no UID passes the content-type guard but is still
   // not the Note page — a stripped, cached or interstitial variant looks
   // exactly like this. Say what actually arrived, so the next occurrence is
@@ -41,7 +45,14 @@ for (const post of posts) {
   const versions = recordVersions(notesRoot, uid);
   const record = versions.length ? readRecord(uid, versions.at(-1)) : null;
   const leafHash = genesis.get(uid);
-  if (!leafHash && !record) throw new Error(`unanchored public note: ${post.slug}`);
+  if (!leafHash && !record) {
+    // No record at all. Minutes after publication that is the Worker's push
+    // still in flight; past the short grace it is a missed dispatch.
+    const verdict = missingRecordVerdict(post.date_gmt ? `${post.date_gmt}Z` : undefined);
+    if (!verdict.ok) throw new Error(`unanchored public note: ${post.slug} (uid ${uid}): ${verdict.reason}`);
+    console.log(`awaiting record: ${post.slug} (uid ${uid}), published ${verdict.hours.toFixed(1)}h ago; not indexed yet`);
+    continue;
+  }
   // The Note's STANDING anchor, which is a different question from the current
   // record's own OTS state. A record is `pending` for the hours between its
   // commit and its Bitcoin confirmation, and an edit must not un-anchor a Note
