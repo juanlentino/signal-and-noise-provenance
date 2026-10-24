@@ -799,6 +799,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 972632
+    },
+    {
+      "note_uid": "24ba73ac-8e0a-4abc-9706-b166008fec17",
+      "slug": "a-remix-inherits-nothing",
+      "title": "A remix inherits nothing",
+      "published_at": "2026-10-24T17:06:20Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "9bf723e4330f781fa4d9a681bc17f49a171d23af44ed61ada44b41baeda2e3b0",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
