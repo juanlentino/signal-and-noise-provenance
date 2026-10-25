@@ -78,13 +78,13 @@
       "title": "Verifying the artist isn't enough",
       "published_at": "2026-05-09T22:33:32Z",
       "anchor": "genesis",
-      "version": 4,
-      "content_hash": "eca5eabdbf09d90cf3cab3afc74d4881e126607226169a05ed36ab6a2cb677b5",
+      "version": 5,
+      "content_hash": "233cdae901289f1798bd546d1c88c03f1037bafb0d862b3d5bb12ef7511ba3b0",
       "leaf_hash": "6bea3b91d6bfa6aa9dd37cfaf4b87523962e032fdcc148c38f772ac2464c23ed",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 970670
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "1059fb8d-2602-45a7-912e-18f463c7146d",
@@ -120,13 +120,13 @@
       "title": "Five layers, one system",
       "published_at": "2026-05-19T20:14:00Z",
       "anchor": "genesis",
-      "version": 3,
-      "content_hash": "23aec030db63b9cd2ee83c2d192c68f0d0d248eeb490fd3ec529ca56f6cf52ec",
+      "version": 4,
+      "content_hash": "2719325478b584ed395119baec262c5278e89e048a22e20c02a986933f157d7d",
       "leaf_hash": "4086d94c946b1d911fb8b5afb1d31fbb6d5b16c9d7f169f89d1bcc079bb362d3",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 971884
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "5bc0e8fc-94e5-4891-a123-5fc3574e8ac9",
