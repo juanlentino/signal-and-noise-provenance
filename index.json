@@ -841,10 +841,10 @@
       "kind": "page",
       "slug": "over-detection",
       "title": "Provenance Over Detection",
-      "version": 1,
-      "content_hash": "68d3044d47e0cad209abdefd433c3b92ddbdd2b70493e25b16d1019920d46180",
-      "ots_status": "confirmed",
-      "bitcoin_block": 966921
+      "version": 2,
+      "content_hash": "9633ab43dc3b313db14256a3bea9bed9be567cd25e127635b990745bae482c06",
+      "ots_status": "pending",
+      "bitcoin_block": null
     },
     {
       "note_uid": "9d49e140-10a2-4c62-943e-e98270fe09d2",
