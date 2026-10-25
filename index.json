@@ -162,13 +162,13 @@
       "title": "Falsifiability is the line",
       "published_at": "2026-05-27T19:24:00Z",
       "anchor": "genesis",
-      "version": 4,
-      "content_hash": "f150d3d841552a579164b15ee57b960a4671e78e8a7d4df9431488997b6b4fd0",
+      "version": 5,
+      "content_hash": "7036af92caf39882228e098854f207774828b64edd1860dc98c5c6f3fa121362",
       "leaf_hash": "964150870dc7ea8f9df37c11de1095dcead674d2fcd2761779c81b6efe23e7cf",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "confirmed",
-      "standalone_bitcoin_block": 970670
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     },
     {
       "note_uid": "5c3d0e61-0f95-4bd4-b665-41571fdad1a3",
