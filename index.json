@@ -83,8 +83,8 @@
       "leaf_hash": "6bea3b91d6bfa6aa9dd37cfaf4b87523962e032fdcc148c38f772ac2464c23ed",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 973141
     },
     {
       "note_uid": "1059fb8d-2602-45a7-912e-18f463c7146d",
@@ -125,8 +125,8 @@
       "leaf_hash": "4086d94c946b1d911fb8b5afb1d31fbb6d5b16c9d7f169f89d1bcc079bb362d3",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 973141
     },
     {
       "note_uid": "5bc0e8fc-94e5-4891-a123-5fc3574e8ac9",
@@ -167,8 +167,8 @@
       "leaf_hash": "964150870dc7ea8f9df37c11de1095dcead674d2fcd2761779c81b6efe23e7cf",
       "bitcoin_block": 957359,
       "ots_status": "confirmed",
-      "standalone_ots_status": "pending",
-      "standalone_bitcoin_block": null
+      "standalone_ots_status": "confirmed",
+      "standalone_bitcoin_block": 973141
     },
     {
       "note_uid": "5c3d0e61-0f95-4bd4-b665-41571fdad1a3",
@@ -843,8 +843,8 @@
       "title": "Provenance Over Detection",
       "version": 2,
       "content_hash": "9633ab43dc3b313db14256a3bea9bed9be567cd25e127635b990745bae482c06",
-      "ots_status": "pending",
-      "bitcoin_block": null
+      "ots_status": "confirmed",
+      "bitcoin_block": 973140
     },
     {
       "note_uid": "9d49e140-10a2-4c62-943e-e98270fe09d2",
