@@ -813,6 +813,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 972955
+    },
+    {
+      "note_uid": "68ca25d8-177f-4cea-a544-10b427809313",
+      "slug": "two-valid-signatures-can-disagree",
+      "title": "Two valid signatures can disagree",
+      "published_at": "2026-10-28T16:46:13Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "6dcc3332498f7bcade9c7bc7ade538a9ca59670b7841284fe2bcb30f2cc14bcd",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
