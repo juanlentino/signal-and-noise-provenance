@@ -827,6 +827,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 973580
+    },
+    {
+      "note_uid": "2c35adac-e634-430e-888d-1963fffe35cc",
+      "slug": "when-the-tool-signs-itself",
+      "title": "When the tool signs itself",
+      "published_at": "2026-11-01T15:51:53Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "67f80cc4e63346ebd9c44e423936821159c4a6dffb29d00e1bbb4075e37c0b0f",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
