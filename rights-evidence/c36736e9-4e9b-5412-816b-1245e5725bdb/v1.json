@@ -1,0 +1,189 @@
+{
+  "payload": {
+    "composed_at": "2026-11-01T21:44:03+00:00",
+    "crawling": {
+      "by_day": {
+        "2026-10-01": {
+          "reads": 32,
+          "train": 32
+        },
+        "2026-10-02": {
+          "reads": 34,
+          "train": 34
+        },
+        "2026-10-03": {
+          "reads": 11,
+          "train": 11
+        },
+        "2026-10-04": {
+          "reads": 11,
+          "train": 11
+        },
+        "2026-10-05": {
+          "reads": 41,
+          "train": 41
+        },
+        "2026-10-06": {
+          "reads": 83,
+          "train": 82
+        },
+        "2026-10-07": {
+          "reads": 2,
+          "train": 2
+        },
+        "2026-10-08": {
+          "reads": 13,
+          "train": 13
+        },
+        "2026-10-09": {
+          "reads": 32,
+          "train": 32
+        },
+        "2026-10-12": {
+          "reads": 1,
+          "train": 0
+        },
+        "2026-10-21": {
+          "reads": 1,
+          "train": 0
+        },
+        "2026-10-24": {
+          "reads": 5,
+          "train": 0
+        },
+        "2026-10-25": {
+          "reads": 6,
+          "train": 0
+        }
+      },
+      "by_surface": {
+        "train": {
+          "html": 257,
+          "wp-json": 1
+        },
+        "unlabelled": {
+          "html": 13,
+          "robots": 1
+        }
+      },
+      "complete": true,
+      "reads": 272,
+      "train": 258
+    },
+    "family": "google-ai",
+    "identity": {
+      "basis": "claimed user agent",
+      "crawling": {
+        "reads": {
+          "unverifiable": 0,
+          "unverified": 264,
+          "verified": 8
+        },
+        "train": {
+          "unverifiable": 0,
+          "unverified": 258,
+          "verified": 0
+        }
+      },
+      "rights_files": "claimed user agent; the rights stream records no verification",
+      "verification": {
+        "since": "2026-09-27T15:49:59Z",
+        "source": "cloudflare verified bot category"
+      }
+    },
+    "kind": "rights-evidence",
+    "month": "2026-10",
+    "reservation": {
+      "signals": {
+        "license-xml": [
+          {
+            "block": 967762,
+            "content_hash": "e7f7cf77e06748e6a2b675ba8423fa821fb3eef5ebf5d3324a66d568f4d20119",
+            "valid_from": "2026-09-20T00:09:20Z",
+            "valid_to": null,
+            "version": 3
+          }
+        ],
+        "robots-txt": [
+          {
+            "block": 963662,
+            "content_hash": "7d2c712340f63795c008d419dad03d0fe6e6ae93807d5189ae3ed23fa2e868a4",
+            "valid_from": "2026-08-23T02:24:19Z",
+            "valid_to": null,
+            "version": 5
+          }
+        ],
+        "tdm-policy": [
+          {
+            "block": 967762,
+            "content_hash": "24c2ba599add41fa6410279af82601426d959c889965ee72c0805ca29238b474",
+            "valid_from": "2026-09-20T00:09:20Z",
+            "valid_to": null,
+            "version": 9
+          }
+        ],
+        "tdmrep-json": [
+          {
+            "block": 959348,
+            "content_hash": "421f88383938eeaf8882474c747d1f3cfcd7e51c5d89711fd3df98fc0071ec80",
+            "valid_from": "2026-07-24T02:34:12Z",
+            "valid_to": null,
+            "version": 1
+          }
+        ],
+        "webmcp-bridge": [
+          {
+            "block": 967489,
+            "content_hash": "aebb3b6755a16f045d742e4744ce2621988af9eb27be9bb3039cc75de8984fd3",
+            "valid_from": "2026-09-18T02:51:39Z",
+            "valid_to": null,
+            "version": 5
+          }
+        ]
+      },
+      "window": {
+        "end": "2026-10-31T23:59:59Z",
+        "start": "2026-10-01T00:00:00Z"
+      }
+    },
+    "retrieval_reads": {
+      "by_path": {},
+      "by_purpose": {},
+      "complete": true,
+      "first": "",
+      "last": "",
+      "reads": 0
+    },
+    "rights_reads": {
+      "by_path": {},
+      "by_purpose": {},
+      "complete": true,
+      "first": "",
+      "last": "",
+      "reads": 0
+    },
+    "schema": 2,
+    "sensor": {
+      "taxonomy": "1.6.1",
+      "version": "1.36.2"
+    },
+    "site": "https://juanlentino.com",
+    "unlabelled_reads": {
+      "by_path": {},
+      "by_purpose": {},
+      "complete": true,
+      "first": "",
+      "last": "",
+      "reads": 0
+    }
+  },
+  "content_hash": "a3891dce2ee448cf51d88f756285df684c739f8b022a4e151c38273e31cfaa9a",
+  "signature": "FcyqYnWpcN9aIes7G8G+JEnhJU9gMaGAo3GrJ+qeXOyfssBjC7rEoIw0T0z7p/QCCJODFCQEDi/OZAuzsYSMDQ==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
