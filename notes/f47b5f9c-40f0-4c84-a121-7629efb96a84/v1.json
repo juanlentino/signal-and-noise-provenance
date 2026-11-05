@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v2",
+    "author": "Juan Lentino",
+    "content": "AI saves real time inside the production workflow on the deterministic tasks, the cleanup and repair that used to eat hours. That is still accurate, and it undersells the change. The larger shift in my working life did not happen in the session at all. It happened in every domain around the session, the ones I was never trained for and used to route around, hire out, or do badly.\n\nThe domains I never trained for\n\nI run a studio business and an independent practice, and both have always generated work that is not audio: infrastructure for the website that carries my writing, analytics to know what actually gets read, delivery systems so clients stop asking whether the files arrived, contract review before anything gets signed, financial modeling when pricing has to change.\n\nFor twenty years the honest options were to pay a specialist, spend a week learning enough to be dangerous, defer it to a slow season, or let it stay broken. Most of it stayed broken in ways I had learned not to see.\n\nWhat changed is that assisted work made those domains operable by one person at a useful level. Not expert level. Operable. The website runs on infrastructure I maintain myself, the analytics answer real questions instead of decorating a dashboard, and the delivery system I once described as a discipline problem is now boring on purpose with far less of my time spent keeping it that way. None of this made me a better engineer of audio. It made the practice around the audio stop leaking.\n\nThe risk points the other way\n\nInside my craft, evaluation is instant. I know a bad de-noise in one listen, because twenty years of listening is exactly what I have. Outside the craft that instinct does not exist, and the failure mode changes character: it goes silent. A mediocre mix announces itself. The misconfigured backup reports success every night and saves nothing, and its announcement arrives months later, from the failure itself, at the worst available moment. I caught one of those in time once, and I think about it whenever assisted work in an unfamiliar domain looks finished.\n\nA · Inside the craft\n\nFailure announces itself\n\nA bad de-noise is audible in one listen.\n\nB · Outside the craft\n\nFailure goes silent\n\nA misconfigured backup reports success every night and saves nothing.\n\nSo the discipline is not about the tools; it is about how far a mistake can travel before something catches it. Work in domains I cannot evaluate ships in small steps that can each be verified by outcome. Decisions stay parked where I can check results directly. A human specialist reviews the things whose failure would be expensive and slow to surface. I do not need to grade the work the way an expert would; I need to structure it so that reality grades it early.\n\nThe constraint moved\n\nThe old constraint on the practice was capacity: hours, and money for specialists. The new constraint is judgment, and judgment did not expand the way throughput did. Every domain the assistance opened is a domain where I now make calls I am not fully qualified to grade, which is why the honest inventory matters.\n\nWhat I will not delegate is anything whose output I cannot test cold. Client-facing sound stays mine because I can hear it. Legal positions stay with counsel because I cannot price what I would be missing. The interesting territory is everything between those two, and the border there is not set by the tools. It moves exactly as fast as my ability to check their work, which turns out to be the slowest thing I own.",
+    "note_uid": "f47b5f9c-40f0-4c84-a121-7629efb96a84",
+    "parent": null,
+    "published_at": "2026-11-05T19:21:29Z",
+    "title": "The augmentation happened outside the studio",
+    "version": 1
+  },
+  "content_hash": "e5a4037333cafb6ad79ee6bb8515b211a68f4ede19b6916b8029dbb68d8ec9b7",
+  "signature": "EOduNthi3gta+8s6XVqIdbc9KD6aStSzKIAhZf3YTuqm0ZTbHfnjI+5edf9wWNXLhNGN59vkBRN6wW5KgQu4BA==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
