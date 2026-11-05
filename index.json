@@ -841,6 +841,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 974146
+    },
+    {
+      "note_uid": "f47b5f9c-40f0-4c84-a121-7629efb96a84",
+      "slug": "the-augmentation-happened-outside-the-studio",
+      "title": "The augmentation happened outside the studio",
+      "published_at": "2026-11-05T19:21:29Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "e5a4037333cafb6ad79ee6bb8515b211a68f4ede19b6916b8029dbb68d8ec9b7",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
