@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "algo": "sn-normalize-v2",
+    "author": "Juan Lentino",
+    "content": "The theme and plugin that run this site were built by an AI coding agent. I am not an engineer by trade. My part was the brief each change was built against, written before any session started, and the longer I work this way the more of the outcome I find was settled in that document.\n\nWhat a brief has to hold\n\nA working brief has four parts, and each one closes off a direction the agent would otherwise be free to take. A sample with its real exclusions is on the How I work with AI page.\n\nThe four parts of a brief\n\nAlready shipped. Finished work the agent leaves alone, including work it might be tempted to improve.\n\nThis round. The scope of the change, and nothing past it.\n\nOff limits. Files, settings and habits the agent must not touch, named one by one.\n\nThe tests. The named suites that decide whether anything counts as done.\n\nThe off-limits list does most of the work. An agent given open space fills it with reasonable choices, and a reasonable choice nobody asked for is the expensive kind, because nothing flags it. The brief for a routine theme update said, in plain sentences, not to touch the templates, not to add colors or font sizes, not to run a global find-and-replace and not to bump the version number inside the change. None of those would have been sabotage. Each would have looked sensible in the moment and cost an afternoon to find later.\n\nThat update took the site's theme from version 13.8.0 to 13.9.0. Fourteen named test suites had to stay green through every phase of it.\n\nThe test list is what makes done checkable in the domains where my own judgment runs out first. A suite of named tests that must stay green after every phase can be read by someone who could not have written the code, and a failure in any of them stops the work. Without it, the agent's own report of success would be the only evidence on the table.\n\nDecisions stay named\n\nSome choices in a brief are not technical at all. They are questions of taste or risk, and they belong to whoever owns the outcome. A brief that leaves one unmarked has handed it to the agent without saying so.\n\nNaming them is the remedy. One design element in that same update was ambiguous, so the question went into the document with three options attached, and the agent was told to present them and wait. The analytics work had the same shape: to tell my visits apart from readers', the brief had to settle one thing before any code existed. Readers would not get a cookie, and only my own browser would carry one. The simplest fix for that counting problem puts a cookie on everyone, and nothing about the task itself would have told an agent to avoid it.\n\nThe brief outlives the session\n\nThe agent begins every session with no memory of the last one, so whatever was learned has to be written down before the session closes. In practice the briefs grow. A mistake that happens twice becomes a test that fails the build the third time. Decisions already made get recorded so nobody reopens them by accident, and releasing a version stays separate from building the change, so nothing ships as a side effect.\n\nWhat builds up reads less like a set of instructions than an operating record: what done means for each kind of work, and which failures have already happened once. Writing that down for work someone else will carry out is the same job whether the someone else is software or a contractor. The agents change every few months. The record carries over to whichever one comes next.",
+    "note_uid": "506f2e54-d591-42fd-9998-a2682d844e1d",
+    "parent": null,
+    "published_at": "2026-11-09T15:33:07Z",
+    "title": "The brief is the first deliverable",
+    "version": 1
+  },
+  "content_hash": "9f52759b1b665828d6caa07b5a7ca2359e6ada750cfce763bb39b86f257cec89",
+  "signature": "rP+hfEfvtYUIsL4un3enXgQ82NeG4GkLu+c5YOelPcaI35Vnk45ZxabCeWuSg+/3yxTZl33/l4uTxCj/KgiIAA==",
+  "pubkey_id": "sn-ed25519-2026-07",
+  "ots": {
+    "status": "pending",
+    "calendars": [
+      "alice.btc.calendar.opentimestamps.org"
+    ]
+  }
+}
