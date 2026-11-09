@@ -855,6 +855,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 974704
+    },
+    {
+      "note_uid": "506f2e54-d591-42fd-9998-a2682d844e1d",
+      "slug": "the-brief-is-the-first-deliverable",
+      "title": "The brief is the first deliverable",
+      "published_at": "2026-11-09T15:33:07Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "9f52759b1b665828d6caa07b5a7ca2359e6ada750cfce763bb39b86f257cec89",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
