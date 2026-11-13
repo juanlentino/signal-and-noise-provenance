@@ -869,6 +869,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 975195
+    },
+    {
+      "note_uid": "8c00012e-fec5-4db3-9fa8-cc5591fca96e",
+      "slug": "the-other-half-of-the-song-grew-3-3-percent",
+      "title": "The other half of the song grew 3.3 percent",
+      "published_at": "2026-11-13T15:47:23Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "137d3682262555608f9b404931b26fb34c9ac7159d611d1ec89f338180dc9694",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
