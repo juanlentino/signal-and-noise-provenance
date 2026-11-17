@@ -883,6 +883,19 @@
       "anchored_version": 2,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 975705
+    },
+    {
+      "note_uid": "fb3d0eb3-0e29-4655-a20c-08c32de9a8c0",
+      "slug": "being-read-is-not-being-cited",
+      "title": "Being read is not being cited",
+      "published_at": "2026-11-17T16:37:45Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "d2423c1505e1e58eed4f7d06b3e42d5b2294828ba39f7e91979088f32809eb54",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
