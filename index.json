@@ -897,6 +897,19 @@
       "anchored_version": 1,
       "standalone_ots_status": "confirmed",
       "standalone_bitcoin_block": 976316
+    },
+    {
+      "note_uid": "0ce95b9d-4745-4fdc-a8da-1fce06113638",
+      "slug": "most-of-the-ai-crawlers-were-somebody-else",
+      "title": "Most of the AI crawlers were somebody else",
+      "published_at": "2026-11-21T19:22:17Z",
+      "anchor": "per-note",
+      "version": 1,
+      "content_hash": "29fcd73ba5e7e3818138fcf8d52726285990d8606934e2c0b6d4eb7eff585e56",
+      "ots_status": "pending",
+      "anchored_version": 1,
+      "standalone_ots_status": "pending",
+      "standalone_bitcoin_block": null
     }
   ],
   "pages": [
